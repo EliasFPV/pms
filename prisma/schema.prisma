@@ -1,0 +1,344 @@
+// =============================================================================
+//  PMS Italia – Datenbank-Schema (PostgreSQL via Prisma)
+//  Domäne: 5 Ferienwohnungen in Italien, inkl. italienischer Compliance
+//  (Tassa di Soggiorno, Alloggiati Web, ISTAT, CIR/CIN, Fatturazione Elettronica)
+// =============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+//  Wohnung (Unità abitativa) – eine der 5 Ferienwohnungen
+// -----------------------------------------------------------------------------
+model Unit {
+  id          String  @id @default(cuid())
+  name        String // z.B. "Casa Vista Mare"
+  internalRef String? @unique // interner Kürzelcode, z.B. "U1"
+  address     String
+  city        String
+  province    String // Provinz-Kürzel, z.B. "SA"
+  region      String // Region für ISTAT, z.B. "Campania"
+  postalCode  String
+  maxGuests   Int     @default(4)
+  bedrooms    Int     @default(1)
+  bathrooms   Int     @default(1)
+  color       String  @default("#2f6fed") // Farbe im Kalender
+
+  // --- Italien-spezifische Codes (Pflicht auf Rechnungen/Dokumenten) ---
+  cir String? // Codice Identificativo Regionale
+  cin String? // Codice Identificativo Nazionale
+
+  // --- Preisbasis ---
+  basePrice    Decimal @default(80) @db.Decimal(10, 2) // Basispreis / Nacht
+  cleaningFee  Decimal @default(50) @db.Decimal(10, 2)
+  currency     String  @default("EUR")
+
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings      Booking[]
+  blocks        Block[]
+  seasonalRates SeasonalRate[]
+  tassaConfig   TassaConfig?
+
+  @@index([active])
+}
+
+// -----------------------------------------------------------------------------
+//  Saisonale Raten (überschreiben den Basispreis in einem Zeitraum)
+// -----------------------------------------------------------------------------
+model SeasonalRate {
+  id            String   @id @default(cuid())
+  unit          Unit     @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId        String
+  name          String // "Hochsaison", "Weihnachten", ...
+  startDate     DateTime @db.Date
+  endDate       DateTime @db.Date
+  pricePerNight Decimal  @db.Decimal(10, 2)
+  minNights     Int      @default(1)
+  priority      Int      @default(0) // höher gewinnt bei Überlappung
+
+  @@index([unitId, startDate, endDate])
+}
+
+// -----------------------------------------------------------------------------
+//  Konfiguration der Tassa di Soggiorno (Kurtaxe) pro Wohnung
+// -----------------------------------------------------------------------------
+model TassaConfig {
+  id              String  @id @default(cuid())
+  unit            Unit    @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId          String  @unique
+  amountPerNight  Decimal @default(2.00) @db.Decimal(10, 2) // pro Person/Nacht
+  maxChargedNights Int    @default(7) // nur die ersten N Nächte werden berechnet
+  exemptUnderAge  Int     @default(12) // Kinder unter diesem Alter sind befreit
+  enabled         Boolean @default(true)
+}
+
+// -----------------------------------------------------------------------------
+//  Gast (Anagrafica ospite) – CRM
+// -----------------------------------------------------------------------------
+model Guest {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String?
+  phone     String?
+  language  String   @default("it")
+
+  // Adresse
+  addressLine String?
+  city        String?
+  province    String?
+  postalCode  String?
+  country     String  @default("IT") // ISO-3166 alpha-2
+
+  // Geburtsdaten (für Alloggiati / ISTAT)
+  sex            Sex?
+  dateOfBirth    DateTime? @db.Date
+  placeOfBirth   String? // Comune / Stato estero
+  countryOfBirth String? // ISO alpha-2
+  citizenship    String? // ISO alpha-2
+
+  // Ausweisdokument (sensibel – Alloggiati Pflicht für Meldepflichtige)
+  documentType   DocumentType?
+  documentNumber String?
+  documentIssuer String? // Ausstellungsort
+
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  bookingGuests BookingGuest[]
+
+  @@index([lastName, firstName])
+  @@index([email])
+}
+
+// -----------------------------------------------------------------------------
+//  Buchung (Prenotazione)
+// -----------------------------------------------------------------------------
+model Booking {
+  id        String        @id @default(cuid())
+  reference String        @unique @default(cuid()) // menschenlesbare Referenz wird im Service gesetzt
+  unit      Unit          @relation(fields: [unitId], references: [id])
+  unitId    String
+  status    BookingStatus @default(CONFIRMED)
+  channel   Channel       @default(DIRECT)
+
+  checkIn   DateTime @db.Date
+  checkOut  DateTime @db.Date // exklusiv (Abreisetag)
+  adults    Int      @default(1)
+  children  Int      @default(0)
+
+  // Finanzielles (zum Buchungszeitpunkt eingefroren)
+  nights        Int
+  accommodation Decimal @db.Decimal(10, 2) // Summe Übernachtungen
+  cleaningFee   Decimal @db.Decimal(10, 2) @default(0)
+  tassaSoggiorno Decimal @db.Decimal(10, 2) @default(0)
+  totalAmount   Decimal @db.Decimal(10, 2)
+  depositAmount Decimal @db.Decimal(10, 2) @default(0)
+
+  notes        String?
+  alloggiatiSentAt DateTime? // Zeitpunkt der Polizeimeldung
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  guests   BookingGuest[]
+  payments Payment[]
+  invoice  Invoice?
+
+  @@index([unitId, checkIn, checkOut])
+  @@index([status])
+  @@index([checkIn])
+}
+
+// -----------------------------------------------------------------------------
+//  Verknüpfung Buchung <-> Gast (n:m) mit Rolle für Alloggiati-Meldung
+// -----------------------------------------------------------------------------
+model BookingGuest {
+  id        String      @id @default(cuid())
+  booking   Booking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId String
+  guest     Guest       @relation(fields: [guestId], references: [id])
+  guestId   String
+  role      GuestRole   @default(SINGLE) // bestimmt Alloggiati-"Tipo Alloggiato"
+  isMinor   Boolean     @default(false)
+
+  @@unique([bookingId, guestId])
+  @@index([bookingId])
+}
+
+// -----------------------------------------------------------------------------
+//  Blockierung (Wartung, Eigennutzung) – verhindert Buchungen im Zeitraum
+// -----------------------------------------------------------------------------
+model Block {
+  id        String    @id @default(cuid())
+  unit      Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  unitId    String
+  startDate DateTime  @db.Date
+  endDate   DateTime  @db.Date // exklusiv
+  reason    BlockReason @default(MAINTENANCE)
+  note      String?
+  createdAt DateTime  @default(now())
+
+  @@index([unitId, startDate, endDate])
+}
+
+// -----------------------------------------------------------------------------
+//  Zahlung (Anzahlung / Restzahlung)
+// -----------------------------------------------------------------------------
+model Payment {
+  id        String        @id @default(cuid())
+  booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  bookingId String
+  type      PaymentType   @default(BALANCE)
+  method    PaymentMethod @default(BANK_TRANSFER)
+  amount    Decimal       @db.Decimal(10, 2)
+  paidAt    DateTime?
+  reference String?
+  createdAt DateTime      @default(now())
+
+  @@index([bookingId])
+}
+
+// -----------------------------------------------------------------------------
+//  Aufgabe (Reinigung, Wartung, Check-in-Vorbereitung)
+// -----------------------------------------------------------------------------
+model Task {
+  id        String     @id @default(cuid())
+  title     String
+  unitId    String?
+  bookingId String?
+  dueDate   DateTime?  @db.Date
+  status    TaskStatus @default(OPEN)
+  type      TaskType   @default(CLEANING)
+  createdAt DateTime   @default(now())
+
+  @@index([status, dueDate])
+}
+
+// -----------------------------------------------------------------------------
+//  Rechnung – Datenstruktur für Fatturazione Elettronica (SdI / XML FatturaPA)
+// -----------------------------------------------------------------------------
+model Invoice {
+  id            String        @id @default(cuid())
+  booking       Booking       @relation(fields: [bookingId], references: [id])
+  bookingId     String        @unique
+  number        String        @unique // progressivo, z.B. "2026/0001"
+  issueDate     DateTime      @db.Date
+  status        InvoiceStatus @default(DRAFT)
+
+  // Empfänger (Cessionario/Committente)
+  recipientName       String
+  recipientVat        String? // Partita IVA
+  recipientFiscalCode String? // Codice Fiscale
+  recipientSdiCode    String? @default("0000000") // Codice Destinatario
+  recipientPec        String?
+  recipientCountry    String  @default("IT")
+  recipientAddress    String?
+  recipientCity       String?
+  recipientZip        String?
+  recipientProvince   String?
+
+  // Beträge
+  taxableAmount Decimal @db.Decimal(10, 2) // imponibile
+  vatRate       Decimal @default(0) @db.Decimal(5, 2) // i.d.R. 0/22; Kurzzeitvermietung oft befreit
+  vatAmount     Decimal @default(0) @db.Decimal(10, 2)
+  totalAmount   Decimal @db.Decimal(10, 2)
+
+  // FatturaPA Metadaten
+  documentType String  @default("TD01") // TD01 = Fattura
+  cir          String? // CIR der Wohnung (Pflichtangabe)
+  cin          String? // CIN der Wohnung (Pflichtangabe)
+  xmlPayload   String? // erzeugtes FatturaPA-XML
+  sdiStatus    String? // Rückmeldung des Sistema di Interscambio
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// -----------------------------------------------------------------------------
+//  Enums
+// -----------------------------------------------------------------------------
+enum Sex {
+  M
+  F
+}
+
+enum DocumentType {
+  IDENT_CARD // Carta d'identità
+  PASSPORT // Passaporto
+  DRIVING_LICENSE // Patente di guida
+}
+
+enum GuestRole {
+  SINGLE //  16 – Ospite singolo
+  FAMILY_HEAD //  17 – Capofamiglia
+  GROUP_HEAD //  18 – Capogruppo
+  FAMILY_MEMBER // 19 – Familiare
+  GROUP_MEMBER //  20 – Membro gruppo
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CHECKED_IN
+  CHECKED_OUT
+  CANCELLED
+}
+
+enum Channel {
+  DIRECT
+  AIRBNB
+  BOOKING_COM
+  VRBO
+  OTHER
+}
+
+enum BlockReason {
+  MAINTENANCE
+  OWNER_USE
+  SEASONAL_CLOSURE
+  OTHER
+}
+
+enum PaymentType {
+  DEPOSIT // Anzahlung / Caparra
+  BALANCE // Restzahlung / Saldo
+  TASSA // Kurtaxe separat
+  REFUND
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CARD
+  CASH
+  CHANNEL // über Plattform (Airbnb/Booking)
+}
+
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskType {
+  CLEANING
+  MAINTENANCE
+  CHECKIN_PREP
+  ADMIN
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  SENT_SDI
+  ACCEPTED
+  REJECTED
+}
