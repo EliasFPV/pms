@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PMS Italia – Demo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = { theme: { extend: { colors: { brand: { 100:'#d9eaff', 500:'#2f6fed', 600:'#1f5bd6', 700:'#1947ad' } } } } };
+</script>
+<style>
+  body { font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial; }
+  .cell { width: 38px; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+<!-- Header -->
+<header class="border-b border-slate-200 bg-white">
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🏖️</span>
+      <span class="text-lg font-semibold text-slate-800">PMS Italia</span>
+      <span class="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">DEMO</span>
+    </div>
+    <nav id="nav" class="flex gap-1"></nav>
+  </div>
+</header>
+
+<main class="mx-auto max-w-7xl px-6 py-6">
+  <div id="view-dashboard"></div>
+  <div id="view-calendar" class="hidden"></div>
+  <div id="view-compliance" class="hidden"></div>
+</main>
+
+<footer class="mx-auto max-w-7xl px-6 py-8 text-center text-xs text-slate-400">
+  Statische Demo des PMS Italia · Die Compliance-Logik (Tassa di Soggiorno, Alloggiati Web 168-Zeichen-Format, ISTAT) läuft
+  vollständig im Browser. Produktivversion: Next.js 15 + Prisma + PostgreSQL.
+</footer>
+
+<script>
+// =============================================================================
+//  Hilfsfunktionen
+// =============================================================================
+const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
+const pad = (n) => String(n).padStart(2, "0");
+const fmtDE = (d) => `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()}`;
+const fmtIT = (d) => `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}`;
+const isoDate = (d) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today = new Date(); today.setHours(0,0,0,0);
+const addDays = (base, n) => { const x = new Date(base); x.setDate(x.getDate()+n); return x; };
+const nightsBetween = (a, b) => Math.max(0, Math.round((b - a) / 86400000));
+const sameDay = (a, b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+
+// =============================================================================
+//  Mock-Daten: 5 Ferienwohnungen + Gäste + Buchungen
+// =============================================================================
+const STATE_CODES = { IT:"100000100", DE:"100000132", FR:"100000109", GB:"100000389", US:"100000404", ES:"100000134", NL:"100000122", CH:"100000125" };
+const stateCode = (c) => STATE_CODES[(c||"IT").toUpperCase()] || "100000100";
+
+const units = [
+  { id:"U1", name:"Casa Vista Mare",       color:"#2f6fed", base:120, cleaning:50, cir:"IT065006C2..001", cin:"IT065006B5XXXX01", maxGuests:4 },
+  { id:"U2", name:"Appartamento Limoneto", color:"#16a34a", base:95,  cleaning:50, cir:"IT065006C2..002", cin:"IT065006B5XXXX02", maxGuests:4 },
+  { id:"U3", name:"Loft Centro Storico",   color:"#f59e0b", base:110, cleaning:45, cir:"IT065006C2..003", cin:"IT065006B5XXXX03", maxGuests:3 },
+  { id:"U4", name:"Villetta Uliveto",      color:"#db2777", base:150, cleaning:70, cir:"IT065006C2..004", cin:"IT065006B5XXXX04", maxGuests:6 },
+  { id:"U5", name:"Monolocale Belvedere",  color:"#0891b2", base:70,  cleaning:35, cir:"IT065006C2..005", cin:"IT065006B5XXXX05", maxGuests:2 },
+];
+const tassaCfg = { amountPerNight:2, maxChargedNights:7, exemptUnderAge:12, enabled:true };
+
+const guests = {
+  g1:{ first:"Mario", last:"Rossi",   sex:"M", dob:new Date("1980-05-12"), country:"IT", province:"RM", doc:"IDENT_CARD", docNo:"AB1234567" },
+  g2:{ first:"Anna",  last:"Müller",  sex:"F", dob:new Date("1990-09-03"), country:"DE", province:null, doc:"PASSPORT",   docNo:"C01X00T47" },
+  g3:{ first:"Lena",  last:"Müller",  sex:"F", dob:new Date("2018-04-01"), country:"DE", province:null, doc:null,         docNo:null },
+  g4:{ first:"James", last:"Smith",   sex:"M", dob:new Date("1975-11-20"), country:"GB", province:null, doc:"PASSPORT",   docNo:"540021J9" },
+  g5:{ first:"Sofia", last:"Bianchi", sex:"F", dob:new Date("1995-02-14"), country:"IT", province:"NA", doc:"IDENT_CARD", docNo:"CA9988776" },
+};
+
+// Buchungen relativ zu heute -> Demo ist immer "aktuell"
+const bookings = [
+  { id:"b1", unitId:"U1", ref:"BK-2026-0001", checkIn:addDays(today,-2), checkOut:addDays(today,3), adults:2, children:0,
+    guestIds:[{id:"g1",role:"SINGLE"}] },
+  { id:"b2", unitId:"U2", ref:"BK-2026-0002", checkIn:addDays(today,0),  checkOut:addDays(today,7), adults:2, children:1,
+    childrenAges:[6], guestIds:[{id:"g2",role:"FAMILY_HEAD"},{id:"g3",role:"FAMILY_MEMBER"}] },
+  { id:"b3", unitId:"U4", ref:"BK-2026-0003", checkIn:addDays(today,1),  checkOut:addDays(today,8), adults:4, children:0,
+    guestIds:[{id:"g4",role:"GROUP_HEAD"}] },
+  { id:"b4", unitId:"U5", ref:"BK-2026-0004", checkIn:addDays(today,-1), checkOut:addDays(today,0), adults:1, children:0,
+    guestIds:[{id:"g5",role:"SINGLE"}] },
+  { id:"b5", unitId:"U1", ref:"BK-2026-0005", checkIn:addDays(today,6),  checkOut:addDays(today,10), adults:2, children:0,
+    guestIds:[{id:"g5",role:"SINGLE"}] },
+];
+const blocks = [ { unitId:"U3", start:addDays(today,1), end:addDays(today,4), reason:"Wartung: Boiler-Austausch" } ];
+const tasks = [
+  { title:"Reinigung Casa Vista Mare nach Check-out", due:addDays(today,3) },
+  { title:"Willkommenskorb Limoneto vorbereiten",     due:addDays(today,0) },
+  { title:"Alloggiati-Meldung prüfen",                due:addDays(today,0) },
+];
+
+const unitById = (id) => units.find(u => u.id === id);
+const ageAt = (dob, at) => { let a = at.getFullYear()-dob.getFullYear(); const m = at.getMonth()-dob.getMonth(); if (m<0||(m===0&&at.getDate()<dob.getDate())) a--; return a; };
+
+// =============================================================================
+//  Tassa di Soggiorno (Kurtaxe)
+// =============================================================================
+function calcTassa(nights, guestList, cfg) {
+  if (!cfg.enabled || nights <= 0 || guestList.length === 0)
+    return { total:0, payingGuests:0, exemptGuests:0, chargeableNights:0, breakdown:"deaktiviert/keine Gäste" };
+  const exempt = guestList.filter(g => g.age !== null && g.age < cfg.exemptUnderAge).length;
+  const paying = guestList.length - exempt;
+  const chNights = Math.min(nights, cfg.maxChargedNights);
+  const total = round2(cfg.amountPerNight * paying * chNights);
+  return { total, payingGuests:paying, exemptGuests:exempt, chargeableNights:chNights,
+    breakdown:`${cfg.amountPerNight.toFixed(2)} € × ${paying} Gäste × ${chNights} Nächte (max. ${cfg.maxChargedNights}; ${exempt} Kind(er) < ${cfg.exemptUnderAge} J. befreit)` };
+}
+
+// =============================================================================
+//  Alloggiati Web – 168-Zeichen-Fixformat
+// =============================================================================
+const TIPO = { SINGLE:"16", FAMILY_HEAD:"17", GROUP_HEAD:"18", FAMILY_MEMBER:"19", GROUP_MEMBER:"20" };
+const REQUIRES_DOC = new Set(["SINGLE","FAMILY_HEAD","GROUP_HEAD"]);
+const DOC_CODES = { IDENT_CARD:"IDENT", PASSPORT:"PASOR", DRIVING_LICENSE:"PATEN" };
+const ITALY = "100000100";
+const normalize = (s) => (s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z0-9 \/]/g," ");
+const fixed = (v, len) => { const c = normalize(v); return c.length>=len ? c.slice(0,len) : c.padEnd(len," "); };
+
+function buildAlloggiatiRecord(g) {
+  const bornIT = g.birthStateCode === ITALY;
+  const needDoc = REQUIRES_DOC.has(g.role);
+  let l = "";
+  l += fixed(TIPO[g.role], 2);
+  l += fixed(fmtIT(g.arrival), 10);
+  l += pad(Math.min(Math.max(g.nights,1),30)).slice(0,2);
+  l += fixed(g.lastName, 50);
+  l += fixed(g.firstName, 30);
+  l += fixed(g.sex==="M"?"1":g.sex==="F"?"2":"", 1);
+  l += fixed(g.dob ? fmtIT(g.dob) : "", 10);
+  l += fixed(bornIT ? g.birthMunicipality : "", 9);
+  l += fixed(bornIT ? g.birthProvince : "", 2);
+  l += fixed(g.birthStateCode, 9);
+  l += fixed(g.citizenshipCode, 9);
+  l += fixed(needDoc && g.docType ? (DOC_CODES[g.docType]||"") : "", 5);
+  l += fixed(needDoc ? g.docNumber : "", 20);
+  l += fixed(needDoc ? g.docIssuer : "", 9);
+  return l.padEnd(168," ").slice(0,168);
+}
+
+function alloggiatiRecordsForDate(date) {
+  const recs = [];
+  for (const b of bookings) {
+    if (!sameDay(b.checkIn, date)) continue;
+    const nights = nightsBetween(b.checkIn, b.checkOut);
+    for (const ref of b.guestIds) {
+      const g = guests[ref.id];
+      recs.push(buildAlloggiatiRecord({
+        role: ref.role, arrival: b.checkIn, nights,
+        lastName: g.last, firstName: g.first, sex: g.sex, dob: g.dob,
+        birthMunicipality: null, birthProvince: g.province,
+        birthStateCode: stateCode(g.country), citizenshipCode: stateCode(g.country),
+        docType: g.doc, docNumber: g.docNo, docIssuer: stateCode(g.country),
+      }));
+    }
+  }
+  return recs;
+}
+
+// =============================================================================
+//  ISTAT-Aggregation
+// =============================================================================
+function buildIstat() {
+  const map = {};
+  let arrivals = 0, nights = 0;
+  for (const b of bookings) {
+    const n = nightsBetween(b.checkIn, b.checkOut);
+    for (const ref of b.guestIds) {
+      const c = (guests[ref.id].country || "XX").toUpperCase();
+      map[c] = map[c] || { country:c, arrivals:0, nights:0 };
+      map[c].arrivals++; map[c].nights += n;
+      arrivals++; nights += n;
+    }
+  }
+  const rows = Object.values(map).sort((a,b) => b.nights - a.nights);
+  return { rows, arrivals, nights, avg: arrivals ? round2(nights/arrivals) : 0 };
+}
+
+// =============================================================================
+//  Rendering
+// =============================================================================
+const views = ["dashboard","calendar","compliance"];
+const labels = { dashboard:"Dashboard", calendar:"Kalender", compliance:"Compliance Italia" };
+
+function renderNav() {
+  document.getElementById("nav").innerHTML = views.map(v =>
+    `<button data-view="${v}" class="navbtn rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100">${labels[v]}</button>`
+  ).join("");
+  document.querySelectorAll(".navbtn").forEach(btn => btn.onclick = () => show(btn.dataset.view));
+}
+
+function show(view) {
+  views.forEach(v => document.getElementById("view-"+v).classList.toggle("hidden", v !== view));
+  document.querySelectorAll(".navbtn").forEach(b =>
+    b.classList.toggle("bg-brand-100", b.dataset.view === view) ||
+    b.classList.toggle("text-brand-700", b.dataset.view === view));
+}
+
+// --- Dashboard ---
+function currentBooking(unitId) {
+  return bookings.find(b => b.unitId===unitId && b.checkIn <= today && b.checkOut > today);
+}
+function kpi(label, value, accent) {
+  return `<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div class="text-sm text-slate-500">${label}</div>
+    <div class="mt-1 text-2xl font-semibold ${accent||'text-slate-800'}">${value}</div></div>`;
+}
+function renderDashboard() {
+  const checkIns = bookings.filter(b => sameDay(b.checkIn, today));
+  const checkOuts = bookings.filter(b => sameDay(b.checkOut, today));
+  const occupied = units.filter(u => currentBooking(u.id)).length;
+
+  const stayRow = (b, accent) => {
+    const g = guests[b.guestIds[0].id];
+    return `<div class="flex items-center justify-between border-b border-slate-100 px-4 py-3 last:border-0">
+      <div><div class="font-medium text-slate-700">${g.first} ${g.last}</div>
+      <div class="text-xs text-slate-500">${unitById(b.unitId).name} · ${b.adults+b.children} Gäste</div></div>
+      <span class="text-xs font-medium ${accent}">${fmtDE(b.checkIn)} → ${fmtDE(b.checkOut)}</span></div>`;
+  };
+
+  document.getElementById("view-dashboard").innerHTML = `
+    <div class="flex items-center justify-between">
+      <div><h1 class="text-2xl font-bold text-slate-800">Dashboard</h1>
+      <p class="text-sm text-slate-500">${fmtDE(today)}</p></div>
+    </div>
+    <div class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-5">
+      ${kpi("Belegung", occupied+"/"+units.length, "text-brand-600")}
+      ${kpi("Check-ins heute", checkIns.length, "text-emerald-600")}
+      ${kpi("Check-outs heute", checkOuts.length, "text-amber-600")}
+      ${kpi("Offene Aufgaben", tasks.length)}
+      ${kpi("Alloggiati offen", checkIns.length, checkIns.length?"text-red-600":"text-emerald-600")}
+    </div>
+
+    <h2 class="mb-3 mt-8 text-lg font-semibold text-slate-700">Wohnungen</h2>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      ${units.map(u => {
+        const b = currentBooking(u.id);
+        const g = b ? guests[b.guestIds[0].id] : null;
+        return `<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2"><span class="h-3 w-3 rounded-full" style="background:${u.color}"></span>
+            <span class="font-semibold text-slate-800">${u.name}</span></div>
+            <span class="rounded-full px-2 py-0.5 text-xs font-medium ${b?'bg-red-100 text-red-700':'bg-emerald-100 text-emerald-700'}">${b?'Belegt':'Frei'}</span>
+          </div>
+          <div class="mt-2 text-xs text-slate-500">CIR: ${u.cir} · CIN: ${u.cin}</div>
+          ${b ? `<div class="mt-3 rounded-lg bg-slate-50 p-2 text-sm">
+            <div class="font-medium text-slate-700">${g.first} ${g.last}</div>
+            <div class="text-xs text-slate-500">${fmtDE(b.checkIn)} → ${fmtDE(b.checkOut)}</div></div>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+
+    <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div><h2 class="mb-3 text-lg font-semibold text-slate-700">Heutige Check-ins</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        ${checkIns.length ? checkIns.map(b => stayRow(b,"text-emerald-600")).join("") : '<p class="p-4 text-sm text-slate-500">Keine Einträge.</p>'}</div></div>
+      <div><h2 class="mb-3 text-lg font-semibold text-slate-700">Heutige Check-outs</h2>
+        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+        ${checkOuts.length ? checkOuts.map(b => stayRow(b,"text-amber-600")).join("") : '<p class="p-4 text-sm text-slate-500">Keine Einträge.</p>'}</div></div>
+    </div>
+
+    <h2 class="mb-3 mt-8 text-lg font-semibold text-slate-700">Offene Aufgaben</h2>
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      ${tasks.map(t => `<div class="flex items-center justify-between border-b border-slate-100 px-4 py-2 text-sm last:border-0">
+        <span class="text-slate-700">${t.title}</span><span class="text-xs text-slate-400">${fmtDE(t.due)}</span></div>`).join("")}
+    </div>`;
+}
+
+// --- Kalender ---
+let monthOffset = 0;
+function renderCalendar() {
+  const base = new Date(today.getFullYear(), today.getMonth()+monthOffset, 1);
+  const monthStart = new Date(base);
+  const monthEnd = new Date(base.getFullYear(), base.getMonth()+1, 0);
+  const days = []; for (let d=new Date(monthStart); d<=monthEnd; d=addDays(d,1)) days.push(new Date(d));
+  const monthName = base.toLocaleDateString("de-DE", { month:"long", year:"numeric" });
+
+  const barStyle = (b) => {
+    let startIdx = days.findIndex(d => sameDay(d,b.checkIn) || d>b.checkIn);
+    if (startIdx === -1) { if (b.checkOut <= monthStart) return null; startIdx = 0; }
+    if (b.checkIn < monthStart) startIdx = 0;
+    let endIdx = days.findIndex(d => sameDay(d,b.checkOut));
+    if (endIdx === -1) endIdx = b.checkOut > monthEnd ? days.length : days.findIndex(d => d>b.checkOut);
+    if (endIdx === -1) endIdx = days.length;
+    if (endIdx <= startIdx) return null;
+    const span = Math.max(1, endIdx - startIdx);
+    return `left:${startIdx*38 + 19}px; width:${span*38 - 19}px; background:${unitById(b.unitId).color};`;
+  };
+
+  const header = days.map(d => {
+    const we = [0,6].includes(d.getDay()), tod = sameDay(d,today);
+    return `<div class="cell shrink-0 border-r border-slate-100 py-1 text-center text-xs ${tod?'bg-brand-100 font-bold text-brand-700':we?'bg-slate-100 text-slate-500':'text-slate-500'}">
+      <div>${d.toLocaleDateString("de-DE",{weekday:"narrow"})}</div><div class="font-medium text-slate-700">${d.getDate()}</div></div>`;
+  }).join("");
+
+  const rows = units.map(u => {
+    const grid = days.map(d => `<div class="cell shrink-0 border-r border-slate-100 ${[0,6].includes(d.getDay())?'bg-slate-50':''}"></div>`).join("");
+    const bars = bookings.filter(b => b.unitId===u.id).map(b => {
+      const st = barStyle(b); if (!st) return "";
+      const g = guests[b.guestIds[0].id];
+      return `<div title="${b.ref} · ${isoDate(b.checkIn)} → ${isoDate(b.checkOut)}" class="absolute top-[10px] flex h-[32px] items-center overflow-hidden rounded-md px-2 text-xs font-medium text-white shadow" style="${st}">${g.first} ${g.last}</div>`;
+    }).join("");
+    // Blockierungen (Wartung)
+    const blockBars = blocks.filter(bl => bl.unitId===u.id).map(bl => {
+      const fake = { unitId:u.id, checkIn:bl.start, checkOut:bl.end };
+      const st = barStyle(fake); if (!st) return "";
+      return `<div title="${bl.reason}" class="absolute top-[10px] flex h-[32px] items-center overflow-hidden rounded-md border border-slate-400 bg-slate-300 px-2 text-xs font-medium text-slate-700 shadow" style="${st.replace(/background:[^;]+;/,'')}">🔧 Wartung</div>`;
+    }).join("");
+    return `<div class="relative flex border-b border-slate-100" style="height:52px">
+      <div class="sticky left-0 z-10 flex w-[180px] shrink-0 items-center gap-2 border-r border-slate-200 bg-white px-3 text-sm font-medium text-slate-700">
+        <span class="h-3 w-3 rounded-full" style="background:${u.color}"></span>${u.name}</div>
+      ${grid}${bars}${blockBars}</div>`;
+  }).join("");
+
+  document.getElementById("view-calendar").innerHTML = `
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-slate-800">Belegungskalender · ${monthName}</h1>
+      <div class="flex gap-2">
+        <button id="cal-prev" class="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100">← Zurück</button>
+        <button id="cal-today" class="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100">Heute</button>
+        <button id="cal-next" class="rounded-md border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-100">Weiter →</button>
+      </div>
+    </div>
+    <div class="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div style="width:${180 + days.length*38}px">
+        <div class="flex border-b border-slate-200 bg-slate-50">
+          <div class="sticky left-0 z-10 w-[180px] shrink-0 border-r border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-600">Wohnung</div>
+          ${header}
+        </div>${rows}
+      </div>
+    </div>
+    <p class="mt-3 text-xs text-slate-500">Balken = Belegungen (Anreise mittags → Abreise mittags). Doppelbuchungen werden serverseitig verhindert; 🔧 = Wartungsblockierung.</p>`;
+
+  document.getElementById("cal-prev").onclick = () => { monthOffset--; renderCalendar(); };
+  document.getElementById("cal-next").onclick = () => { monthOffset++; renderCalendar(); };
+  document.getElementById("cal-today").onclick = () => { monthOffset=0; renderCalendar(); };
+}
+
+// --- Compliance ---
+function renderCompliance() {
+  const istat = buildIstat();
+  document.getElementById("view-compliance").innerHTML = `
+    <h1 class="text-2xl font-bold text-slate-800">Compliance Italia 🇮🇹</h1>
+    <p class="text-sm text-slate-500">Interaktive Demo der gesetzlichen Pflichtmodule.</p>
+
+    <!-- Tassa -->
+    <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 class="text-lg font-semibold text-slate-700">Tassa di Soggiorno (Kurtaxe)</h2>
+      <p class="text-xs text-slate-500">Betrag/Person/Nacht: ${tassaCfg.amountPerNight.toFixed(2)} € · max. ${tassaCfg.maxChargedNights} Nächte · Kinder < ${tassaCfg.exemptUnderAge} J. befreit</p>
+      <div class="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <label class="text-sm">Nächte<input id="t-nights" type="number" value="10" min="1" class="mt-1 w-full rounded-md border border-slate-300 px-2 py-1"></label>
+        <label class="text-sm">Erwachsene<input id="t-adults" type="number" value="2" min="0" class="mt-1 w-full rounded-md border border-slate-300 px-2 py-1"></label>
+        <label class="text-sm">Kinder<input id="t-children" type="number" value="1" min="0" class="mt-1 w-full rounded-md border border-slate-300 px-2 py-1"></label>
+        <label class="text-sm">Alter Kinder (Kommas)<input id="t-ages" value="6" class="mt-1 w-full rounded-md border border-slate-300 px-2 py-1"></label>
+      </div>
+      <div id="t-result" class="mt-4 rounded-lg bg-slate-50 p-3 text-sm"></div>
+    </section>
+
+    <!-- Alloggiati -->
+    <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 class="text-lg font-semibold text-slate-700">Alloggiati Web – Polizeimeldung</h2>
+      <p class="text-xs text-slate-500">Generiert die .txt-Datei im exakten 168-Zeichen-Fixformat der Polizia di Stato für die Anreisen eines Tages.</p>
+      <div class="mt-4 flex flex-wrap items-end gap-3">
+        <label class="text-sm">Anreisedatum
+          <select id="a-date" class="mt-1 block rounded-md border border-slate-300 px-2 py-1"></select></label>
+        <button id="a-gen" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700">Vorschau erzeugen</button>
+        <button id="a-dl" class="rounded-lg border border-brand-600 px-4 py-2 text-sm font-medium text-brand-700 hover:bg-brand-100">⬇ .txt herunterladen</button>
+      </div>
+      <pre id="a-preview" class="mt-4 overflow-x-auto rounded-lg bg-slate-900 p-3 text-xs leading-relaxed text-emerald-300"></pre>
+    </section>
+
+    <!-- ISTAT -->
+    <section class="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+      <h2 class="text-lg font-semibold text-slate-700">ISTAT – Tourismusstatistik</h2>
+      <div class="mt-3 grid grid-cols-3 gap-4">
+        ${kpi("Ankünfte (arrivi)", istat.arrivals)}
+        ${kpi("Übernachtungen (presenze)", istat.nights)}
+        ${kpi("Ø Aufenthalt (Nächte)", istat.avg)}
+      </div>
+      <table class="mt-4 w-full text-sm">
+        <thead><tr class="border-b border-slate-200 text-left text-slate-500">
+          <th class="py-2">Herkunftsland</th><th class="py-2 text-right">Ankünfte</th><th class="py-2 text-right">Übernachtungen</th></tr></thead>
+        <tbody>${istat.rows.map(r => `<tr class="border-b border-slate-100">
+          <td class="py-2 font-medium text-slate-700">${r.country}</td>
+          <td class="py-2 text-right">${r.arrivals}</td><td class="py-2 text-right">${r.nights}</td></tr>`).join("")}</tbody>
+      </table>
+    </section>`;
+
+  // Tassa live
+  const recalc = () => {
+    const nights = +document.getElementById("t-nights").value || 0;
+    const adults = +document.getElementById("t-adults").value || 0;
+    const ages = document.getElementById("t-ages").value.split(",").map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+    const list = [...Array(adults).fill({age:null}), ...ages.map(a => ({age:a}))];
+    const r = calcTassa(nights, list, tassaCfg);
+    document.getElementById("t-result").innerHTML =
+      `<div class="text-2xl font-bold text-brand-700">${r.total.toFixed(2)} €</div>
+       <div class="mt-1 text-xs text-slate-600">${r.breakdown}</div>`;
+  };
+  ["t-nights","t-adults","t-children","t-ages"].forEach(id => document.getElementById(id).oninput = recalc);
+  recalc();
+
+  // Alloggiati: nur Tage mit Anreisen anbieten
+  const sel = document.getElementById("a-date");
+  const arrivalDays = [...new Set(bookings.map(b => isoDate(b.checkIn)))].sort();
+  sel.innerHTML = arrivalDays.map(d => `<option value="${d}">${d}</option>`).join("");
+  const todaysArrivals = isoDate(today);
+  if (arrivalDays.includes(todaysArrivals)) sel.value = todaysArrivals;
+
+  const genPreview = () => {
+    const [y,m,dd] = sel.value.split("-").map(Number);
+    const recs = alloggiatiRecordsForDate(new Date(y, m-1, dd));
+    const pre = document.getElementById("a-preview");
+    if (!recs.length) { pre.textContent = "Keine Anreisen an diesem Tag."; return ""; }
+    pre.textContent = recs.map((r,i) => `# Datensatz ${i+1} (Länge ${r.length}):\n[${r}]`).join("\n\n");
+    return recs.join("\r\n") + "\r\n";
+  };
+  document.getElementById("a-gen").onclick = genPreview;
+  document.getElementById("a-dl").onclick = () => {
+    const content = genPreview();
+    if (!content) return;
+    const blob = new Blob([content], { type:"text/plain;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `alloggiati_${sel.value}.txt`;
+    a.click(); URL.revokeObjectURL(a.href);
+  };
+  genPreview();
+}
+
+// =============================================================================
+//  Init
+// =============================================================================
+renderNav();
+renderDashboard();
+renderCalendar();
+renderCompliance();
+show("dashboard");
+</script>
+</body>
+</html>
