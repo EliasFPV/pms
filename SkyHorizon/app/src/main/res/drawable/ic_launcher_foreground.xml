@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Horizon line -->
+    <path
+        android:fillColor="#FF3F5C8C"
+        android:pathData="M22,70 L86,70 L86,73 L22,73 Z" />
+
+    <!-- Sun disc rising over the horizon -->
+    <path
+        android:fillColor="#FFFFC24D"
+        android:pathData="M54,44 m-15,0 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0 Z" />
+
+    <!-- Sun rays -->
+    <path
+        android:fillColor="#FFFFC24D"
+        android:pathData="M52.5,18 L55.5,18 L55.5,26 L52.5,26 Z
+                          M33.4,25.6 L35.6,23.5 L41.2,29.1 L39.1,31.2 Z
+                          M72.4,23.5 L74.6,25.6 L69,31.2 L66.9,29.1 Z
+                          M26,42.5 L34,42.5 L34,45.5 L26,45.5 Z
+                          M74,42.5 L82,42.5 L82,45.5 L74,45.5 Z" />
+
+    <!-- Crescent moon below the horizon -->
+    <path
+        android:fillColor="#FFD8E2F5"
+        android:pathData="M72,86 a11,11 0 1,1 -8.2,-18.4 a8.6,8.6 0 1,0 8.2,18.4 Z" />
+</vector>

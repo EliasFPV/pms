@@ -12,3 +12,12 @@ next-env.d.ts
 .vercel
 
 tsconfig.tsbuildinfo
+
+# Android / Gradle (SkyHorizon)
+SkyHorizon/.gradle/
+SkyHorizon/build/
+SkyHorizon/app/build/
+SkyHorizon/local.properties
+SkyHorizon/.idea/
+*.apk
+!app-debug.apk
