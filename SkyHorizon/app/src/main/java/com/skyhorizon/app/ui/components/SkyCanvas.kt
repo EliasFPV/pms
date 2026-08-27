@@ -37,6 +37,7 @@ import com.skyhorizon.app.astro.SkySnapshot
 import com.skyhorizon.app.astro.TrackSample
 import com.skyhorizon.app.astro.normalizeDegrees
 import com.skyhorizon.app.astro.normalizeSignedDegrees
+import com.skyhorizon.app.terrain.HorizonProfile
 import com.skyhorizon.app.ui.theme.SkyPalette
 import kotlin.math.abs
 import kotlin.math.asin
@@ -128,17 +129,11 @@ fun SkyCanvas(
     track: List<TrackSample>,
     viewState: SkyViewState,
     modifier: Modifier = Modifier,
+    horizonProfile: HorizonProfile? = null,
     showTerrain: Boolean = true,
 ) {
     val textMeasurer = rememberTextMeasurer()
     val stars = remember { generateStars() }
-    val terrain = remember {
-        listOf(
-            TerrainLayer(buildTerrain(seed = 1741, maxHeightDeg = 9.0f), haze = 1.0f),
-            TerrainLayer(buildTerrain(seed = 90210, maxHeightDeg = 5.8f), haze = 0.55f),
-            TerrainLayer(buildTerrain(seed = 31337, maxHeightDeg = 3.4f), haze = 0.0f),
-        )
-    }
 
     Canvas(
         modifier = modifier.pointerInput(Unit) {
@@ -154,7 +149,7 @@ fun SkyCanvas(
             track = track,
             viewState = viewState,
             stars = stars,
-            terrain = if (showTerrain) terrain else emptyList(),
+            horizonProfile = if (showTerrain) horizonProfile else null,
             textMeasurer = textMeasurer,
         )
     }
@@ -165,7 +160,7 @@ private fun DrawScope.drawSky(
     track: List<TrackSample>,
     viewState: SkyViewState,
     stars: List<Star>,
-    terrain: List<TerrainLayer>,
+    horizonProfile: HorizonProfile?,
     textMeasurer: TextMeasurer,
 ) {
     val width = size.width
@@ -358,24 +353,16 @@ private fun DrawScope.drawSky(
     }
 
     // --- Skyline ----------------------------------------------------------
-    terrain.forEach { layer ->
-        // Distant ranges are washed towards the colour of the sky at the horizon, which
-        // is what gives a real skyline its sense of depth.
-        val ridgeColor = lerp(
-            SkyPalette.RidgeNear,
-            lerp(SkyPalette.RidgeFar, palette.second, 0.45f),
-            layer.haze,
-        )
-        drawPath(
-            path = ridgePath(
-                profile = layer.profile,
-                centerAzimuth = centerAzimuth,
-                fieldOfView = viewState.fieldOfView.toDouble(),
-                bottom = height,
-                xFor = ::xFor,
-                yFor = ::yFor,
-            ),
-            color = ridgeColor,
+    if (horizonProfile != null) {
+        drawHorizon(
+            profile = horizonProfile,
+            centerAzimuth = centerAzimuth,
+            fieldOfView = viewState.fieldOfView.toDouble(),
+            width = width,
+            bottom = height,
+            skyAtHorizon = palette.second,
+            xFor = ::xFor,
+            yFor = ::yFor,
         )
     }
 
@@ -395,7 +382,7 @@ private fun DrawScope.drawSky(
     // Kept on top of the skyline: it is the astronomical 0 degree reference, not the
     // visible ridge line.
     drawLine(
-        color = SkyPalette.Horizon.copy(alpha = if (terrain.isEmpty()) 1f else 0.8f),
+        color = SkyPalette.Horizon.copy(alpha = if (horizonProfile == null) 1f else 0.75f),
         start = Offset(0f, horizonY),
         end = Offset(width, horizonY),
         strokeWidth = horizonStroke,
@@ -461,31 +448,88 @@ private fun DrawScope.drawSky(
     }
 }
 
-/** Filled silhouette of one mountain range across the visible span of horizon. */
-private fun ridgePath(
-    profile: TerrainProfile,
+/**
+ * Draws the real skyline. Each column of the view is filled from the terrain's
+ * elevation angle down to the bottom of the canvas, tinted by how far away that
+ * terrain is: near ridges stay dark, distant ones wash out towards the colour of
+ * the sky, which is what aerial perspective does to a real horizon.
+ */
+private fun DrawScope.drawHorizon(
+    profile: HorizonProfile,
     centerAzimuth: Double,
     fieldOfView: Double,
+    width: Float,
     bottom: Float,
+    skyAtHorizon: Color,
     xFor: (Double) -> Float,
     yFor: (Double) -> Float,
-): Path {
-    val path = Path()
-    val halfSpan = fieldOfView / 2.0 + 4.0
-    val start = centerAzimuth - halfSpan
-    val end = centerAzimuth + halfSpan
-    // Roughly one sample every two pixels, whatever the zoom level.
-    val step = (fieldOfView / 320.0).coerceIn(0.05, 0.75)
+) {
+    val columns = (width / 3f).toInt().coerceIn(64, 480)
+    val span = fieldOfView + 8.0
+    val start = centerAzimuth - span / 2.0
+    val step = span / columns
 
-    path.moveTo(xFor(start), bottom)
-    var azimuth = start
-    while (azimuth <= end) {
-        path.lineTo(xFor(azimuth), yFor(profile.heightAt(azimuth).toDouble()))
-        azimuth += step
+    val angles = FloatArray(columns + 1)
+    val hazeSteps = IntArray(columns + 1)
+    val rawHaze = IntArray(columns + 1)
+
+    for (index in 0..columns) {
+        val azimuth = start + index * step
+        angles[index] = profile.angleAt(azimuth)
+        rawHaze[index] = hazeStep(profile.distanceAt(azimuth))
     }
-    path.lineTo(xFor(end), bottom)
-    path.close()
-    return path
+
+    // A single stray column of distant terrain between near ridges is sampling noise
+    // rather than a real ridge, so smooth the haze without touching the silhouette.
+    for (index in 0..columns) {
+        var lower = 0
+        var upper = 0
+        for (offset in -2..2) {
+            val neighbour = rawHaze[(index + offset).coerceIn(0, columns)]
+            if (neighbour < rawHaze[index]) lower++
+            if (neighbour > rawHaze[index]) upper++
+        }
+        hazeSteps[index] = when {
+            lower >= 3 -> rawHaze[(index - 2).coerceAtLeast(0)]
+            upper >= 3 -> rawHaze[(index + 2).coerceAtMost(columns)]
+            else -> rawHaze[index]
+        }
+    }
+
+    var runStart = 0
+    while (runStart < columns) {
+        var runEnd = runStart
+        while (runEnd < columns && hazeSteps[runEnd + 1] == hazeSteps[runStart]) runEnd++
+        // Overlap the next column so neighbouring runs meet without a seam.
+        val last = (runEnd + 1).coerceAtMost(columns)
+
+        val path = Path()
+        path.moveTo(xFor(start + runStart * step), bottom)
+        for (index in runStart..last) {
+            path.lineTo(xFor(start + index * step), yFor(angles[index].toDouble()))
+        }
+        path.lineTo(xFor(start + last * step), bottom)
+        path.close()
+        drawPath(path = path, color = ridgeColor(hazeSteps[runStart], skyAtHorizon))
+
+        runStart = runEnd + 1
+    }
+}
+
+private const val HAZE_STEPS = 6
+
+/** Quantised distance band, so the silhouette fills in a handful of runs. */
+private fun hazeStep(distanceMeters: Float): Int {
+    val kilometres = distanceMeters / 1000f
+    val fraction = (kilometres / 45f).coerceIn(0f, 1f)
+    // A square root spreads the near distances, where haze changes fastest.
+    val eased = kotlin.math.sqrt(fraction)
+    return (eased * HAZE_STEPS).roundToInt().coerceIn(0, HAZE_STEPS)
+}
+
+private fun ridgeColor(hazeStep: Int, skyAtHorizon: Color): Color {
+    val t = hazeStep.toFloat() / HAZE_STEPS
+    return lerp(SkyPalette.RidgeNear, lerp(SkyPalette.RidgeFar, skyAtHorizon, 0.5f), t)
 }
 
 private fun DrawScope.drawSun(

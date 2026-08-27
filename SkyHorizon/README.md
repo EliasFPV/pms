@@ -38,9 +38,25 @@ but it runs on anything from API 26 upwards.
 - Times can be read in the device zone or in the mean solar time of the chosen
   meridian.
 
+**Real skyline** — the horizon you would actually see from the chosen spot
+- Public elevation tiles (AWS "Terrain Tiles", Terrarium encoding, no API key)
+  are fetched for the surroundings and cached on disk.
+- `HorizonCalculator` ray-casts outwards along every azimuth, keeping the highest
+  apparent elevation angle. Earth curvature and standard atmospheric refraction
+  (k = 0.13, the 7/6 R effective-radius rule) are both applied, so the result is
+  the ridge line a person standing there would see.
+- Two resolution tiers keep the download to roughly 25 tiles: about 53 m per
+  sample within 15 km, about 210 m beyond, out to 70 km.
+- Accuracy check: from Zermatt the computed Matterhorn horizon is +17.6° at
+  bearing 235.5° and 8.61 km, against a true +18.5° at 234.8° and 8.57 km. The
+  remaining ~0.9° is SRTM smoothing the summit pyramid, not the ray-cast.
+- The renderer tints each column by how far away that terrain is, so distant
+  ranges wash out towards the sky the way aerial perspective really works.
+- Without a network the app falls back to a flat horizon and says so.
+
 **Sky visualisation** — a custom Compose `Canvas`
 - Panoramic horizon: drag to pan through the full 360°, pinch to change the
-  field of view (25°–200°).
+  field of view (20°–200°).
 - Sky gradient that follows the Sun's altitude from daylight through the golden
   hour and each twilight stage into night, with a star field that fades in.
 - Altitude grid every 15° and a compass strip with N/NE/E/… and degree ticks.
@@ -74,6 +90,11 @@ publishes `app-debug.apk` as a build artifact.
 ```bash
 ./gradlew testDebugUnitTest
 ```
+
+`HorizonCalculatorTest` checks the skyline maths against landscapes with a known
+answer: a flat plain (where the result must equal the textbook dip of the
+horizon, `sqrt(2h/R)`, at `sqrt(2hR)` away), a plateau at a known height and
+distance, a single ridge, and the seam where the panorama wraps through north.
 
 `AstroAccuracyTest` checks the engine against the worked examples in Meeus
 (*Astronomical Algorithms*, 2nd ed.): example 25.b for the Sun, 47.a for the

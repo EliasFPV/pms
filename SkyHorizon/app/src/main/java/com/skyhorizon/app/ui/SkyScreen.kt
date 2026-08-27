@@ -57,6 +57,7 @@ import com.skyhorizon.app.ui.components.MapPickerScreen
 import com.skyhorizon.app.ui.components.SkyCanvas
 import com.skyhorizon.app.ui.components.rememberSkyViewState
 import java.util.Locale
+import kotlin.math.roundToInt
 
 /** Keeps the sky view the dominant element even with the controls expanded. */
 private val CONTROL_PANEL_MAX_HEIGHT = 330.dp
@@ -140,6 +141,7 @@ private fun SkyScreen(
                 snapshot = state.snapshot,
                 track = state.track,
                 viewState = skyViewState,
+                horizonProfile = (state.horizon as? HorizonState.Ready)?.profile,
                 showTerrain = showTerrain,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -168,10 +170,15 @@ private fun SkyScreen(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
+                HorizonStatus(
+                    horizon = state.horizon,
+                    onRetry = viewModel::retryHorizon,
+                )
                 FilterChip(
                     selected = showTerrain,
                     onClick = { showTerrain = !showTerrain },
                     label = { Text("Skyline", style = MaterialTheme.typography.labelSmall) },
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
 
@@ -235,6 +242,34 @@ private fun SkyScreen(
                     DetailCard(state.snapshot)
                 }
             }
+        }
+    }
+}
+
+/**
+ * Where the real skyline stands: still downloading elevation tiles, ready (in which
+ * case the measured ground elevation is worth showing), or unavailable and retryable.
+ */
+@Composable
+private fun HorizonStatus(horizon: HorizonState, onRetry: () -> Unit) {
+    when (horizon) {
+        is HorizonState.Loading -> Row(verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 1.5.dp)
+            Text(
+                text = " Reading terrain",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        is HorizonState.Ready -> Text(
+            text = "Ground ${horizon.profile.observerElevationMeters.roundToInt()} m",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        is HorizonState.Unavailable -> TextButton(onClick = onRetry) {
+            Text("No terrain - retry", style = MaterialTheme.typography.labelSmall)
         }
     }
 }

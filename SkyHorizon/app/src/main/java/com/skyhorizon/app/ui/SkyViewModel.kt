@@ -9,6 +9,9 @@ import com.skyhorizon.app.astro.SkySnapshot
 import com.skyhorizon.app.astro.TrackSample
 import com.skyhorizon.app.location.LocationRepository
 import com.skyhorizon.app.location.LocationResult
+import com.skyhorizon.app.terrain.HorizonProfile
+import com.skyhorizon.app.terrain.HorizonResult
+import com.skyhorizon.app.terrain.TerrainRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -40,6 +43,13 @@ enum class ZoneMode(val label: String) {
     LOCATION("Location time"),
 }
 
+/** Progress of the real-terrain skyline for the active location. */
+sealed interface HorizonState {
+    data object Loading : HorizonState
+    data class Ready(val profile: HorizonProfile) : HorizonState
+    data class Unavailable(val reason: String) : HorizonState
+}
+
 data class SkyUiState(
     val epochMillis: Long,
     val followRealTime: Boolean,
@@ -52,6 +62,7 @@ data class SkyUiState(
     val zoneMode: ZoneMode,
     val snapshot: SkySnapshot,
     val track: List<TrackSample>,
+    val horizon: HorizonState,
     val isLocating: Boolean,
     val message: String?,
 ) {
@@ -76,6 +87,7 @@ data class SkyUiState(
 class SkyViewModel(application: Application) : AndroidViewModel(application) {
 
     private val locationRepository = LocationRepository(application)
+    private val terrainRepository = TerrainRepository(application)
 
     private val _state = MutableStateFlow(initialState())
     val state: StateFlow<SkyUiState> = _state.asStateFlow()
@@ -83,10 +95,12 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
     private var tickerJob: Job? = null
     private var trackJob: Job? = null
     private var geocodeJob: Job? = null
+    private var horizonJob: Job? = null
 
     init {
         startTicker()
         recomputeTrack()
+        refreshHorizon()
     }
 
     private fun initialState(): SkyUiState {
@@ -106,6 +120,7 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
             zoneMode = ZoneMode.DEVICE,
             snapshot = SkyEngine.snapshot(Observer(latitude, longitude), now),
             track = emptyList(),
+            horizon = HorizonState.Loading,
             isLocating = false,
             message = null,
         )
@@ -276,6 +291,7 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
         recomputeTrack()
+        refreshHorizon()
     }
 
     private fun geocodeIfPossible(latitude: Double, longitude: Double, overwriteLabel: Boolean) {
@@ -293,6 +309,40 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+    }
+
+    // --- Skyline --------------------------------------------------------------
+
+    /**
+     * Rebuilds the real horizon silhouette for the active coordinates. The elevation
+     * tiles are cached on disk, so returning to a place is instant.
+     */
+    private fun refreshHorizon() {
+        val latitude = _state.value.latitude
+        val longitude = _state.value.longitude
+        horizonJob?.cancel()
+        _state.update { it.copy(horizon = HorizonState.Loading) }
+        horizonJob = viewModelScope.launch {
+            val result = terrainRepository.horizonFor(latitude, longitude)
+            _state.update { current ->
+                // Ignore a result that arrived after the user moved on.
+                if (current.latitude != latitude || current.longitude != longitude) {
+                    current
+                } else {
+                    current.copy(
+                        horizon = when (result) {
+                            is HorizonResult.Ready -> HorizonState.Ready(result.profile)
+                            is HorizonResult.Unavailable -> HorizonState.Unavailable(result.reason)
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    /** Lets the user retry after a failed download without moving the location. */
+    fun retryHorizon() {
+        if (_state.value.horizon !is HorizonState.Loading) refreshHorizon()
     }
 
     // --- Daily track ----------------------------------------------------------
