@@ -31,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.skyhorizon.app.astro.SkySnapshot
 import com.skyhorizon.app.astro.TrackSample
@@ -48,8 +49,8 @@ import kotlin.random.Random
 /** Camera for the panoramic horizon view: where it looks and how wide the lens is. */
 class SkyViewState(
     initialAzimuth: Float = 180f,
-    initialAltitude: Float = 25f,
-    initialFieldOfView: Float = 120f,
+    initialAltitude: Float = 22f,
+    initialFieldOfView: Float = 85f,
 ) {
     var centerAzimuth by mutableFloatStateOf(normalize(initialAzimuth))
         private set
@@ -76,8 +77,8 @@ class SkyViewState(
 
     fun reset() {
         centerAzimuth = 180f
-        centerAltitude = 25f
-        fieldOfView = 120f
+        centerAltitude = 22f
+        fieldOfView = 85f
     }
 
     private fun normalize(value: Float): Float = ((value % 360f) + 360f) % 360f
@@ -85,7 +86,7 @@ class SkyViewState(
     companion object {
         const val MIN_ALTITUDE = -35f
         const val MAX_ALTITUDE = 80f
-        const val MIN_FOV = 25f
+        const val MIN_FOV = 20f
         const val MAX_FOV = 200f
 
         // listSaver keeps the three floats individually bundle-storable, so the camera
@@ -127,9 +128,17 @@ fun SkyCanvas(
     track: List<TrackSample>,
     viewState: SkyViewState,
     modifier: Modifier = Modifier,
+    showTerrain: Boolean = true,
 ) {
     val textMeasurer = rememberTextMeasurer()
     val stars = remember { generateStars() }
+    val terrain = remember {
+        listOf(
+            TerrainLayer(buildTerrain(seed = 1741, maxHeightDeg = 9.0f), haze = 1.0f),
+            TerrainLayer(buildTerrain(seed = 90210, maxHeightDeg = 5.8f), haze = 0.55f),
+            TerrainLayer(buildTerrain(seed = 31337, maxHeightDeg = 3.4f), haze = 0.0f),
+        )
+    }
 
     Canvas(
         modifier = modifier.pointerInput(Unit) {
@@ -145,6 +154,7 @@ fun SkyCanvas(
             track = track,
             viewState = viewState,
             stars = stars,
+            terrain = if (showTerrain) terrain else emptyList(),
             textMeasurer = textMeasurer,
         )
     }
@@ -155,15 +165,28 @@ private fun DrawScope.drawSky(
     track: List<TrackSample>,
     viewState: SkyViewState,
     stars: List<Star>,
+    terrain: List<TerrainLayer>,
     textMeasurer: TextMeasurer,
 ) {
     val width = size.width
     val height = size.height
     if (width <= 0f || height <= 0f) return
 
+    // Every dimension below is expressed in dp and converted here, so the drawing keeps
+    // its proportions on a high-density screen instead of shrinking to a third of its
+    // intended size.
+    val hairline = 0.8.dp.toPx()
+    val gridStroke = 1.dp.toPx()
+    val cardinalStroke = 1.4.dp.toPx()
+    val horizonStroke = 2.dp.toPx()
+    val tickShort = 3.dp.toPx()
+    val tickLong = 6.dp.toPx()
+    val minBodyRadius = 15.dp.toPx()
+    val labelGap = 6.dp.toPx()
+
     val pixelsPerDegreeX = width / viewState.fieldOfView
     // Cap the vertical span so a wide field of view does not squash the sky flat.
-    val pixelsPerDegreeY = max(pixelsPerDegreeX, height / 150f)
+    val pixelsPerDegreeY = max(pixelsPerDegreeX, height / 110f)
     val centerAzimuth = viewState.centerAzimuth.toDouble()
     val centerAltitude = viewState.centerAltitude.toDouble()
 
@@ -228,6 +251,7 @@ private fun DrawScope.drawSky(
 
     // --- Stars ------------------------------------------------------------
     if (night > 0.02f) {
+        val starRadius = 1.3.dp.toPx()
         stars.forEach { star ->
             val x = xFor(star.azimuthDeg)
             if (!isVisibleX(x)) return@forEach
@@ -235,42 +259,46 @@ private fun DrawScope.drawSky(
             if (y > horizonY) return@forEach
             drawCircle(
                 color = SkyPalette.Star.copy(alpha = star.magnitude * night * 0.9f),
-                radius = star.magnitude * 2.1f,
+                radius = star.magnitude * starRadius,
                 center = Offset(x, y),
             )
         }
     }
 
     // --- Altitude grid ----------------------------------------------------
-    val dashed = PathEffect.dashPathEffect(floatArrayOf(9f, 11f), 0f)
+    val dashed = PathEffect.dashPathEffect(
+        floatArrayOf(4.dp.toPx(), 5.dp.toPx()),
+        0f,
+    )
     val labelStyle = TextStyle(
         color = SkyPalette.Label,
-        fontSize = 11.sp,
+        fontSize = 13.sp,
         fontWeight = FontWeight.Medium,
     )
+    val tickStyle = labelStyle.copy(fontSize = 10.sp)
     val cardinalStyle = TextStyle(
         color = SkyPalette.Horizon,
-        fontSize = 15.sp,
+        fontSize = 19.sp,
         fontWeight = FontWeight.Bold,
     )
 
     for (altitude in -30..90 step 15) {
         val y = yFor(altitude.toDouble())
-        if (y < -30f || y > height + 30f) continue
+        if (y < -tickLong || y > height + tickLong) continue
         if (altitude == 0) continue
         drawLine(
             color = SkyPalette.Grid,
             start = Offset(0f, y),
             end = Offset(width, y),
-            strokeWidth = 1f,
+            strokeWidth = gridStroke,
             pathEffect = dashed,
         )
         drawLabel(
             textMeasurer = textMeasurer,
             text = "${altitude}°",
             style = labelStyle,
-            x = 10f,
-            y = y - 16f,
+            x = labelGap,
+            y = y - labelGap - 12.dp.toPx(),
             centered = false,
         )
     }
@@ -280,60 +308,97 @@ private fun DrawScope.drawSky(
     while (azimuth < 360) {
         val x = xFor(azimuth.toDouble())
         if (isVisibleX(x)) {
-            val isCardinal = azimuth % 45 == 0
-            if (isCardinal) {
-                drawLine(
-                    color = SkyPalette.GridStrong,
-                    start = Offset(x, 0f),
-                    end = Offset(x, horizonY.coerceIn(0f, height)),
-                    strokeWidth = 1.4f,
-                    pathEffect = dashed,
-                )
-                drawLabel(
-                    textMeasurer = textMeasurer,
-                    text = cardinalName(azimuth),
-                    style = cardinalStyle,
-                    x = x,
-                    y = horizonY + 10f,
-                    centered = true,
-                )
-            } else if (azimuth % 15 == 0) {
-                drawLine(
+            when {
+                azimuth % 45 == 0 -> {
+                    drawLine(
+                        color = SkyPalette.GridStrong,
+                        start = Offset(x, 0f),
+                        end = Offset(x, horizonY.coerceIn(0f, height)),
+                        strokeWidth = cardinalStroke,
+                        pathEffect = dashed,
+                    )
+                    // Cardinal names sit just above the horizon so the skyline never
+                    // covers them.
+                    drawLabel(
+                        textMeasurer = textMeasurer,
+                        text = cardinalName(azimuth),
+                        style = cardinalStyle,
+                        x = x,
+                        y = horizonY - 26.dp.toPx(),
+                        centered = true,
+                    )
+                }
+
+                azimuth % 15 == 0 -> {
+                    drawLine(
+                        color = SkyPalette.Grid,
+                        start = Offset(x, horizonY - tickLong),
+                        end = Offset(x, horizonY + tickLong),
+                        strokeWidth = gridStroke,
+                    )
+                    drawLabel(
+                        textMeasurer = textMeasurer,
+                        text = "$azimuth",
+                        style = tickStyle,
+                        x = x,
+                        y = horizonY - tickLong - 13.dp.toPx(),
+                        centered = true,
+                    )
+                }
+
+                else -> drawLine(
                     color = SkyPalette.Grid,
-                    start = Offset(x, horizonY - 10f),
-                    end = Offset(x, horizonY + 10f),
-                    strokeWidth = 1f,
-                )
-                drawLabel(
-                    textMeasurer = textMeasurer,
-                    text = "$azimuth",
-                    style = labelStyle.copy(fontSize = 9.sp),
-                    x = x,
-                    y = horizonY + 32f,
-                    centered = true,
-                )
-            } else {
-                drawLine(
-                    color = SkyPalette.Grid,
-                    start = Offset(x, horizonY - 5f),
-                    end = Offset(x, horizonY + 5f),
-                    strokeWidth = 0.8f,
+                    start = Offset(x, horizonY - tickShort),
+                    end = Offset(x, horizonY + tickShort),
+                    strokeWidth = hairline,
                 )
             }
         }
         azimuth += 5
     }
 
+    // --- Skyline ----------------------------------------------------------
+    terrain.forEach { layer ->
+        // Distant ranges are washed towards the colour of the sky at the horizon, which
+        // is what gives a real skyline its sense of depth.
+        val ridgeColor = lerp(
+            SkyPalette.RidgeNear,
+            lerp(SkyPalette.RidgeFar, palette.second, 0.45f),
+            layer.haze,
+        )
+        drawPath(
+            path = ridgePath(
+                profile = layer.profile,
+                centerAzimuth = centerAzimuth,
+                fieldOfView = viewState.fieldOfView.toDouble(),
+                bottom = height,
+                xFor = ::xFor,
+                yFor = ::yFor,
+            ),
+            color = ridgeColor,
+        )
+    }
+
     // --- Daily arcs -------------------------------------------------------
-    drawTrack(track, SkyPalette.SunTrack, ::xFor, ::yFor, width) { it.sunAzimuthDeg to it.sunAltitudeDeg }
-    drawTrack(track, SkyPalette.MoonTrack, ::xFor, ::yFor, width) { it.moonAzimuthDeg to it.moonAltitudeDeg }
+    val trackStroke = Stroke(
+        width = 1.6.dp.toPx(),
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 4.dp.toPx()), 0f),
+    )
+    drawTrack(track, SkyPalette.SunTrack, ::xFor, ::yFor, width, trackStroke) {
+        it.sunAzimuthDeg to it.sunAltitudeDeg
+    }
+    drawTrack(track, SkyPalette.MoonTrack, ::xFor, ::yFor, width, trackStroke) {
+        it.moonAzimuthDeg to it.moonAltitudeDeg
+    }
 
     // --- Horizon ----------------------------------------------------------
+    // Kept on top of the skyline: it is the astronomical 0 degree reference, not the
+    // visible ridge line.
     drawLine(
-        color = SkyPalette.Horizon,
+        color = SkyPalette.Horizon.copy(alpha = if (terrain.isEmpty()) 1f else 0.8f),
         start = Offset(0f, horizonY),
         end = Offset(width, horizonY),
-        strokeWidth = 3f,
+        strokeWidth = horizonStroke,
     )
 
     // --- Moon -------------------------------------------------------------
@@ -341,7 +406,7 @@ private fun DrawScope.drawSky(
     val moonY = yFor(snapshot.moon.apparentAltitudeDeg)
     val moonRadius = max(
         (snapshot.moon.angularDiameterDeg / 2.0).toFloat() * pixelsPerDegreeX,
-        MIN_BODY_RADIUS_PX,
+        minBodyRadius,
     )
     if (isVisibleX(moonX)) {
         drawMoon(
@@ -355,6 +420,7 @@ private fun DrawScope.drawSky(
                 ).toFloat() - 90f,
             aboveHorizon = snapshot.moon.isAboveHorizon,
             nightFactor = night,
+            outlineStroke = hairline * 1.5f,
         )
         drawLabel(
             textMeasurer = textMeasurer,
@@ -362,7 +428,7 @@ private fun DrawScope.drawSky(
                 "${format1(snapshot.moon.apparentAltitudeDeg)}°",
             style = labelStyle.copy(color = SkyPalette.MoonLit),
             x = moonX,
-            y = moonY + moonRadius + 12f,
+            y = moonY + moonRadius + labelGap,
             centered = true,
         )
     }
@@ -372,7 +438,7 @@ private fun DrawScope.drawSky(
     val sunY = yFor(snapshot.sun.apparentAltitudeDeg)
     val sunRadius = max(
         (snapshot.sun.angularDiameterDeg / 2.0).toFloat() * pixelsPerDegreeX,
-        MIN_BODY_RADIUS_PX,
+        minBodyRadius,
     )
     if (isVisibleX(sunX)) {
         drawSun(
@@ -380,6 +446,8 @@ private fun DrawScope.drawSky(
             centerY = sunY,
             radius = sunRadius,
             aboveHorizon = snapshot.sun.isAboveHorizon,
+            outlineStroke = hairline * 2f,
+            dash = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 2.5.dp.toPx()), 0f),
         )
         drawLabel(
             textMeasurer = textMeasurer,
@@ -387,20 +455,46 @@ private fun DrawScope.drawSky(
                 "${format1(snapshot.sun.apparentAltitudeDeg)}°",
             style = labelStyle.copy(color = SkyPalette.Sun),
             x = sunX,
-            y = sunY + sunRadius + 12f,
+            y = sunY + sunRadius + labelGap,
             centered = true,
         )
     }
-
 }
 
-private const val MIN_BODY_RADIUS_PX = 13f
+/** Filled silhouette of one mountain range across the visible span of horizon. */
+private fun ridgePath(
+    profile: TerrainProfile,
+    centerAzimuth: Double,
+    fieldOfView: Double,
+    bottom: Float,
+    xFor: (Double) -> Float,
+    yFor: (Double) -> Float,
+): Path {
+    val path = Path()
+    val halfSpan = fieldOfView / 2.0 + 4.0
+    val start = centerAzimuth - halfSpan
+    val end = centerAzimuth + halfSpan
+    // Roughly one sample every two pixels, whatever the zoom level.
+    val step = (fieldOfView / 320.0).coerceIn(0.05, 0.75)
+
+    path.moveTo(xFor(start), bottom)
+    var azimuth = start
+    while (azimuth <= end) {
+        path.lineTo(xFor(azimuth), yFor(profile.heightAt(azimuth).toDouble()))
+        azimuth += step
+    }
+    path.lineTo(xFor(end), bottom)
+    path.close()
+    return path
+}
 
 private fun DrawScope.drawSun(
     centerX: Float,
     centerY: Float,
     radius: Float,
     aboveHorizon: Boolean,
+    outlineStroke: Float,
+    dash: PathEffect,
 ) {
     val center = Offset(centerX, centerY)
     if (aboveHorizon) {
@@ -428,10 +522,7 @@ private fun DrawScope.drawSun(
             color = SkyPalette.Sun.copy(alpha = 0.85f),
             radius = radius,
             center = center,
-            style = Stroke(
-                width = 2f,
-                pathEffect = PathEffect.dashPathEffect(floatArrayOf(7f, 6f), 0f),
-            ),
+            style = Stroke(width = outlineStroke, pathEffect = dash),
         )
     }
 }
@@ -444,6 +535,7 @@ private fun DrawScope.drawMoon(
     rotationDegrees: Float,
     aboveHorizon: Boolean,
     nightFactor: Float,
+    outlineStroke: Float,
 ) {
     val center = Offset(centerX, centerY)
     val litColor = if (aboveHorizon) SkyPalette.MoonLit else SkyPalette.MoonBelow
@@ -477,7 +569,7 @@ private fun DrawScope.drawMoon(
         color = litColor.copy(alpha = 0.55f),
         radius = radius,
         center = center,
-        style = Stroke(width = 1.2f),
+        style = Stroke(width = outlineStroke),
     )
 }
 
@@ -485,7 +577,7 @@ private fun DrawScope.drawMoon(
  * Path covering the sunlit part of the disc, with the bright limb pointing along +x
  * (or -x when [litOnRight] is false).
  * The terminator is the projection of the great circle dividing day from night, which
- * appears as a half-ellipse whose semi-axis is `r * cos(phase angle) = r * (2k - 1)`.
+ * appears as a half-ellipse whose semi-axis is `r(2k - 1)`.
  */
 internal fun lunarLimbPath(
     centerX: Float,
@@ -534,6 +626,7 @@ private fun DrawScope.drawTrack(
     xFor: (Double) -> Float,
     yFor: (Double) -> Float,
     width: Float,
+    stroke: Stroke,
     select: (TrackSample) -> Pair<Double, Double>,
 ) {
     if (track.size < 2) return
@@ -553,14 +646,7 @@ private fun DrawScope.drawTrack(
         }
         previousX = x
     }
-    drawPath(
-        path = path,
-        color = color,
-        style = Stroke(
-            width = 2f,
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 8f), 0f),
-        ),
-    )
+    drawPath(path = path, color = color, style = stroke)
 }
 
 private fun DrawScope.drawLabel(

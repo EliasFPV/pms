@@ -27,8 +27,12 @@ object SkyPalette {
     val DayZenith = Color(0xFF1663C7)
     val DayHorizon = Color(0xFFA9D6F5)
 
-    val GroundNear = Color(0xFF2A2620)
-    val GroundFar = Color(0xFF0A0908)
+    val GroundNear = Color(0xFF232028)
+    val GroundFar = Color(0xFF07080C)
+
+    // Mountain silhouettes, near (darkest) to far (hazed towards the sky).
+    val RidgeNear = Color(0xFF0B0D14)
+    val RidgeFar = Color(0xFF3A4562)
 
     val Sun = Color(0xFFFFD24A)
     val SunCore = Color(0xFFFFF6D8)

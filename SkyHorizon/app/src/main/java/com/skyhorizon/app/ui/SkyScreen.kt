@@ -8,14 +8,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Refresh
@@ -23,7 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -38,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,10 +58,13 @@ import com.skyhorizon.app.ui.components.SkyCanvas
 import com.skyhorizon.app.ui.components.rememberSkyViewState
 import java.util.Locale
 
+/** Keeps the sky view the dominant element even with the controls expanded. */
+private val CONTROL_PANEL_MAX_HEIGHT = 330.dp
+
 @Composable
 fun SkyHorizonApp(viewModel: SkyViewModel = viewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var showMapPicker by remember { mutableStateOf(false) }
+    var showMapPicker by rememberSaveable { mutableStateOf(false) }
 
     if (showMapPicker) {
         MapPickerScreen(
@@ -84,6 +93,8 @@ private fun SkyScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val skyViewState = rememberSkyViewState()
+    var detailsExpanded by rememberSaveable { mutableStateOf(false) }
+    var showTerrain by rememberSaveable { mutableStateOf(true) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -124,20 +135,53 @@ private fun SkyScreen(
                 .fillMaxSize()
                 .padding(padding),
         ) {
+            // The canvas takes every pixel the control panel does not claim.
             SkyCanvas(
                 snapshot = state.snapshot,
                 track = state.track,
                 viewState = skyViewState,
+                showTerrain = showTerrain,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
             )
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(onClick = { detailsExpanded = !detailsExpanded }) {
+                    Icon(
+                        imageVector = if (detailsExpanded) {
+                            Icons.Filled.KeyboardArrowDown
+                        } else {
+                            Icons.Filled.KeyboardArrowUp
+                        },
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text(
+                        text = if (detailsExpanded) " Hide details" else " More details",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                FilterChip(
+                    selected = showTerrain,
+                    onClick = { showTerrain = !showTerrain },
+                    label = { Text("Skyline", style = MaterialTheme.typography.labelSmall) },
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .heightIn(max = CONTROL_PANEL_MAX_HEIGHT)
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
                 BodySummaryRow(
@@ -172,7 +216,7 @@ private fun SkyScreen(
                     onResetToNow = viewModel::resetToNow,
                 )
 
-                LocationCard(
+                LocationBar(
                     state = state,
                     onRequestGps = {
                         permissionLauncher.launch(
@@ -183,22 +227,24 @@ private fun SkyScreen(
                         )
                     },
                     onOpenMap = onOpenMap,
-                    onToggleZone = viewModel::toggleZoneMode,
                     onResetView = skyViewState::reset,
                 )
 
-                DetailCard(state.snapshot)
+                if (detailsExpanded) {
+                    ZoneSelector(state = state, onToggleZone = viewModel::toggleZoneMode)
+                    DetailCard(state.snapshot)
+                }
             }
         }
     }
 }
 
+/** Compact single-row summary of the active site plus the three location actions. */
 @Composable
-private fun LocationCard(
+private fun LocationBar(
     state: SkyUiState,
     onRequestGps: () -> Unit,
     onOpenMap: () -> Unit,
-    onToggleZone: () -> Unit,
     onResetView: () -> Unit,
 ) {
     Card(
@@ -206,70 +252,74 @@ private fun LocationCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Filled.Place,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(18.dp),
+            Icon(
+                imageVector = Icons.Filled.Place,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(18.dp),
+            )
+            Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
+                Text(
+                    text = state.locationLabel ?: "Custom position",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
                 )
-                Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
-                    Text(
-                        text = state.locationLabel ?: "Custom position",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Text(
-                        text = coordinateText(state),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                if (state.isLocating) {
-                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                }
+                Text(
+                    text = coordinateText(state),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
             }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                FilledTonalButton(onClick = onRequestGps, modifier = Modifier.weight(1f)) {
+            if (state.isLocating) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            } else {
+                FilledTonalIconButton(onClick = onRequestGps, modifier = Modifier.size(38.dp)) {
                     Icon(
                         imageVector = Icons.Filled.LocationOn,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                        contentDescription = "Use device location",
+                        modifier = Modifier.size(19.dp),
                     )
-                    Text("  GPS", style = MaterialTheme.typography.labelLarge)
-                }
-                FilledTonalButton(onClick = onOpenMap, modifier = Modifier.weight(1f)) {
-                    Icon(
-                        imageVector = Icons.Filled.Place,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text("  Map", style = MaterialTheme.typography.labelLarge)
-                }
-                FilledTonalButton(onClick = onResetView, modifier = Modifier.weight(1f)) {
-                    Icon(
-                        imageVector = Icons.Filled.Refresh,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text("  View", style = MaterialTheme.typography.labelLarge)
                 }
             }
+            FilledTonalIconButton(
+                onClick = onOpenMap,
+                modifier = Modifier.padding(start = 6.dp).size(38.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Place,
+                    contentDescription = "Pick on map",
+                    modifier = Modifier.size(19.dp),
+                )
+            }
+            FilledTonalIconButton(
+                onClick = onResetView,
+                modifier = Modifier.padding(start = 6.dp).size(38.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    contentDescription = "Reset the sky view",
+                    modifier = Modifier.size(19.dp),
+                )
+            }
+        }
+    }
+}
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ZoneMode.entries.forEach { mode ->
-                    FilterChip(
-                        selected = state.zoneMode == mode,
-                        onClick = { if (state.zoneMode != mode) onToggleZone() },
-                        label = { Text(mode.label, style = MaterialTheme.typography.labelSmall) },
-                    )
-                }
-            }
+@Composable
+private fun ZoneSelector(state: SkyUiState, onToggleZone: () -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        ZoneMode.entries.forEach { mode ->
+            FilterChip(
+                selected = state.zoneMode == mode,
+                onClick = { if (state.zoneMode != mode) onToggleZone() },
+                label = { Text(mode.label, style = MaterialTheme.typography.labelSmall) },
+            )
         }
     }
 }
@@ -293,10 +343,7 @@ private fun DetailCard(snapshot: SkySnapshot) {
                 "Moon distance",
                 String.format(Locale.US, "%,.0f km", snapshot.moon.distanceKm),
             )
-            DetailRow(
-                "Moon phase angle",
-                degrees(snapshot.moonPhase.phaseAngleDeg),
-            )
+            DetailRow("Moon phase angle", degrees(snapshot.moonPhase.phaseAngleDeg))
             DetailRow("Local sidereal time", hoursMinutes(snapshot.localSiderealTimeDeg))
             DetailRow(
                 "Equation of time",
@@ -343,7 +390,7 @@ private fun coordinateText(state: SkyUiState): String {
         ""
     }
     val accuracy = state.accuracyMeters?.let { String.format(Locale.US, " · ±%.0f m", it) } ?: ""
-    return "$latitude  $longitude$elevation$accuracy · ${state.locationSource.label}"
+    return "$latitude  $longitude$elevation$accuracy"
 }
 
 private fun degrees(value: Double): String = String.format(Locale.US, "%+.3f°", value)
