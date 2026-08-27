@@ -51,20 +51,22 @@ internal class ElevationMosaic(
 }
 
 /**
- * Uses the fine mosaic for everything inside [nearRadiusMeters] of the observer and
- * the coarse one beyond it, which is what keeps the download to a couple of dozen
- * tiles without flattening nearby ridges.
+ * Picks the finest elevation mosaic that still covers a sample.
+ *
+ * Detail is only affordable close in, so the tiers step outwards: fine nearby, coarse
+ * for the distant ranges that still rise above the horizon a hundred kilometres away.
  */
 internal class TieredElevationSource(
-    private val near: ElevationMosaic,
-    private val far: ElevationMosaic,
+    tiers: List<Tier>,
     private val observerLatitude: Double,
     private val observerLongitude: Double,
-    private val nearRadiusMeters: Double,
 ) : ElevationSource {
 
-    private val nearRadiusDegreesSquared: Double = run {
-        val degrees = nearRadiusMeters / HorizonCalculator.METERS_PER_DEGREE
+    class Tier(val mosaic: ElevationMosaic, val radiusMeters: Double)
+
+    private val mosaics = tiers.map { it.mosaic }
+    private val radiiSquaredDegrees = tiers.map { tier ->
+        val degrees = tier.radiusMeters / HorizonCalculator.METERS_PER_DEGREE
         degrees * degrees
     }
     private val longitudeScale = kotlin.math.cos(observerLatitude * PI_OVER_180)
@@ -72,11 +74,13 @@ internal class TieredElevationSource(
     override fun elevationAt(latitudeDeg: Double, longitudeDeg: Double): Float {
         val dLat = latitudeDeg - observerLatitude
         val dLon = (longitudeDeg - observerLongitude) * longitudeScale
-        return if (dLat * dLat + dLon * dLon <= nearRadiusDegreesSquared) {
-            near.elevationAt(latitudeDeg, longitudeDeg)
-        } else {
-            far.elevationAt(latitudeDeg, longitudeDeg)
+        val distanceSquared = dLat * dLat + dLon * dLon
+        for (index in mosaics.indices) {
+            if (distanceSquared <= radiiSquaredDegrees[index]) {
+                return mosaics[index].elevationAt(latitudeDeg, longitudeDeg)
+            }
         }
+        return mosaics.last().elevationAt(latitudeDeg, longitudeDeg)
     }
 
     private companion object {

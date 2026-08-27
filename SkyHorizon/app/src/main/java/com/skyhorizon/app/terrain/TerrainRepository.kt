@@ -50,14 +50,16 @@ class TerrainRepository(context: Context) {
 
         return try {
             withTimeout(OVERALL_TIMEOUT_MS) {
-                val near = buildMosaic(NEAR_ZOOM, latitudeDeg, longitudeDeg, NEAR_RADIUS_M)
-                val far = buildMosaic(FAR_ZOOM, latitudeDeg, longitudeDeg, HorizonCalculator.DEFAULT_MAX_RANGE_M)
+                val tiers = TIERS.map { (zoom, radius) ->
+                    TieredElevationSource.Tier(
+                        mosaic = buildMosaic(zoom, latitudeDeg, longitudeDeg, radius),
+                        radiusMeters = radius,
+                    )
+                }
                 val source = TieredElevationSource(
-                    near = near,
-                    far = far,
+                    tiers = tiers,
                     observerLatitude = latitudeDeg,
                     observerLongitude = longitudeDeg,
-                    nearRadiusMeters = NEAR_RADIUS_M,
                 )
                 val profile = withContext(Dispatchers.Default) {
                     HorizonCalculator.compute(latitudeDeg, longitudeDeg, source)
@@ -242,11 +244,18 @@ class TerrainRepository(context: Context) {
         const val TILE_BASE_URL = "https://s3.amazonaws.com/elevation-tiles-prod/terrarium"
         const val USER_AGENT = "SkyHorizon/1.0 (Android)"
 
-        /** Fine detail nearby, coarse further out - see the accuracy notes in the README. */
-        const val NEAR_ZOOM = 11
-        const val FAR_ZOOM = 9
-        const val MIN_ZOOM = 6
-        const val NEAR_RADIUS_M = 15_000.0
+        /**
+         * Zoom level paired with the radius it covers, finest first. Roughly 53 m per
+         * sample within 15 km, 210 m to 70 km, and 850 m out to 200 km, where the
+         * distant ranges that shape a wide panorama still sit above the horizon.
+         * Together this is about 37 tiles, fetched once and then cached.
+         */
+        val TIERS = listOf(
+            11 to 15_000.0,
+            9 to 70_000.0,
+            7 to HorizonCalculator.DEFAULT_MAX_RANGE_M,
+        )
+        const val MIN_ZOOM = 5
 
         const val MAX_TILES_PER_MOSAIC = 36
         const val FETCH_CONCURRENCY = 4

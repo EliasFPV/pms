@@ -381,11 +381,13 @@ private fun DrawScope.drawSky(
     // --- Horizon ----------------------------------------------------------
     // Kept on top of the skyline: it is the astronomical 0 degree reference, not the
     // visible ridge line.
+    // Thin when a skyline is drawn: distant ranges show up barely a degree above zero,
+    // and a heavy reference line would sit right on top of them.
     drawLine(
-        color = SkyPalette.Horizon.copy(alpha = if (horizonProfile == null) 1f else 0.75f),
+        color = SkyPalette.Horizon.copy(alpha = if (horizonProfile == null) 1f else 0.7f),
         start = Offset(0f, horizonY),
         end = Offset(width, horizonY),
-        strokeWidth = horizonStroke,
+        strokeWidth = if (horizonProfile == null) horizonStroke else horizonStroke * 0.55f,
     )
 
     // --- Moon -------------------------------------------------------------
@@ -521,7 +523,9 @@ private const val HAZE_STEPS = 6
 /** Quantised distance band, so the silhouette fills in a handful of runs. */
 private fun hazeStep(distanceMeters: Float): Int {
     val kilometres = distanceMeters / 1000f
-    val fraction = (kilometres / 45f).coerceIn(0f, 1f)
+    // Ridges are drawn out to 200 km; by about 80 km haze has washed them out about
+    // as far as it can, so that is where the scale tops out.
+    val fraction = (kilometres / 80f).coerceIn(0f, 1f)
     // A square root spreads the near distances, where haze changes fastest.
     val eased = kotlin.math.sqrt(fraction)
     return (eased * HAZE_STEPS).roundToInt().coerceIn(0, HAZE_STEPS)

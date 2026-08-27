@@ -65,13 +65,17 @@ object HorizonCalculator {
     const val EYE_HEIGHT_M = 1.7
 
     const val DEFAULT_SAMPLE_COUNT = 1440
-    const val DEFAULT_MAX_RANGE_M = 70_000.0
+    /**
+     * How far to look. From low ground the ranges that dominate a panorama often lie
+     * 70-150 km out; past 200 km the Earth's curve hides all but a handful of the
+     * highest summits, and testing showed under a sixth of a degree of difference.
+     */
+    const val DEFAULT_MAX_RANGE_M = 200_000.0
 
     /**
      * @param sampleCount number of azimuths; the default gives one sample per quarter
      *   degree, a few pixels on a phone at the app's normal field of view.
-     * @param maxRangeMeters how far to look. Beyond about 70 km the Earth's curve
-     *   hides everything but the very largest peaks.
+     * @param maxRangeMeters how far to look; see [DEFAULT_MAX_RANGE_M].
      */
     fun compute(
         latitudeDeg: Double,
@@ -132,11 +136,17 @@ object HorizonCalculator {
      */
     private fun buildRanges(maxRangeMeters: Double): DoubleArray {
         val ranges = ArrayList<Double>(1024)
-        var distance = 20.0
+        var distance = MIN_STEP_M
         while (distance < maxRangeMeters) {
             ranges.add(distance)
-            distance += max(20.0, distance / 110.0)
+            // Proportional steps keep the angular resolution even, but the step is
+            // capped so far-out ridges are not stepped straight over.
+            distance += (distance / STEP_DIVISOR).coerceIn(MIN_STEP_M, MAX_STEP_M)
         }
         return ranges.toDoubleArray()
     }
+
+    private const val MIN_STEP_M = 20.0
+    private const val MAX_STEP_M = 400.0
+    private const val STEP_DIVISOR = 110.0
 }

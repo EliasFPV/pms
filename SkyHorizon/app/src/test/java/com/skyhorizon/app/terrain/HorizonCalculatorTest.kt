@@ -126,6 +126,39 @@ class HorizonCalculatorTest {
     }
 
     @Test
+    fun `a high range well beyond a hundred kilometres still reaches the skyline`() {
+        // From low ground the ranges that shape a wide panorama often lie far out;
+        // an earlier cut-off at 70 km silently dropped all of them.
+        val rangeHeight = 3500.0
+        val rangeDistance = 120_000.0
+        val profile = HorizonCalculator.compute(
+            latitudeDeg = latitude,
+            longitudeDeg = longitude,
+            source = { lat, lon ->
+                if (metersFromObserver(lat, lon) >= rangeDistance) rangeHeight.toFloat() else 0f
+            },
+        )
+
+        val drop = rangeDistance * rangeDistance / (2.0 * HorizonCalculator.REFRACTED_RADIUS_M)
+        val expected = atan2(rangeHeight - eyeHeight - drop, rangeDistance) * 180.0 / PI
+        assertTrue("expected a visible distant range, got $expected deg", expected > 1.0)
+
+        for (azimuth in 0 until 360 step 13) {
+            assertEquals(
+                "distant range at $azimuth deg",
+                expected,
+                profile.angleAt(azimuth.toDouble()).toDouble(),
+                0.05,
+            )
+            assertEquals(
+                rangeDistance,
+                profile.distanceAt(azimuth.toDouble()).toDouble(),
+                600.0,
+            )
+        }
+    }
+
+    @Test
     fun `the observer elevation comes from the ground below them`() {
         val profile = HorizonCalculator.compute(
             latitudeDeg = latitude,

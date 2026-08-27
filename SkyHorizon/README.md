@@ -45,8 +45,13 @@ but it runs on anything from API 26 upwards.
   apparent elevation angle. Earth curvature and standard atmospheric refraction
   (k = 0.13, the 7/6 R effective-radius rule) are both applied, so the result is
   the ridge line a person standing there would see.
-- Two resolution tiers keep the download to roughly 25 tiles: about 53 m per
-  sample within 15 km, about 210 m beyond, out to 70 km.
+- Three resolution tiers keep the download to roughly 37 tiles: about 53 m per
+  sample within 15 km, 210 m to 70 km, and 850 m out to 200 km. From low ground
+  the ranges that shape a wide panorama often stand 70-150 km away, so stopping
+  short of them drops a large part of the skyline: from Milan a 70 km limit
+  loses distant terrain on 48% of all azimuths, by up to 1.6 degrees.
+- Going beyond 200 km, or using finer tiles for the far field, was measured and
+  rejected: both change the result by under a sixth of a degree.
 - Accuracy check: from Zermatt the computed Matterhorn horizon is +17.6° at
   bearing 235.5° and 8.61 km, against a true +18.5° at 234.8° and 8.57 km. The
   remaining ~0.9° is SRTM smoothing the summit pyramid, not the ray-cast.
