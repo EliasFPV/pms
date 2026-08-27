@@ -3,12 +3,14 @@ package com.skyhorizon.app.terrain
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import java.io.File
@@ -64,6 +66,12 @@ class TerrainRepository(context: Context) {
                 cachedProfile = profile
                 HorizonResult.Ready(profile)
             }
+        } catch (timeout: TimeoutCancellationException) {
+            HorizonResult.Unavailable("Timed out downloading elevation data")
+        } catch (cancellation: CancellationException) {
+            // The observer moved on: let the cancellation reach the caller rather than
+            // reporting it as a failed download.
+            throw cancellation
         } catch (error: Exception) {
             HorizonResult.Unavailable(
                 error.message?.takeIf { it.isNotBlank() } ?: "Elevation data unavailable",
