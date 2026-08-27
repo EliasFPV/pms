@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -87,7 +88,9 @@ class SkyViewState(
         const val MIN_FOV = 25f
         const val MAX_FOV = 200f
 
-        val Saver: Saver<SkyViewState, List<Float>> = Saver(
+        // listSaver keeps the three floats individually bundle-storable, so the camera
+        // survives configuration changes and process death.
+        val Saver: Saver<SkyViewState, Any> = listSaver(
             save = { listOf(it.centerAzimuth, it.centerAltitude, it.fieldOfView) },
             restore = { SkyViewState(it[0], it[1], it[2]) },
         )
@@ -175,7 +178,7 @@ private fun DrawScope.drawSky(
     val horizonY = yFor(0.0)
     val sunAltitude = snapshot.sun.apparentAltitudeDeg
     val palette = skyColors(sunAltitude)
-    val nightFactor = nightFactor(sunAltitude)
+    val night = nightFactor(sunAltitude)
 
     // --- Background -------------------------------------------------------
     val skyBottom = horizonY.coerceIn(0f, height)
@@ -224,14 +227,14 @@ private fun DrawScope.drawSky(
     }
 
     // --- Stars ------------------------------------------------------------
-    if (nightFactor > 0.02f) {
+    if (night > 0.02f) {
         stars.forEach { star ->
             val x = xFor(star.azimuthDeg)
             if (!isVisibleX(x)) return@forEach
             val y = yFor(star.altitudeDeg)
             if (y > horizonY) return@forEach
             drawCircle(
-                color = SkyPalette.Star.copy(alpha = star.magnitude * nightFactor * 0.9f),
+                color = SkyPalette.Star.copy(alpha = star.magnitude * night * 0.9f),
                 radius = star.magnitude * 2.1f,
                 center = Offset(x, y),
             )
@@ -351,7 +354,7 @@ private fun DrawScope.drawSky(
                     snapshot.moonPhase.brightLimbAngleDeg
                 ).toFloat() - 90f,
             aboveHorizon = snapshot.moon.isAboveHorizon,
-            nightFactor = nightFactor,
+            nightFactor = night,
         )
         drawLabel(
             textMeasurer = textMeasurer,
