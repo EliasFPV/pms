@@ -87,7 +87,10 @@ class SkyViewState(
     companion object {
         const val MIN_ALTITUDE = -35f
         const val MAX_ALTITUDE = 80f
-        const val MIN_FOV = 20f
+        // Tight enough that the Sun and Moon reach their true angular size on screen:
+        // half a degree of disc only outgrows the minimum marker below about 9 degrees
+        // of field, so stopping at 20 would pin them at a fixed size forever.
+        const val MIN_FOV = 2f
         const val MAX_FOV = 200f
 
         // listSaver keeps the three floats individually bundle-storable, so the camera
@@ -176,7 +179,9 @@ private fun DrawScope.drawSky(
     val horizonStroke = 2.dp.toPx()
     val tickShort = 3.dp.toPx()
     val tickLong = 6.dp.toPx()
-    val minBodyRadius = 15.dp.toPx()
+    // Below this the true disc is too small to find, so a marker ring stands in for it.
+    val markerRadius = 12.dp.toPx()
+    val minDiscRadius = 2.dp.toPx()
     val labelGap = 6.dp.toPx()
 
     val pixelsPerDegreeX = width / viewState.fieldOfView
@@ -393,15 +398,15 @@ private fun DrawScope.drawSky(
     // --- Moon -------------------------------------------------------------
     val moonX = xFor(snapshot.moon.azimuthDeg)
     val moonY = yFor(snapshot.moon.apparentAltitudeDeg)
-    val moonRadius = max(
-        (snapshot.moon.angularDiameterDeg / 2.0).toFloat() * pixelsPerDegreeX,
-        minBodyRadius,
-    )
+    val moonTrueRadius = (snapshot.moon.angularDiameterDeg / 2.0).toFloat() * pixelsPerDegreeX
+    val moonRadius = max(moonTrueRadius, minDiscRadius)
+    val moonLabelRadius = max(moonRadius, markerRadius)
     if (isVisibleX(moonX)) {
         drawMoon(
             centerX = moonX,
             centerY = moonY,
             radius = moonRadius,
+            markerRadius = if (moonTrueRadius < markerRadius) markerRadius else null,
             illuminatedFraction = snapshot.moonPhase.illuminatedFraction.toFloat(),
             rotationDegrees = (
                 snapshot.moon.horizontal.parallacticAngleDeg -
@@ -417,7 +422,7 @@ private fun DrawScope.drawSky(
                 "${format1(snapshot.moon.apparentAltitudeDeg)}°",
             style = labelStyle.copy(color = SkyPalette.MoonLit),
             x = moonX,
-            y = moonY + moonRadius + labelGap,
+            y = moonY + moonLabelRadius + labelGap,
             centered = true,
         )
     }
@@ -425,15 +430,15 @@ private fun DrawScope.drawSky(
     // --- Sun --------------------------------------------------------------
     val sunX = xFor(snapshot.sun.azimuthDeg)
     val sunY = yFor(snapshot.sun.apparentAltitudeDeg)
-    val sunRadius = max(
-        (snapshot.sun.angularDiameterDeg / 2.0).toFloat() * pixelsPerDegreeX,
-        minBodyRadius,
-    )
+    val sunTrueRadius = (snapshot.sun.angularDiameterDeg / 2.0).toFloat() * pixelsPerDegreeX
+    val sunRadius = max(sunTrueRadius, minDiscRadius)
+    val sunLabelRadius = max(sunRadius, markerRadius)
     if (isVisibleX(sunX)) {
         drawSun(
             centerX = sunX,
             centerY = sunY,
             radius = sunRadius,
+            markerRadius = if (sunTrueRadius < markerRadius) markerRadius else null,
             aboveHorizon = snapshot.sun.isAboveHorizon,
             outlineStroke = hairline * 2f,
             dash = PathEffect.dashPathEffect(floatArrayOf(3.dp.toPx(), 2.5.dp.toPx()), 0f),
@@ -444,7 +449,7 @@ private fun DrawScope.drawSky(
                 "${format1(snapshot.sun.apparentAltitudeDeg)}°",
             style = labelStyle.copy(color = SkyPalette.Sun),
             x = sunX,
-            y = sunY + sunRadius + labelGap,
+            y = sunY + sunLabelRadius + labelGap,
             centered = true,
         )
     }
@@ -540,13 +545,19 @@ private fun DrawScope.drawSun(
     centerX: Float,
     centerY: Float,
     radius: Float,
+    markerRadius: Float?,
     aboveHorizon: Boolean,
     outlineStroke: Float,
     dash: PathEffect,
 ) {
     val center = Offset(centerX, centerY)
+    // The disc is drawn at its true angular size, so zooming in grows it exactly as
+    // the real Sun would grow in a telephoto view. Half a degree is only a few pixels
+    // at a wide field, so a ring marks where it is until the disc outgrows it.
+    val halo = markerRadius ?: radius
+
     if (aboveHorizon) {
-        val glowRadius = radius * 6f
+        val glowRadius = halo * 4.5f
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(
@@ -561,16 +572,27 @@ private fun DrawScope.drawSun(
             center = center,
         )
         drawCircle(color = SkyPalette.Sun, radius = radius, center = center)
-        drawCircle(color = SkyPalette.SunCore, radius = radius * 0.62f, center = center)
+        if (radius > outlineStroke * 3f) {
+            drawCircle(color = SkyPalette.SunCore, radius = radius * 0.62f, center = center)
+        }
     } else {
         // Below the horizon the Sun is drawn shaded, with a dashed outline so its
         // position is still readable against the ground.
-        drawCircle(color = SkyPalette.SunBelow.copy(alpha = 0.55f), radius = radius, center = center)
+        drawCircle(color = SkyPalette.SunBelow.copy(alpha = 0.7f), radius = radius, center = center)
         drawCircle(
             color = SkyPalette.Sun.copy(alpha = 0.85f),
-            radius = radius,
+            radius = halo,
             center = center,
             style = Stroke(width = outlineStroke, pathEffect = dash),
+        )
+    }
+
+    if (markerRadius != null && aboveHorizon) {
+        drawCircle(
+            color = SkyPalette.Sun.copy(alpha = 0.45f),
+            radius = markerRadius,
+            center = center,
+            style = Stroke(width = outlineStroke * 0.7f),
         )
     }
 }
@@ -579,6 +601,7 @@ private fun DrawScope.drawMoon(
     centerX: Float,
     centerY: Float,
     radius: Float,
+    markerRadius: Float?,
     illuminatedFraction: Float,
     rotationDegrees: Float,
     aboveHorizon: Boolean,
@@ -588,9 +611,10 @@ private fun DrawScope.drawMoon(
     val center = Offset(centerX, centerY)
     val litColor = if (aboveHorizon) SkyPalette.MoonLit else SkyPalette.MoonBelow
     val darkColor = if (aboveHorizon) SkyPalette.MoonDark else SkyPalette.MoonDark.copy(alpha = 0.5f)
+    val halo = markerRadius ?: radius
 
     if (aboveHorizon && nightFactor > 0.05f) {
-        val glowRadius = radius * 3.4f
+        val glowRadius = halo * 3.0f
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(
@@ -619,6 +643,28 @@ private fun DrawScope.drawMoon(
         center = center,
         style = Stroke(width = outlineStroke),
     )
+
+    // Marker ring while the true disc is still smaller than it: at a wide field the
+    // Moon is half a degree across, which is a couple of pixels.
+    if (markerRadius != null) {
+        drawCircle(
+            color = litColor.copy(alpha = 0.4f),
+            radius = markerRadius,
+            center = center,
+            style = Stroke(width = outlineStroke * 0.7f),
+        )
+        if (radius < markerRadius * 0.6f) {
+            // Too small to read the phase on the disc itself, so show it in the ring.
+            rotate(degrees = rotationDegrees, pivot = center) {
+                drawPath(
+                    path = lunarLimbPath(
+                        centerX, centerY, markerRadius * 0.82f, illuminatedFraction,
+                    ),
+                    color = litColor.copy(alpha = 0.75f),
+                )
+            }
+        }
+    }
 }
 
 /**

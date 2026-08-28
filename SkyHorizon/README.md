@@ -59,9 +59,31 @@ but it runs on anything from API 26 upwards.
   ranges wash out towards the sky the way aerial perspective really works.
 - Without a network the app falls back to a flat horizon and says so.
 
+**Rise and set times**
+- Computed against the *real* skyline, not the idealised 0 degree horizon, so a
+  mountain to the east genuinely delays sunrise. The flat-horizon time is shown
+  alongside whenever the terrain shifts it by a minute or more.
+- A body rises when its **upper limb** appears, so its semi-diameter is added to
+  the refracted altitude of the centre. Over a flat horizon this reproduces the
+  conventional -0.833 degree definition exactly.
+- Polar day and polar night are reported rather than left blank.
+
+**Observer height**
+- Eye height above the ground is adjustable and remembered, defaulting to 2.00 m.
+  It sets the dip of the horizon (0.042 deg at 2 m, with the sea horizon at
+  5.45 km rather than 5.03 km at 1.7 m) and decides what nearby ground hides.
+- On open terrain the difference between 1.7 m and 2.0 m moves sunrise by about
+  a second; standing just behind a crest it can matter far more.
+- The ground elevation itself comes from the elevation model rather than the GPS
+  altitude, which is usually the less reliable of the two.
+
 **Sky visualisation** — a custom Compose `Canvas`
 - Panoramic horizon: drag to pan through the full 360°, pinch to change the
-  field of view (20°–200°).
+  field of view (2°–200°).
+- The Sun and Moon are drawn at their **true angular size**, so zooming in grows
+  them exactly as a telephoto view would. Half a degree is only about three
+  pixels at a wide field, so a ring marks the position until the disc outgrows
+  it at roughly 9° of field. The drawn size feeds no calculation.
 - Sky gradient that follows the Sun's altitude from daylight through the golden
   hour and each twilight stage into night, with a star field that fades in.
 - Altitude grid every 15° and a compass strip with N/NE/E/… and degree ticks.

@@ -3,7 +3,9 @@ package com.skyhorizon.app.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import android.content.Context
 import com.skyhorizon.app.astro.Observer
+import com.skyhorizon.app.astro.RiseSetCalculator
 import com.skyhorizon.app.astro.SkyEngine
 import com.skyhorizon.app.astro.SkySnapshot
 import com.skyhorizon.app.astro.TrackSample
@@ -55,7 +57,10 @@ data class SkyUiState(
     val followRealTime: Boolean,
     val latitude: Double,
     val longitude: Double,
+    /** Ground elevation at the site, from the elevation model when it is available. */
     val elevationMeters: Double,
+    /** Height of the observer's eyes above that ground. */
+    val eyeHeightMeters: Double,
     val locationLabel: String?,
     val accuracyMeters: Float?,
     val locationSource: LocationSource,
@@ -63,10 +68,15 @@ data class SkyUiState(
     val snapshot: SkySnapshot,
     val track: List<TrackSample>,
     val horizon: HorizonState,
+    /** Rise and set times against the real skyline, and against a flat horizon. */
+    val riseSetTerrain: RiseSetCalculator.DayEvents?,
+    val riseSetFlat: RiseSetCalculator.DayEvents?,
     val isLocating: Boolean,
     val message: String?,
 ) {
-    val observer: Observer get() = Observer(latitude, longitude, elevationMeters)
+    // Parallax and the horizon both care about where the eyes are, not the ground.
+    val observer: Observer
+        get() = Observer(latitude, longitude, elevationMeters + eyeHeightMeters)
 
     /** The time zone used for every human-readable date and time in the UI. */
     val zoneId: ZoneId
@@ -88,6 +98,8 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
 
     private val locationRepository = LocationRepository(application)
     private val terrainRepository = TerrainRepository(application)
+    private val preferences =
+        application.getSharedPreferences("skyhorizon", Context.MODE_PRIVATE)
 
     private val _state = MutableStateFlow(initialState())
     val state: StateFlow<SkyUiState> = _state.asStateFlow()
@@ -96,11 +108,13 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
     private var trackJob: Job? = null
     private var geocodeJob: Job? = null
     private var horizonJob: Job? = null
+    private var riseSetJob: Job? = null
 
     init {
         startTicker()
         recomputeTrack()
         refreshHorizon()
+        recomputeRiseSet()
     }
 
     private fun initialState(): SkyUiState {
@@ -114,6 +128,7 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
             latitude = latitude,
             longitude = longitude,
             elevationMeters = 0.0,
+            eyeHeightMeters = preferences.getFloat(KEY_EYE_HEIGHT, DEFAULT_EYE_HEIGHT_M).toDouble(),
             locationLabel = "Royal Observatory, Greenwich",
             accuracyMeters = null,
             locationSource = LocationSource.DEFAULT,
@@ -121,6 +136,8 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
             snapshot = SkyEngine.snapshot(Observer(latitude, longitude), now),
             track = emptyList(),
             horizon = HorizonState.Loading,
+            riseSetTerrain = null,
+            riseSetFlat = null,
             isLocating = false,
             message = null,
         )
@@ -184,6 +201,7 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
     fun toggleZoneMode() {
         _state.update { it.copy(zoneMode = if (it.zoneMode == ZoneMode.DEVICE) ZoneMode.LOCATION else ZoneMode.DEVICE) }
         recomputeTrack()
+        recomputeRiseSet()
     }
 
     private fun setEpochMillis(epochMillis: Long, keepFollowing: Boolean) {
@@ -196,9 +214,11 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
                 message = null,
             )
         }
-        // The daily arc only has to be rebuilt when the displayed calendar day changes.
+        // The daily arc and the rise/set times only have to be rebuilt when the
+        // displayed calendar day changes.
         if (_state.value.zonedDateTime.toLocalDate() != previousDay) {
             recomputeTrack()
+            recomputeRiseSet()
         }
     }
 
@@ -254,16 +274,24 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun setElevation(meters: Double) {
+    /**
+     * Eye height above the ground. It shifts the horizon dip, decides which terrain is
+     * hidden behind nearer ground, and so moves the rise and set times slightly.
+     */
+    fun setEyeHeight(meters: Double) {
+        val clamped = meters.coerceIn(MIN_EYE_HEIGHT_M, MAX_EYE_HEIGHT_M)
+        if (clamped == _state.value.eyeHeightMeters) return
+        preferences.edit().putFloat(KEY_EYE_HEIGHT, clamped.toFloat()).apply()
         _state.update { current ->
             current.copy(
-                elevationMeters = meters.coerceIn(-500.0, 9000.0),
+                eyeHeightMeters = clamped,
                 snapshot = SkyEngine.snapshot(
-                    current.observer.copy(elevationMeters = meters),
+                    current.copy(eyeHeightMeters = clamped).observer,
                     current.epochMillis,
                 ),
             )
         }
+        refreshHorizon()
     }
 
     fun dismissMessage() = _state.update { it.copy(message = null) }
@@ -320,23 +348,72 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
     private fun refreshHorizon() {
         val latitude = _state.value.latitude
         val longitude = _state.value.longitude
+        val eyeHeight = _state.value.eyeHeightMeters
         horizonJob?.cancel()
         _state.update { it.copy(horizon = HorizonState.Loading) }
         horizonJob = viewModelScope.launch {
-            val result = terrainRepository.horizonFor(latitude, longitude)
+            val result = terrainRepository.horizonFor(latitude, longitude, eyeHeight)
             _state.update { current ->
                 // Ignore a result that arrived after the user moved on.
                 if (current.latitude != latitude || current.longitude != longitude) {
                     current
                 } else {
-                    current.copy(
-                        horizon = when (result) {
-                            is HorizonResult.Ready -> HorizonState.Ready(result.profile)
-                            is HorizonResult.Unavailable -> HorizonState.Unavailable(result.reason)
-                        },
-                    )
+                    when (result) {
+                        is HorizonResult.Ready -> {
+                            // The elevation model knows the ground better than a GPS
+                            // altitude does, so adopt it for the parallax too.
+                            val ground = result.profile.observerElevationMeters
+                            val updated = current.copy(
+                                horizon = HorizonState.Ready(result.profile),
+                                elevationMeters = ground,
+                            )
+                            updated.copy(
+                                snapshot = SkyEngine.snapshot(
+                                    updated.observer,
+                                    updated.epochMillis,
+                                ),
+                            )
+                        }
+
+                        is HorizonResult.Unavailable ->
+                            current.copy(horizon = HorizonState.Unavailable(result.reason))
+                    }
                 }
             }
+            recomputeRiseSet()
+        }
+    }
+
+    /**
+     * Rise and set times for the displayed day, both against the real skyline and
+     * against a flat horizon so the difference the terrain makes is visible.
+     */
+    private fun recomputeRiseSet() {
+        riseSetJob?.cancel()
+        val current = _state.value
+        val profile = (current.horizon as? HorizonState.Ready)?.profile
+        riseSetJob = viewModelScope.launch {
+            val startOfDay = current.zonedDateTime
+                .toLocalDate()
+                .atStartOfDay(current.zoneId)
+                .toInstant()
+                .toEpochMilli()
+            val computed = withContext(Dispatchers.Default) {
+                val flat = RiseSetCalculator.forWindow(
+                    observer = current.observer,
+                    startMillis = startOfDay,
+                    skyline = RiseSetCalculator.FLAT,
+                )
+                val terrain = profile?.let {
+                    RiseSetCalculator.forWindow(
+                        observer = current.observer,
+                        startMillis = startOfDay,
+                        skyline = { azimuth -> it.angleAt(azimuth).toDouble() },
+                    )
+                }
+                terrain to flat
+            }
+            _state.update { it.copy(riseSetTerrain = computed.first, riseSetFlat = computed.second) }
         }
     }
 
@@ -367,5 +444,14 @@ class SkyViewModel(application: Application) : AndroidViewModel(application) {
             }
             _state.update { it.copy(track = samples) }
         }
+    }
+
+    private companion object {
+        const val KEY_EYE_HEIGHT = "eye_height_m"
+
+        /** Eye height of a person about two metres tall. */
+        const val DEFAULT_EYE_HEIGHT_M = 2.0f
+        const val MIN_EYE_HEIGHT_M = 0.5
+        const val MAX_EYE_HEIGHT_M = 40.0
     }
 }

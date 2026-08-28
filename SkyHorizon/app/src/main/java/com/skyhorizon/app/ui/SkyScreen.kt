@@ -50,12 +50,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.skyhorizon.app.astro.RiseSetCalculator
 import com.skyhorizon.app.astro.SkySnapshot
 import com.skyhorizon.app.ui.components.BodySummaryRow
 import com.skyhorizon.app.ui.components.DateTimeControls
 import com.skyhorizon.app.ui.components.MapPickerScreen
 import com.skyhorizon.app.ui.components.SkyCanvas
 import com.skyhorizon.app.ui.components.rememberSkyViewState
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlin.math.roundToInt
 
@@ -237,8 +241,14 @@ private fun SkyScreen(
                     onResetView = skyViewState::reset,
                 )
 
+                RiseSetCard(state = state)
+
                 if (detailsExpanded) {
                     ZoneSelector(state = state, onToggleZone = viewModel::toggleZoneMode)
+                    EyeHeightRow(
+                        eyeHeightMeters = state.eyeHeightMeters,
+                        onChange = viewModel::setEyeHeight,
+                    )
                     DetailCard(state.snapshot)
                 }
             }
@@ -343,6 +353,109 @@ private fun LocationBar(
                 )
             }
         }
+    }
+}
+
+private val CLOCK: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
+/**
+ * Rise and set times measured against the observer's real skyline. Where the terrain
+ * shifts a time by a minute or more, the flat-horizon time is shown alongside it, so
+ * the effect of the surrounding mountains is visible rather than buried.
+ */
+@Composable
+private fun RiseSetCard(state: SkyUiState) {
+    val terrain = state.riseSetTerrain
+    val flat = state.riseSetFlat ?: return
+
+    Card(
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = if (terrain != null) "Rise and set over the local skyline" else "Rise and set over a flat horizon",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            EventRow("Sunrise", terrain?.sun?.riseMillis, flat.sun.riseMillis, terrain?.sun, state.zoneId)
+            EventRow("Sunset", terrain?.sun?.setMillis, flat.sun.setMillis, terrain?.sun, state.zoneId)
+            EventRow("Moonrise", terrain?.moon?.riseMillis, flat.moon.riseMillis, terrain?.moon, state.zoneId)
+            EventRow("Moonset", terrain?.moon?.setMillis, flat.moon.setMillis, terrain?.moon, state.zoneId)
+        }
+    }
+}
+
+@Composable
+private fun EventRow(
+    label: String,
+    terrainMillis: Long?,
+    flatMillis: Long?,
+    event: RiseSetCalculator.Event?,
+    zoneId: ZoneId,
+) {
+    val shown = terrainMillis ?: flatMillis
+    val text = when {
+        shown != null -> {
+            val time = Instant.ofEpochMilli(shown).atZone(zoneId).format(CLOCK)
+            // Only worth showing the comparison when the terrain actually moves it.
+            val difference = if (terrainMillis != null && flatMillis != null) {
+                ((terrainMillis - flatMillis) / 60_000.0).roundToInt()
+            } else {
+                0
+            }
+            if (difference != 0) {
+                val sign = if (difference > 0) "+" else ""
+                "$time  ($sign$difference min vs flat)"
+            } else {
+                time
+            }
+        }
+
+        event?.alwaysUp == true -> "stays up all day"
+        event?.alwaysDown == true -> "never clears the skyline"
+        else -> "-"
+    }
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    }
+}
+
+/** Eye height above the ground; it sets the horizon dip and shifts the rise times. */
+@Composable
+private fun EyeHeightRow(eyeHeightMeters: Double, onChange: (Double) -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "Eye height",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+        )
+        TextButton(onClick = { onChange(eyeHeightMeters - 0.1) }) { Text("-") }
+        Text(
+            text = String.format(Locale.US, "%.2f m", eyeHeightMeters),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        TextButton(onClick = { onChange(eyeHeightMeters + 0.1) }) { Text("+") }
     }
 }
 

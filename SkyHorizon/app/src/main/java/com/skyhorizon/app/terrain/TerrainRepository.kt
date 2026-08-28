@@ -44,8 +44,12 @@ class TerrainRepository(context: Context) {
      * Returns the horizon for a position, reusing the previous result while the
      * observer has not moved far enough for the skyline to change.
      */
-    suspend fun horizonFor(latitudeDeg: Double, longitudeDeg: Double): HorizonResult {
-        val key = cacheKey(latitudeDeg, longitudeDeg)
+    suspend fun horizonFor(
+        latitudeDeg: Double,
+        longitudeDeg: Double,
+        eyeHeightMeters: Double,
+    ): HorizonResult {
+        val key = cacheKey(latitudeDeg, longitudeDeg, eyeHeightMeters)
         cachedProfile?.let { if (key == cachedKey) return HorizonResult.Ready(it) }
 
         return try {
@@ -62,7 +66,12 @@ class TerrainRepository(context: Context) {
                     observerLongitude = longitudeDeg,
                 )
                 val profile = withContext(Dispatchers.Default) {
-                    HorizonCalculator.compute(latitudeDeg, longitudeDeg, source)
+                    HorizonCalculator.compute(
+                        latitudeDeg = latitudeDeg,
+                        longitudeDeg = longitudeDeg,
+                        source = source,
+                        eyeHeightMeters = eyeHeightMeters,
+                    )
                 }
                 cachedKey = key
                 cachedProfile = profile
@@ -82,10 +91,14 @@ class TerrainRepository(context: Context) {
     }
 
     /** Rounded to about a hundred metres: closer than that the skyline is unchanged. */
-    private fun cacheKey(latitudeDeg: Double, longitudeDeg: Double): String {
+    private fun cacheKey(
+        latitudeDeg: Double,
+        longitudeDeg: Double,
+        eyeHeightMeters: Double,
+    ): String {
         val lat = (latitudeDeg * 1000).roundToInt()
         val lon = (longitudeDeg * 1000).roundToInt()
-        return "$lat/$lon"
+        return "$lat/$lon/${(eyeHeightMeters * 10).roundToInt()}"
     }
 
     private suspend fun buildMosaic(
