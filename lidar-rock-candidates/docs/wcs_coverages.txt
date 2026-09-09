@@ -1,0 +1,123 @@
+WCS 2.0.1 coverage list - geoservices9.civis.bz.it/geoserver/wcs
+total: 24
+
+p_bz-Elevation__DigitalTerrainModel-0.5m
+  title   : Digitales Geländemodell (DGM 0,5m) [m ü.d.M.] - Modello Digitale del Terreno (DTM 0,5m) [m s.l.m.]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.433888184836508 46.20136644828549 .. 12.403803681978404 47.09364756167985
+
+p_bz-Elevation__DigitalTerrainModel-2.5m
+  title   : Digitales Geländemodell (DGM 2,5m) [m ü.d.M.] - Modello Digitale del Terreno (DTM 2,5m) [m s.l.m.]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.36155279782117 46.18071682526831 .. 12.533622950030843 47.13234549695491
+
+p_bz-Elevation__DigitalTerrainModel-EtschAdige-0.2m-2024
+  title   : Digitales Geländemodell Etsch 2024 (DTM 0,2m) - Modello Digitale del Terreno - Adige 2024 (DTM 0,2m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 11.07319454016829 46.227824870037225 .. 11.328777204769276 46.68277871291447
+
+p_bz-Elevation__DigitalElevationModel-0.5m
+  title   : Digitales Oberflächenmodell (DOM 0,5m)  [m ü.d.M.] - Modello Digitale della Superficie (DSM 0,5m) [m s.l.m.]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.433888184836508 46.20136644828549 .. 12.403803681978404 47.09364756167985
+
+p_bz-Elevation__DigitalElevationModel-2.5m
+  title   : Digitales Oberflächenmodell (DOM 2,5m) [m ü.d.M.] - Modello Digitale della Superficie (DSM 2,5m) [m s.l.m.]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.36155279782117 46.18071682526831 .. 12.533622950030843 47.13234549695491
+
+p_bz-Elevation__DigitalElevationModel-EtschAdige-0.2m-2024
+  title   : Digitales Oberflächenmodell Etsch 2024 (DOM 0,2m) - Modello Digitale della Superficie - Adige 2024 (DSM 0,2m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 11.073194472406604 46.227823071504915 .. 11.328777204769276 46.68277871291447
+
+p_bz-Elevation__DigitalElevationModel-Glaciers-0.5m-2016-2017
+  title   : Digitales Oberflächenmodell Gletscher 2016/17 (DOM 0,5m) [m ü.d.M.] - Modello Digitale della Superficie Ghiacciai 2016/17 (DSM 0,5m) [m s.l.m.]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.450183769418377 46.4025767550868 .. 12.255714762967367 47.129483939837364
+
+p_bz-Elevation__DigitalElevationModel-Glaciers-0.5m-2023
+  title   : Digitales Oberflächenmodell Gletscher 2023 (DOM 0,5m) [m ü.d.M.] - Modello Digitale della Superficie Ghiacciai 2023 (DSM 0,5m) [m s.l.m.]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.42936192149294 46.402459773901654 .. 12.260034102717988 47.13155166140806
+
+p_bz-Elevation__SolarIrradiation-MonthlyMean-AnnualAverageValue-kWh
+  title   : Durchschnittliche jährliche Solareinstrahlung [kWh/m²] - Valore medio annuale di irradiazione solare [kWh/m²]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.2044910445827 46.047911765541556 .. 12.652956473425274 47.26764603156824
+
+p_bz-Elevation__DigitalTerrainModel-2.5m-Exposition
+  title   : Exposition (DGM 2,5m) [°N] - Esposizione (DTM 2,5m) [°N]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.36155279782108 46.180716784426814 .. 12.53362295003934 47.13234545634938
+
+p_bz-BasemapImagery__TopographicMap-1995-10k
+  title   : Grundkarte 1995 1:10.000 - Carta Tecnica 1995 1:10.000
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.319275135656287 46.16702983595993 .. 12.527781494299179 47.13740057696498
+
+p_bz-BasemapImagery__TopographicMap-1995-05k
+  title   : Grundkarte 1995 1:5.000 - Carta Tecnica 1995 1:5.000
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.407569368134624 46.19320195179133 .. 12.483417570092298 47.09785992582509
+
+p_bz-Elevation__DigitalTerrainModel-2.5m-Slope
+  title   : Hangneigung (DGM 2,5m)  [%] - Clivometria (DTM 2,5m)  [%]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.36155279782108 46.180716784426814 .. 12.53362295003934 47.13234545634938
+
+p_bz-Elevation__SolarIrradiation-MonthlyMean-CDTE-kWh
+  title   : Jährlicher Photovoltaik Ertrag (Cadmium Tellurid Modul) [kWh/m²] - Valore medio annuale di energia fotovoltaica prodotta (modulo Cadmium Tellurid) [kWh/m²]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.2044910445827 46.047911765541556 .. 12.652956473425274 47.26764603156824
+
+p_bz-Elevation__SolarIrradiation-MonthlyMean-PCSI-kWh
+  title   : Jährlicher Photovoltaik Ertrag (polykristallines Silizium Modul) [kWh/m²] - Valore medio annuale di energia fotovoltaica prodotta (polykristallines Silizium Modul) [kWh/m²]
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.2044910445827 46.047911765541556 .. 12.652956473425274 47.26764603156824
+
+p_bz-Elevation__DigitalTerrainModel-0.5m-Hillshade
+  title   : Schummerung (DGM 0,5m) - Ombreggiatura (DTM 0,5m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.43388818485266 46.2013664493761 .. 12.40380368203538 47.09364756277162
+
+p_bz-Elevation__DigitalTerrainModel-2.5m-Hillshade
+  title   : Schummerung (DGM 2,5m) - Ombreggiatura (DTM 2,5m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.34858913829642 46.179211520934835 .. 12.586090323155274 47.170264563699945
+
+p_bz-Elevation__DigitalElevationModel-0.5m-Hillshade
+  title   : Schummerung (DOM 0,5m) - Ombreggiatura (DSM 0,5m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.43388818485266 46.2013664493761 .. 12.40380368203538 47.09364756277162
+
+p_bz-Elevation__DigitalElevationModel-2.5m-Hillshade
+  title   : Schummerung (DOM 2,5m) - Ombreggiatura (DSM 2,5m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.34858913829642 46.179211520934835 .. 12.586090323155274 47.170264563699945
+
+p_bz-Elevation__DigitalTerrainModel-20m-Hillshade
+  title   : Schummerung Alpen (DGM 20m) - Ombreggiatura Alpi (DTM 20m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 4.617390884075435 42.78681169693393 .. 16.646321827332383 48.205753391247995
+
+p_bz-Elevation__DigitalElevationModel-Glaciers-0.5m-2016-2017-Hillshade
+  title   : Schummerung Gletscher 2016/17 (DOM 0,5m) - Ombreggiatura ghiacciai 2016/17 (DSM 0,5m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.450183769418377 46.40257679588252 .. 12.255714762967367 47.129483980443794
+
+p_bz-Elevation__DigitalElevationModel-Glaciers-0.5m-2023-Hillshade
+  title   : Schummerung Gletscher 2023 (DOM 0,5m) - Ombreggiatura ghiacciai 2023 (DSM 0,5m)
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.42936192149294 46.402459773901654 .. 12.260034102717988 47.13155166140806
+
+p_bz-BasemapImagery__TopographicMap-2007-10k
+  title   : Vektorgrundkarte 2007 1:10.000 - Carta Tecnica vettoriale 2007 1:10.000
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.361617325937896 46.1833646051653 .. 12.519057271973722 47.13233858874859
+
+p_bz-BasemapImagery__TopographicMap-2007-05k
+  title   : Vektorgrundkarte 2007 1:5.000 - Carta Tecnica vettoriale 2007 1:5.000
+  subtype : RectifiedGridCoverage
+  wgs84bbox: 10.361567321500528 46.18072833383539 .. 12.53360952963034 47.13233323331075
+
