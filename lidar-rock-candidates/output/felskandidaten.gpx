@@ -1,0 +1,1397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="lidar-rock-candidates" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata><name>Felskandidaten Gadertal</name></metadata>
+  <wpt lat="46.703582" lon="11.867261">
+    <ele>1425</ele>
+    <name>023 0,5 m S0.88 38m</name>
+    <desc>Score 0.88 | Wand 38 m | Flaeche 140 m2 | Neigung 64/70 Grad | Exposition 160 Grad | Hoehe 1425 m | Weg 87 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.727491" lon="11.885609">
+    <ele>1018</ele>
+    <name>013 0,5 m S0.81 32m</name>
+    <desc>Score 0.81 | Wand 32 m | Flaeche 400 m2 | Neigung 68/75 Grad | Exposition 222 Grad | Hoehe 1018 m | Weg 12 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.736741" lon="11.876057">
+    <ele>981</ele>
+    <name>008 0,5 m S0.74 22m</name>
+    <desc>Score 0.74 | Wand 22 m | Flaeche 104 m2 | Neigung 63/69 Grad | Exposition 214 Grad | Hoehe 981 m | Weg 13 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.703850" lon="11.867404">
+    <ele>1447</ele>
+    <name>022 0,5 m S0.73 23m</name>
+    <desc>Score 0.73 | Wand 23 m | Flaeche 56 m2 | Neigung 68/74 Grad | Exposition 157 Grad | Hoehe 1447 m | Weg 82 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.763518" lon="11.863609">
+    <ele>873</ele>
+    <name>001 0,5 m S0.73 21m</name>
+    <desc>Score 0.73 | Wand 21 m | Flaeche 44 m2 | Neigung 71/75 Grad | Exposition 210 Grad | Hoehe 873 m | Weg 10 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.736563" lon="11.876376">
+    <ele>977</ele>
+    <name>009 0,5 m S0.73 20m</name>
+    <desc>Score 0.73 | Wand 20 m | Flaeche 84 m2 | Neigung 65/70 Grad | Exposition 214 Grad | Hoehe 977 m | Weg 13 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.730305" lon="11.882589">
+    <ele>1002</ele>
+    <name>012 0,5 m S0.71 41m</name>
+    <desc>Score 0.71 | Wand 41 m | Flaeche 712 m2 | Neigung 55/80 Grad | Exposition 259 Grad | Hoehe 1002 m | Weg 6 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.703263" lon="11.868576">
+    <ele>1355</ele>
+    <name>024 0,5 m S0.69 16m</name>
+    <desc>Score 0.69 | Wand 16 m | Flaeche 64 m2 | Neigung 65/69 Grad | Exposition 155 Grad | Hoehe 1355 m | Weg 6 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.735987" lon="11.877256">
+    <ele>982</ele>
+    <name>010 0,5 m S0.69 16m</name>
+    <desc>Score 0.69 | Wand 16 m | Flaeche 48 m2 | Neigung 67/70 Grad | Exposition 218 Grad | Hoehe 982 m | Weg 11 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.724995" lon="11.887895">
+    <ele>1024</ele>
+    <name>018 0,5 m S0.68 34m</name>
+    <desc>Score 0.68 | Wand 34 m | Flaeche 96 m2 | Neigung 69/79 Grad | Exposition 266 Grad | Hoehe 1024 m | Weg 5 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.714101" lon="11.910129">
+    <ele>1093</ele>
+    <name>021 0,5 m S0.68 22m</name>
+    <desc>Score 0.68 | Wand 22 m | Flaeche 112 m2 | Neigung 62/65 Grad | Exposition 276 Grad | Hoehe 1093 m | Weg 31 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.726358" lon="11.886419">
+    <ele>998</ele>
+    <name>016 0,5 m S0.67 16m</name>
+    <desc>Score 0.67 | Wand 16 m | Flaeche 64 m2 | Neigung 62/66 Grad | Exposition 242 Grad | Hoehe 998 m | Weg 6 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.726322" lon="11.886698">
+    <ele>1014</ele>
+    <name>017 0,5 m S0.66 16m</name>
+    <desc>Score 0.66 | Wand 16 m | Flaeche 56 m2 | Neigung 59/65 Grad | Exposition 214 Grad | Hoehe 1014 m | Weg 8 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.727117" lon="11.885952">
+    <ele>1003</ele>
+    <name>014 0,5 m S0.65 30m</name>
+    <desc>Score 0.65 | Wand 30 m | Flaeche 204 m2 | Neigung 55/74 Grad | Exposition 231 Grad | Hoehe 1003 m | Weg 1 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.759646" lon="11.866250">
+    <ele>930</ele>
+    <name>005 0,5 m S0.65 31m</name>
+    <desc>Score 0.65 | Wand 31 m | Flaeche 88 m2 | Neigung 63/74 Grad | Exposition 14 Grad | Hoehe 930 m | Weg 109 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.685996" lon="11.898505">
+    <ele>1106</ele>
+    <name>025 0,5 m S0.63 17m</name>
+    <desc>Score 0.63 | Wand 17 m | Flaeche 44 m2 | Neigung 68/75 Grad | Exposition 265 Grad | Hoehe 1106 m | Weg 8 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.759832" lon="11.865792">
+    <ele>940</ele>
+    <name>004 0,5 m S0.61 19m</name>
+    <desc>Score 0.61 | Wand 19 m | Flaeche 64 m2 | Neigung 61/69 Grad | Exposition 72 Grad | Hoehe 940 m | Weg 95 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.760150" lon="11.865385">
+    <ele>945</ele>
+    <name>003 0,5 m S0.57 17m</name>
+    <desc>Score 0.57 | Wand 17 m | Flaeche 64 m2 | Neigung 65/69 Grad | Exposition 44 Grad | Hoehe 945 m | Weg 83 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.731520" lon="11.934375">
+    <ele>1474</ele>
+    <name>011 0,5 m S0.55 14m</name>
+    <desc>Score 0.55 | Wand 14 m | Flaeche 44 m2 | Neigung 62/71 Grad | Exposition 278 Grad | Hoehe 1474 m | Weg 5 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.722674" lon="11.881646">
+    <ele>1296</ele>
+    <name>020 0,5 m S0.54 16m</name>
+    <desc>Score 0.54 | Wand 16 m | Flaeche 88 m2 | Neigung 59/65 Grad | Exposition 16 Grad | Hoehe 1296 m | Weg 42 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.726473" lon="11.886375">
+    <ele>1003</ele>
+    <name>015 0,5 m S0.53 11m</name>
+    <desc>Score 0.53 | Wand 11 m | Flaeche 40 m2 | Neigung 53/64 Grad | Exposition 238 Grad | Hoehe 1003 m | Weg 2 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.724268" lon="11.888451">
+    <ele>1019</ele>
+    <name>019 0,5 m S0.53 10m</name>
+    <desc>Score 0.53 | Wand 10 m | Flaeche 60 m2 | Neigung 41/65 Grad | Exposition 208 Grad | Hoehe 1019 m | Weg 3 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.738034" lon="11.875147">
+    <ele>958</ele>
+    <name>007 0,5 m S0.51 15m</name>
+    <desc>Score 0.51 | Wand 15 m | Flaeche 104 m2 | Neigung 38/66 Grad | Exposition 227 Grad | Hoehe 958 m | Weg 4 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.760998" lon="11.866255">
+    <ele>876</ele>
+    <name>002 0,5 m S0.49 16m</name>
+    <desc>Score 0.49 | Wand 16 m | Flaeche 84 m2 | Neigung 39/71 Grad | Exposition 250 Grad | Hoehe 876 m | Weg 68 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.743222" lon="11.872762">
+    <ele>937</ele>
+    <name>006 0,5 m S0.43 17m</name>
+    <desc>Score 0.43 | Wand 17 m | Flaeche 212 m2 | Neigung 34/68 Grad | Exposition 286 Grad | Hoehe 937 m | Weg 0 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.694374" lon="11.910215">
+    <ele>1356</ele>
+    <name>007 2,5 m S0.91 49m</name>
+    <desc>Score 0.91 | Wand 49 m | Flaeche 825 m2 | Neigung 56/61 Grad | Exposition 176 Grad | Hoehe 1356 m | Weg 258 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.702012" lon="11.870761">
+    <ele>1196</ele>
+    <name>005 2,5 m S0.88 58m</name>
+    <desc>Score 0.88 | Wand 58 m | Flaeche 1400 m2 | Neigung 49/55 Grad | Exposition 133 Grad | Hoehe 1196 m | Weg 70 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.759511" lon="11.868856">
+    <ele>928</ele>
+    <name>001 2,5 m S0.87 70m</name>
+    <desc>Score 0.87 | Wand 70 m | Flaeche 3425 m2 | Neigung 51/65 Grad | Exposition 219 Grad | Hoehe 928 m | Weg 30 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.688061" lon="11.930591">
+    <ele>1425</ele>
+    <name>016 2,5 m S0.80 50m</name>
+    <desc>Score 0.80 | Wand 50 m | Flaeche 850 m2 | Neigung 60/66 Grad | Exposition 60 Grad | Hoehe 1425 m | Weg 77 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.675270" lon="11.942514">
+    <ele>1658</ele>
+    <name>019 2,5 m S0.78 37m</name>
+    <desc>Score 0.78 | Wand 37 m | Flaeche 325 m2 | Neigung 56/62 Grad | Exposition 63 Grad | Hoehe 1658 m | Weg 34 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.758703" lon="11.869278">
+    <ele>909</ele>
+    <name>002 2,5 m S0.78 33m</name>
+    <desc>Score 0.78 | Wand 33 m | Flaeche 600 m2 | Neigung 59/68 Grad | Exposition 252 Grad | Hoehe 909 m | Weg 12 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.689248" lon="11.919827">
+    <ele>1815</ele>
+    <name>015 2,5 m S0.77 40m</name>
+    <desc>Score 0.77 | Wand 40 m | Flaeche 400 m2 | Neigung 57/64 Grad | Exposition 28 Grad | Hoehe 1815 m | Weg 85 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.693133" lon="11.921830">
+    <ele>1504</ele>
+    <name>009 2,5 m S0.77 45m</name>
+    <desc>Score 0.77 | Wand 45 m | Flaeche 1150 m2 | Neigung 57/61 Grad | Exposition 18 Grad | Hoehe 1504 m | Weg 124 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.691126" lon="11.922038">
+    <ele>1668</ele>
+    <name>010 2,5 m S0.76 68m</name>
+    <desc>Score 0.76 | Wand 68 m | Flaeche 2175 m2 | Neigung 56/64 Grad | Exposition 30 Grad | Hoehe 1668 m | Weg 69 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.690747" lon="11.923931">
+    <ele>1641</ele>
+    <name>012 2,5 m S0.76 86m</name>
+    <desc>Score 0.76 | Wand 86 m | Flaeche 2950 m2 | Neigung 56/66 Grad | Exposition 2 Grad | Hoehe 1641 m | Weg 39 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.690356" lon="11.922412">
+    <ele>1721</ele>
+    <name>013 2,5 m S0.76 101m</name>
+    <desc>Score 0.76 | Wand 101 m | Flaeche 3275 m2 | Neigung 55/65 Grad | Exposition 32 Grad | Hoehe 1721 m | Weg 126 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.694133" lon="11.954338">
+    <ele>1532</ele>
+    <name>006 2,5 m S0.75 39m</name>
+    <desc>Score 0.75 | Wand 39 m | Flaeche 650 m2 | Neigung 50/54 Grad | Exposition 11 Grad | Hoehe 1532 m | Weg 223 m | Geologie: gemischt_karbonat_werfener | ACHTUNG Schutzgebiet: Fanes-Sennes-Prags</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.691297" lon="11.912146">
+    <ele>1586</ele>
+    <name>011 2,5 m S0.75 56m</name>
+    <desc>Score 0.75 | Wand 56 m | Flaeche 1975 m2 | Neigung 55/64 Grad | Exposition 356 Grad | Hoehe 1586 m | Weg 132 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.677412" lon="11.941119">
+    <ele>1632</ele>
+    <name>018 2,5 m S0.74 32m</name>
+    <desc>Score 0.74 | Wand 32 m | Flaeche 875 m2 | Neigung 56/64 Grad | Exposition 76 Grad | Hoehe 1632 m | Weg 67 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.756822" lon="11.933058">
+    <ele>1466</ele>
+    <name>003 2,5 m S0.74 34m</name>
+    <desc>Score 0.74 | Wand 34 m | Flaeche 400 m2 | Neigung 55/64 Grad | Exposition 287 Grad | Hoehe 1466 m | Weg 34 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.722804" lon="11.882943">
+    <ele>1243</ele>
+    <name>004 2,5 m S0.68 29m</name>
+    <desc>Score 0.68 | Wand 29 m | Flaeche 600 m2 | Neigung 51/54 Grad | Exposition 34 Grad | Hoehe 1243 m | Weg 8 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.689386" lon="11.932999">
+    <ele>1300</ele>
+    <name>014 2,5 m S0.67 21m</name>
+    <desc>Score 0.67 | Wand 21 m | Flaeche 350 m2 | Neigung 54/57 Grad | Exposition 83 Grad | Hoehe 1300 m | Weg 126 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.685326" lon="11.944358">
+    <ele>1389</ele>
+    <name>017 2,5 m S0.66 30m</name>
+    <desc>Score 0.66 | Wand 30 m | Flaeche 325 m2 | Neigung 52/58 Grad | Exposition 11 Grad | Hoehe 1389 m | Weg 76 m | Geologie: mittel</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.693217" lon="11.923971">
+    <ele>1468</ele>
+    <name>008 2,5 m S0.62 20m</name>
+    <desc>Score 0.62 | Wand 20 m | Flaeche 350 m2 | Neigung 52/54 Grad | Exposition 50 Grad | Hoehe 1468 m | Weg 204 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <wpt lat="46.675405" lon="11.864119">
+    <ele>1787</ele>
+    <name>020 2,5 m S0.61 22m</name>
+    <desc>Score 0.61 | Wand 22 m | Flaeche 275 m2 | Neigung 55/59 Grad | Exposition 352 Grad | Hoehe 1787 m | Weg 83 m | Geologie: gemischt_karbonat_werfener</desc>
+    <sym>Summit</sym>
+  </wpt>
+  <trk><name>Umriss 023 0,5 m</name><trkseg>
+    <trkpt lat="46.703659" lon="11.867230"/>
+    <trkpt lat="46.703641" lon="11.867229"/>
+    <trkpt lat="46.703642" lon="11.867203"/>
+    <trkpt lat="46.703606" lon="11.867201"/>
+    <trkpt lat="46.703606" lon="11.867174"/>
+    <trkpt lat="46.703552" lon="11.867172"/>
+    <trkpt lat="46.703552" lon="11.867198"/>
+    <trkpt lat="46.703534" lon="11.867197"/>
+    <trkpt lat="46.703530" lon="11.867327"/>
+    <trkpt lat="46.703513" lon="11.867327"/>
+    <trkpt lat="46.703512" lon="11.867353"/>
+    <trkpt lat="46.703530" lon="11.867354"/>
+    <trkpt lat="46.703529" lon="11.867380"/>
+    <trkpt lat="46.703547" lon="11.867381"/>
+    <trkpt lat="46.703548" lon="11.867355"/>
+    <trkpt lat="46.703566" lon="11.867355"/>
+    <trkpt lat="46.703567" lon="11.867303"/>
+    <trkpt lat="46.703639" lon="11.867307"/>
+    <trkpt lat="46.703640" lon="11.867281"/>
+    <trkpt lat="46.703658" lon="11.867282"/>
+    <trkpt lat="46.703659" lon="11.867230"/>
+  </trkseg></trk>
+  <trk><name>Umriss 013 0,5 m</name><trkseg>
+    <trkpt lat="46.727645" lon="11.885411"/>
+    <trkpt lat="46.727627" lon="11.885410"/>
+    <trkpt lat="46.727628" lon="11.885384"/>
+    <trkpt lat="46.727610" lon="11.885383"/>
+    <trkpt lat="46.727609" lon="11.885409"/>
+    <trkpt lat="46.727555" lon="11.885406"/>
+    <trkpt lat="46.727555" lon="11.885433"/>
+    <trkpt lat="46.727537" lon="11.885432"/>
+    <trkpt lat="46.727535" lon="11.885510"/>
+    <trkpt lat="46.727481" lon="11.885507"/>
+    <trkpt lat="46.727480" lon="11.885533"/>
+    <trkpt lat="46.727462" lon="11.885532"/>
+    <trkpt lat="46.727462" lon="11.885558"/>
+    <trkpt lat="46.727444" lon="11.885558"/>
+    <trkpt lat="46.727443" lon="11.885584"/>
+    <trkpt lat="46.727425" lon="11.885583"/>
+    <trkpt lat="46.727424" lon="11.885609"/>
+    <trkpt lat="46.727406" lon="11.885608"/>
+    <trkpt lat="46.727406" lon="11.885634"/>
+    <trkpt lat="46.727388" lon="11.885633"/>
+    <trkpt lat="46.727387" lon="11.885659"/>
+    <trkpt lat="46.727369" lon="11.885658"/>
+    <trkpt lat="46.727366" lon="11.885763"/>
+    <trkpt lat="46.727348" lon="11.885762"/>
+    <trkpt lat="46.727348" lon="11.885788"/>
+    <trkpt lat="46.727366" lon="11.885789"/>
+    <trkpt lat="46.727365" lon="11.885815"/>
+    <trkpt lat="46.727401" lon="11.885817"/>
+    <trkpt lat="46.727400" lon="11.885843"/>
+    <trkpt lat="46.727418" lon="11.885844"/>
+    <trkpt lat="46.727419" lon="11.885818"/>
+    <trkpt lat="46.727437" lon="11.885819"/>
+    <trkpt lat="46.727438" lon="11.885767"/>
+    <trkpt lat="46.727456" lon="11.885768"/>
+    <trkpt lat="46.727458" lon="11.885715"/>
+    <trkpt lat="46.727494" lon="11.885717"/>
+    <trkpt lat="46.727494" lon="11.885691"/>
+    <trkpt lat="46.727512" lon="11.885692"/>
+    <trkpt lat="46.727513" lon="11.885666"/>
+    <trkpt lat="46.727531" lon="11.885667"/>
+    <trkpt lat="46.727532" lon="11.885615"/>
+    <trkpt lat="46.727550" lon="11.885616"/>
+    <trkpt lat="46.727551" lon="11.885589"/>
+    <trkpt lat="46.727569" lon="11.885590"/>
+    <trkpt lat="46.727570" lon="11.885538"/>
+    <trkpt lat="46.727606" lon="11.885540"/>
+    <trkpt lat="46.727607" lon="11.885514"/>
+    <trkpt lat="46.727625" lon="11.885515"/>
+    <trkpt lat="46.727625" lon="11.885489"/>
+    <trkpt lat="46.727643" lon="11.885490"/>
+    <trkpt lat="46.727645" lon="11.885411"/>
+  </trkseg></trk>
+  <trk><name>Umriss 008 0,5 m</name><trkseg>
+    <trkpt lat="46.736811" lon="11.875978"/>
+    <trkpt lat="46.736793" lon="11.875977"/>
+    <trkpt lat="46.736793" lon="11.875951"/>
+    <trkpt lat="46.736775" lon="11.875950"/>
+    <trkpt lat="46.736775" lon="11.875976"/>
+    <trkpt lat="46.736757" lon="11.875975"/>
+    <trkpt lat="46.736756" lon="11.876001"/>
+    <trkpt lat="46.736738" lon="11.876000"/>
+    <trkpt lat="46.736738" lon="11.876026"/>
+    <trkpt lat="46.736720" lon="11.876026"/>
+    <trkpt lat="46.736719" lon="11.876052"/>
+    <trkpt lat="46.736683" lon="11.876050"/>
+    <trkpt lat="46.736682" lon="11.876076"/>
+    <trkpt lat="46.736664" lon="11.876075"/>
+    <trkpt lat="46.736664" lon="11.876101"/>
+    <trkpt lat="46.736682" lon="11.876102"/>
+    <trkpt lat="46.736681" lon="11.876128"/>
+    <trkpt lat="46.736717" lon="11.876130"/>
+    <trkpt lat="46.736716" lon="11.876156"/>
+    <trkpt lat="46.736734" lon="11.876157"/>
+    <trkpt lat="46.736735" lon="11.876131"/>
+    <trkpt lat="46.736753" lon="11.876132"/>
+    <trkpt lat="46.736755" lon="11.876054"/>
+    <trkpt lat="46.736791" lon="11.876056"/>
+    <trkpt lat="46.736791" lon="11.876029"/>
+    <trkpt lat="46.736809" lon="11.876030"/>
+    <trkpt lat="46.736811" lon="11.875978"/>
+  </trkseg></trk>
+  <trk><name>Umriss 022 0,5 m</name><trkseg>
+    <trkpt lat="46.703889" lon="11.867373"/>
+    <trkpt lat="46.703871" lon="11.867372"/>
+    <trkpt lat="46.703872" lon="11.867346"/>
+    <trkpt lat="46.703836" lon="11.867344"/>
+    <trkpt lat="46.703835" lon="11.867370"/>
+    <trkpt lat="46.703817" lon="11.867369"/>
+    <trkpt lat="46.703815" lon="11.867447"/>
+    <trkpt lat="46.703833" lon="11.867448"/>
+    <trkpt lat="46.703833" lon="11.867474"/>
+    <trkpt lat="46.703851" lon="11.867475"/>
+    <trkpt lat="46.703851" lon="11.867449"/>
+    <trkpt lat="46.703869" lon="11.867450"/>
+    <trkpt lat="46.703870" lon="11.867424"/>
+    <trkpt lat="46.703888" lon="11.867425"/>
+    <trkpt lat="46.703889" lon="11.867373"/>
+  </trkseg></trk>
+  <trk><name>Umriss 001 0,5 m</name><trkseg>
+    <trkpt lat="46.763546" lon="11.863571"/>
+    <trkpt lat="46.763528" lon="11.863570"/>
+    <trkpt lat="46.763528" lon="11.863544"/>
+    <trkpt lat="46.763510" lon="11.863543"/>
+    <trkpt lat="46.763510" lon="11.863570"/>
+    <trkpt lat="46.763492" lon="11.863569"/>
+    <trkpt lat="46.763490" lon="11.863647"/>
+    <trkpt lat="46.763508" lon="11.863648"/>
+    <trkpt lat="46.763507" lon="11.863674"/>
+    <trkpt lat="46.763525" lon="11.863675"/>
+    <trkpt lat="46.763526" lon="11.863649"/>
+    <trkpt lat="46.763544" lon="11.863650"/>
+    <trkpt lat="46.763546" lon="11.863571"/>
+  </trkseg></trk>
+  <trk><name>Umriss 009 0,5 m</name><trkseg>
+    <trkpt lat="46.736604" lon="11.876307"/>
+    <trkpt lat="46.736587" lon="11.876306"/>
+    <trkpt lat="46.736587" lon="11.876280"/>
+    <trkpt lat="46.736569" lon="11.876279"/>
+    <trkpt lat="46.736569" lon="11.876305"/>
+    <trkpt lat="46.736551" lon="11.876305"/>
+    <trkpt lat="46.736549" lon="11.876357"/>
+    <trkpt lat="46.736531" lon="11.876356"/>
+    <trkpt lat="46.736531" lon="11.876382"/>
+    <trkpt lat="46.736513" lon="11.876381"/>
+    <trkpt lat="46.736511" lon="11.876433"/>
+    <trkpt lat="46.736529" lon="11.876434"/>
+    <trkpt lat="46.736529" lon="11.876460"/>
+    <trkpt lat="46.736547" lon="11.876461"/>
+    <trkpt lat="46.736547" lon="11.876435"/>
+    <trkpt lat="46.736583" lon="11.876437"/>
+    <trkpt lat="46.736584" lon="11.876411"/>
+    <trkpt lat="46.736602" lon="11.876412"/>
+    <trkpt lat="46.736604" lon="11.876307"/>
+  </trkseg></trk>
+  <trk><name>Umriss 012 0,5 m</name><trkseg>
+    <trkpt lat="46.730562" lon="11.882530"/>
+    <trkpt lat="46.730544" lon="11.882529"/>
+    <trkpt lat="46.730545" lon="11.882503"/>
+    <trkpt lat="46.730527" lon="11.882502"/>
+    <trkpt lat="46.730526" lon="11.882528"/>
+    <trkpt lat="46.730508" lon="11.882527"/>
+    <trkpt lat="46.730506" lon="11.882606"/>
+    <trkpt lat="46.730398" lon="11.882600"/>
+    <trkpt lat="46.730400" lon="11.882522"/>
+    <trkpt lat="46.730382" lon="11.882521"/>
+    <trkpt lat="46.730384" lon="11.882442"/>
+    <trkpt lat="46.730366" lon="11.882441"/>
+    <trkpt lat="46.730367" lon="11.882415"/>
+    <trkpt lat="46.730313" lon="11.882412"/>
+    <trkpt lat="46.730312" lon="11.882438"/>
+    <trkpt lat="46.730294" lon="11.882437"/>
+    <trkpt lat="46.730294" lon="11.882464"/>
+    <trkpt lat="46.730240" lon="11.882461"/>
+    <trkpt lat="46.730239" lon="11.882487"/>
+    <trkpt lat="46.730185" lon="11.882484"/>
+    <trkpt lat="46.730184" lon="11.882510"/>
+    <trkpt lat="46.730166" lon="11.882509"/>
+    <trkpt lat="46.730166" lon="11.882535"/>
+    <trkpt lat="46.730094" lon="11.882532"/>
+    <trkpt lat="46.730093" lon="11.882558"/>
+    <trkpt lat="46.730075" lon="11.882557"/>
+    <trkpt lat="46.730075" lon="11.882583"/>
+    <trkpt lat="46.730057" lon="11.882582"/>
+    <trkpt lat="46.730055" lon="11.882660"/>
+    <trkpt lat="46.730073" lon="11.882661"/>
+    <trkpt lat="46.730072" lon="11.882687"/>
+    <trkpt lat="46.730090" lon="11.882688"/>
+    <trkpt lat="46.730091" lon="11.882662"/>
+    <trkpt lat="46.730216" lon="11.882669"/>
+    <trkpt lat="46.730216" lon="11.882695"/>
+    <trkpt lat="46.730234" lon="11.882696"/>
+    <trkpt lat="46.730234" lon="11.882670"/>
+    <trkpt lat="46.730324" lon="11.882675"/>
+    <trkpt lat="46.730324" lon="11.882701"/>
+    <trkpt lat="46.730342" lon="11.882702"/>
+    <trkpt lat="46.730341" lon="11.882728"/>
+    <trkpt lat="46.730359" lon="11.882729"/>
+    <trkpt lat="46.730360" lon="11.882703"/>
+    <trkpt lat="46.730485" lon="11.882709"/>
+    <trkpt lat="46.730486" lon="11.882683"/>
+    <trkpt lat="46.730522" lon="11.882685"/>
+    <trkpt lat="46.730523" lon="11.882659"/>
+    <trkpt lat="46.730541" lon="11.882660"/>
+    <trkpt lat="46.730541" lon="11.882634"/>
+    <trkpt lat="46.730559" lon="11.882635"/>
+    <trkpt lat="46.730562" lon="11.882530"/>
+  </trkseg></trk>
+  <trk><name>Umriss 024 0,5 m</name><trkseg>
+    <trkpt lat="46.703318" lon="11.868624"/>
+    <trkpt lat="46.703300" lon="11.868623"/>
+    <trkpt lat="46.703301" lon="11.868597"/>
+    <trkpt lat="46.703283" lon="11.868596"/>
+    <trkpt lat="46.703283" lon="11.868570"/>
+    <trkpt lat="46.703265" lon="11.868569"/>
+    <trkpt lat="46.703266" lon="11.868543"/>
+    <trkpt lat="46.703248" lon="11.868542"/>
+    <trkpt lat="46.703249" lon="11.868516"/>
+    <trkpt lat="46.703267" lon="11.868517"/>
+    <trkpt lat="46.703267" lon="11.868491"/>
+    <trkpt lat="46.703249" lon="11.868490"/>
+    <trkpt lat="46.703250" lon="11.868464"/>
+    <trkpt lat="46.703232" lon="11.868463"/>
+    <trkpt lat="46.703231" lon="11.868489"/>
+    <trkpt lat="46.703213" lon="11.868488"/>
+    <trkpt lat="46.703213" lon="11.868514"/>
+    <trkpt lat="46.703231" lon="11.868515"/>
+    <trkpt lat="46.703230" lon="11.868541"/>
+    <trkpt lat="46.703248" lon="11.868542"/>
+    <trkpt lat="46.703247" lon="11.868568"/>
+    <trkpt lat="46.703229" lon="11.868567"/>
+    <trkpt lat="46.703229" lon="11.868594"/>
+    <trkpt lat="46.703247" lon="11.868594"/>
+    <trkpt lat="46.703246" lon="11.868621"/>
+    <trkpt lat="46.703264" lon="11.868622"/>
+    <trkpt lat="46.703263" lon="11.868648"/>
+    <trkpt lat="46.703281" lon="11.868649"/>
+    <trkpt lat="46.703281" lon="11.868675"/>
+    <trkpt lat="46.703299" lon="11.868676"/>
+    <trkpt lat="46.703299" lon="11.868650"/>
+    <trkpt lat="46.703317" lon="11.868651"/>
+    <trkpt lat="46.703318" lon="11.868624"/>
+  </trkseg></trk>
+  <trk><name>Umriss 010 0,5 m</name><trkseg>
+    <trkpt lat="46.736024" lon="11.877219"/>
+    <trkpt lat="46.736006" lon="11.877218"/>
+    <trkpt lat="46.736006" lon="11.877192"/>
+    <trkpt lat="46.735988" lon="11.877191"/>
+    <trkpt lat="46.735988" lon="11.877217"/>
+    <trkpt lat="46.735970" lon="11.877216"/>
+    <trkpt lat="46.735969" lon="11.877242"/>
+    <trkpt lat="46.735951" lon="11.877241"/>
+    <trkpt lat="46.735950" lon="11.877294"/>
+    <trkpt lat="46.735968" lon="11.877295"/>
+    <trkpt lat="46.735967" lon="11.877321"/>
+    <trkpt lat="46.735985" lon="11.877322"/>
+    <trkpt lat="46.735986" lon="11.877295"/>
+    <trkpt lat="46.736004" lon="11.877296"/>
+    <trkpt lat="46.736004" lon="11.877270"/>
+    <trkpt lat="46.736022" lon="11.877271"/>
+    <trkpt lat="46.736024" lon="11.877219"/>
+  </trkseg></trk>
+  <trk><name>Umriss 018 0,5 m</name><trkseg>
+    <trkpt lat="46.725045" lon="11.887864"/>
+    <trkpt lat="46.725027" lon="11.887863"/>
+    <trkpt lat="46.725028" lon="11.887837"/>
+    <trkpt lat="46.724992" lon="11.887835"/>
+    <trkpt lat="46.724993" lon="11.887809"/>
+    <trkpt lat="46.724975" lon="11.887808"/>
+    <trkpt lat="46.724974" lon="11.887834"/>
+    <trkpt lat="46.724956" lon="11.887833"/>
+    <trkpt lat="46.724955" lon="11.887885"/>
+    <trkpt lat="46.724937" lon="11.887884"/>
+    <trkpt lat="46.724936" lon="11.887910"/>
+    <trkpt lat="46.724954" lon="11.887911"/>
+    <trkpt lat="46.724954" lon="11.887937"/>
+    <trkpt lat="46.724971" lon="11.887938"/>
+    <trkpt lat="46.724971" lon="11.887965"/>
+    <trkpt lat="46.725025" lon="11.887967"/>
+    <trkpt lat="46.725025" lon="11.887941"/>
+    <trkpt lat="46.725043" lon="11.887942"/>
+    <trkpt lat="46.725045" lon="11.887864"/>
+  </trkseg></trk>
+  <trk><name>Umriss 021 0,5 m</name><trkseg>
+    <trkpt lat="46.714202" lon="11.910183"/>
+    <trkpt lat="46.714184" lon="11.910182"/>
+    <trkpt lat="46.714184" lon="11.910156"/>
+    <trkpt lat="46.714148" lon="11.910154"/>
+    <trkpt lat="46.714149" lon="11.910128"/>
+    <trkpt lat="46.714131" lon="11.910127"/>
+    <trkpt lat="46.714132" lon="11.910101"/>
+    <trkpt lat="46.714096" lon="11.910099"/>
+    <trkpt lat="46.714096" lon="11.910073"/>
+    <trkpt lat="46.714078" lon="11.910072"/>
+    <trkpt lat="46.714079" lon="11.910046"/>
+    <trkpt lat="46.714025" lon="11.910043"/>
+    <trkpt lat="46.714024" lon="11.910069"/>
+    <trkpt lat="46.714007" lon="11.910068"/>
+    <trkpt lat="46.714006" lon="11.910094"/>
+    <trkpt lat="46.714024" lon="11.910095"/>
+    <trkpt lat="46.714023" lon="11.910121"/>
+    <trkpt lat="46.714059" lon="11.910123"/>
+    <trkpt lat="46.714058" lon="11.910149"/>
+    <trkpt lat="46.714112" lon="11.910152"/>
+    <trkpt lat="46.714112" lon="11.910178"/>
+    <trkpt lat="46.714130" lon="11.910179"/>
+    <trkpt lat="46.714129" lon="11.910206"/>
+    <trkpt lat="46.714165" lon="11.910207"/>
+    <trkpt lat="46.714164" lon="11.910234"/>
+    <trkpt lat="46.714182" lon="11.910235"/>
+    <trkpt lat="46.714183" lon="11.910208"/>
+    <trkpt lat="46.714201" lon="11.910209"/>
+    <trkpt lat="46.714202" lon="11.910183"/>
+  </trkseg></trk>
+  <trk><name>Umriss 016 0,5 m</name><trkseg>
+    <trkpt lat="46.726414" lon="11.886393"/>
+    <trkpt lat="46.726397" lon="11.886392"/>
+    <trkpt lat="46.726397" lon="11.886365"/>
+    <trkpt lat="46.726343" lon="11.886363"/>
+    <trkpt lat="46.726343" lon="11.886389"/>
+    <trkpt lat="46.726325" lon="11.886388"/>
+    <trkpt lat="46.726323" lon="11.886440"/>
+    <trkpt lat="46.726305" lon="11.886439"/>
+    <trkpt lat="46.726305" lon="11.886465"/>
+    <trkpt lat="46.726323" lon="11.886466"/>
+    <trkpt lat="46.726322" lon="11.886492"/>
+    <trkpt lat="46.726340" lon="11.886493"/>
+    <trkpt lat="46.726341" lon="11.886467"/>
+    <trkpt lat="46.726359" lon="11.886468"/>
+    <trkpt lat="46.726359" lon="11.886442"/>
+    <trkpt lat="46.726395" lon="11.886444"/>
+    <trkpt lat="46.726396" lon="11.886418"/>
+    <trkpt lat="46.726414" lon="11.886419"/>
+    <trkpt lat="46.726414" lon="11.886393"/>
+  </trkseg></trk>
+  <trk><name>Umriss 017 0,5 m</name><trkseg>
+    <trkpt lat="46.726371" lon="11.886678"/>
+    <trkpt lat="46.726353" lon="11.886677"/>
+    <trkpt lat="46.726354" lon="11.886651"/>
+    <trkpt lat="46.726300" lon="11.886648"/>
+    <trkpt lat="46.726299" lon="11.886674"/>
+    <trkpt lat="46.726281" lon="11.886673"/>
+    <trkpt lat="46.726280" lon="11.886726"/>
+    <trkpt lat="46.726298" lon="11.886727"/>
+    <trkpt lat="46.726297" lon="11.886753"/>
+    <trkpt lat="46.726333" lon="11.886755"/>
+    <trkpt lat="46.726334" lon="11.886729"/>
+    <trkpt lat="46.726352" lon="11.886730"/>
+    <trkpt lat="46.726353" lon="11.886703"/>
+    <trkpt lat="46.726371" lon="11.886704"/>
+    <trkpt lat="46.726371" lon="11.886678"/>
+  </trkseg></trk>
+  <trk><name>Umriss 014 0,5 m</name><trkseg>
+    <trkpt lat="46.727182" lon="11.885936"/>
+    <trkpt lat="46.727164" lon="11.885935"/>
+    <trkpt lat="46.727167" lon="11.885831"/>
+    <trkpt lat="46.727149" lon="11.885830"/>
+    <trkpt lat="46.727149" lon="11.885804"/>
+    <trkpt lat="46.727131" lon="11.885803"/>
+    <trkpt lat="46.727131" lon="11.885829"/>
+    <trkpt lat="46.727113" lon="11.885828"/>
+    <trkpt lat="46.727112" lon="11.885854"/>
+    <trkpt lat="46.727094" lon="11.885853"/>
+    <trkpt lat="46.727093" lon="11.885879"/>
+    <trkpt lat="46.727075" lon="11.885878"/>
+    <trkpt lat="46.727075" lon="11.885904"/>
+    <trkpt lat="46.727057" lon="11.885903"/>
+    <trkpt lat="46.727056" lon="11.885956"/>
+    <trkpt lat="46.727038" lon="11.885955"/>
+    <trkpt lat="46.727037" lon="11.885981"/>
+    <trkpt lat="46.727055" lon="11.885982"/>
+    <trkpt lat="46.727054" lon="11.886008"/>
+    <trkpt lat="46.727072" lon="11.886009"/>
+    <trkpt lat="46.727071" lon="11.886061"/>
+    <trkpt lat="46.727089" lon="11.886062"/>
+    <trkpt lat="46.727088" lon="11.886088"/>
+    <trkpt lat="46.727106" lon="11.886089"/>
+    <trkpt lat="46.727107" lon="11.886063"/>
+    <trkpt lat="46.727143" lon="11.886065"/>
+    <trkpt lat="46.727143" lon="11.886039"/>
+    <trkpt lat="46.727161" lon="11.886040"/>
+    <trkpt lat="46.727162" lon="11.886014"/>
+    <trkpt lat="46.727180" lon="11.886015"/>
+    <trkpt lat="46.727182" lon="11.885936"/>
+  </trkseg></trk>
+  <trk><name>Umriss 005 0,5 m</name><trkseg>
+    <trkpt lat="46.759717" lon="11.866249"/>
+    <trkpt lat="46.759699" lon="11.866249"/>
+    <trkpt lat="46.759699" lon="11.866222"/>
+    <trkpt lat="46.759627" lon="11.866219"/>
+    <trkpt lat="46.759628" lon="11.866192"/>
+    <trkpt lat="46.759610" lon="11.866191"/>
+    <trkpt lat="46.759611" lon="11.866165"/>
+    <trkpt lat="46.759593" lon="11.866164"/>
+    <trkpt lat="46.759592" lon="11.866190"/>
+    <trkpt lat="46.759574" lon="11.866190"/>
+    <trkpt lat="46.759573" lon="11.866216"/>
+    <trkpt lat="46.759591" lon="11.866217"/>
+    <trkpt lat="46.759591" lon="11.866243"/>
+    <trkpt lat="46.759609" lon="11.866244"/>
+    <trkpt lat="46.759608" lon="11.866270"/>
+    <trkpt lat="46.759626" lon="11.866271"/>
+    <trkpt lat="46.759625" lon="11.866297"/>
+    <trkpt lat="46.759643" lon="11.866298"/>
+    <trkpt lat="46.759643" lon="11.866324"/>
+    <trkpt lat="46.759679" lon="11.866326"/>
+    <trkpt lat="46.759679" lon="11.866300"/>
+    <trkpt lat="46.759697" lon="11.866301"/>
+    <trkpt lat="46.759698" lon="11.866275"/>
+    <trkpt lat="46.759716" lon="11.866276"/>
+    <trkpt lat="46.759717" lon="11.866249"/>
+  </trkseg></trk>
+  <trk><name>Umriss 025 0,5 m</name><trkseg>
+    <trkpt lat="46.686041" lon="11.898495"/>
+    <trkpt lat="46.686023" lon="11.898494"/>
+    <trkpt lat="46.686023" lon="11.898468"/>
+    <trkpt lat="46.685970" lon="11.898465"/>
+    <trkpt lat="46.685969" lon="11.898491"/>
+    <trkpt lat="46.685951" lon="11.898490"/>
+    <trkpt lat="46.685950" lon="11.898516"/>
+    <trkpt lat="46.685968" lon="11.898517"/>
+    <trkpt lat="46.685968" lon="11.898543"/>
+    <trkpt lat="46.686021" lon="11.898546"/>
+    <trkpt lat="46.686022" lon="11.898520"/>
+    <trkpt lat="46.686040" lon="11.898521"/>
+    <trkpt lat="46.686041" lon="11.898495"/>
+  </trkseg></trk>
+  <trk><name>Umriss 004 0,5 m</name><trkseg>
+    <trkpt lat="46.759890" lon="11.865787"/>
+    <trkpt lat="46.759872" lon="11.865786"/>
+    <trkpt lat="46.759873" lon="11.865760"/>
+    <trkpt lat="46.759819" lon="11.865757"/>
+    <trkpt lat="46.759820" lon="11.865731"/>
+    <trkpt lat="46.759802" lon="11.865730"/>
+    <trkpt lat="46.759801" lon="11.865756"/>
+    <trkpt lat="46.759783" lon="11.865755"/>
+    <trkpt lat="46.759782" lon="11.865808"/>
+    <trkpt lat="46.759800" lon="11.865809"/>
+    <trkpt lat="46.759799" lon="11.865835"/>
+    <trkpt lat="46.759871" lon="11.865839"/>
+    <trkpt lat="46.759872" lon="11.865812"/>
+    <trkpt lat="46.759890" lon="11.865813"/>
+    <trkpt lat="46.759890" lon="11.865787"/>
+  </trkseg></trk>
+  <trk><name>Umriss 003 0,5 m</name><trkseg>
+    <trkpt lat="46.760190" lon="11.865332"/>
+    <trkpt lat="46.760172" lon="11.865331"/>
+    <trkpt lat="46.760172" lon="11.865305"/>
+    <trkpt lat="46.760154" lon="11.865304"/>
+    <trkpt lat="46.760154" lon="11.865330"/>
+    <trkpt lat="46.760136" lon="11.865329"/>
+    <trkpt lat="46.760134" lon="11.865381"/>
+    <trkpt lat="46.760116" lon="11.865380"/>
+    <trkpt lat="46.760116" lon="11.865406"/>
+    <trkpt lat="46.760098" lon="11.865405"/>
+    <trkpt lat="46.760097" lon="11.865432"/>
+    <trkpt lat="46.760115" lon="11.865432"/>
+    <trkpt lat="46.760114" lon="11.865459"/>
+    <trkpt lat="46.760132" lon="11.865460"/>
+    <trkpt lat="46.760133" lon="11.865433"/>
+    <trkpt lat="46.760169" lon="11.865435"/>
+    <trkpt lat="46.760170" lon="11.865409"/>
+    <trkpt lat="46.760188" lon="11.865410"/>
+    <trkpt lat="46.760190" lon="11.865332"/>
+  </trkseg></trk>
+  <trk><name>Umriss 011 0,5 m</name><trkseg>
+    <trkpt lat="46.731565" lon="11.934364"/>
+    <trkpt lat="46.731547" lon="11.934363"/>
+    <trkpt lat="46.731548" lon="11.934337"/>
+    <trkpt lat="46.731494" lon="11.934334"/>
+    <trkpt lat="46.731493" lon="11.934360"/>
+    <trkpt lat="46.731475" lon="11.934359"/>
+    <trkpt lat="46.731475" lon="11.934385"/>
+    <trkpt lat="46.731493" lon="11.934386"/>
+    <trkpt lat="46.731492" lon="11.934413"/>
+    <trkpt lat="46.731546" lon="11.934415"/>
+    <trkpt lat="46.731547" lon="11.934389"/>
+    <trkpt lat="46.731565" lon="11.934390"/>
+    <trkpt lat="46.731565" lon="11.934364"/>
+  </trkseg></trk>
+  <trk><name>Umriss 020 0,5 m</name><trkseg>
+    <trkpt lat="46.722720" lon="11.881589"/>
+    <trkpt lat="46.722702" lon="11.881588"/>
+    <trkpt lat="46.722702" lon="11.881562"/>
+    <trkpt lat="46.722666" lon="11.881560"/>
+    <trkpt lat="46.722666" lon="11.881586"/>
+    <trkpt lat="46.722648" lon="11.881585"/>
+    <trkpt lat="46.722646" lon="11.881637"/>
+    <trkpt lat="46.722629" lon="11.881636"/>
+    <trkpt lat="46.722627" lon="11.881689"/>
+    <trkpt lat="46.722645" lon="11.881689"/>
+    <trkpt lat="46.722645" lon="11.881716"/>
+    <trkpt lat="46.722662" lon="11.881717"/>
+    <trkpt lat="46.722662" lon="11.881743"/>
+    <trkpt lat="46.722680" lon="11.881744"/>
+    <trkpt lat="46.722680" lon="11.881718"/>
+    <trkpt lat="46.722698" lon="11.881718"/>
+    <trkpt lat="46.722700" lon="11.881640"/>
+    <trkpt lat="46.722718" lon="11.881641"/>
+    <trkpt lat="46.722720" lon="11.881589"/>
+  </trkseg></trk>
+  <trk><name>Umriss 015 0,5 m</name><trkseg>
+    <trkpt lat="46.726506" lon="11.886345"/>
+    <trkpt lat="46.726488" lon="11.886344"/>
+    <trkpt lat="46.726488" lon="11.886318"/>
+    <trkpt lat="46.726470" lon="11.886317"/>
+    <trkpt lat="46.726470" lon="11.886343"/>
+    <trkpt lat="46.726452" lon="11.886342"/>
+    <trkpt lat="46.726451" lon="11.886368"/>
+    <trkpt lat="46.726433" lon="11.886367"/>
+    <trkpt lat="46.726432" lon="11.886394"/>
+    <trkpt lat="46.726450" lon="11.886394"/>
+    <trkpt lat="46.726450" lon="11.886421"/>
+    <trkpt lat="46.726486" lon="11.886423"/>
+    <trkpt lat="46.726486" lon="11.886396"/>
+    <trkpt lat="46.726504" lon="11.886397"/>
+    <trkpt lat="46.726506" lon="11.886345"/>
+  </trkseg></trk>
+  <trk><name>Umriss 019 0,5 m</name><trkseg>
+    <trkpt lat="46.724311" lon="11.888453"/>
+    <trkpt lat="46.724293" lon="11.888452"/>
+    <trkpt lat="46.724294" lon="11.888399"/>
+    <trkpt lat="46.724276" lon="11.888399"/>
+    <trkpt lat="46.724277" lon="11.888372"/>
+    <trkpt lat="46.724259" lon="11.888371"/>
+    <trkpt lat="46.724258" lon="11.888398"/>
+    <trkpt lat="46.724240" lon="11.888397"/>
+    <trkpt lat="46.724237" lon="11.888501"/>
+    <trkpt lat="46.724255" lon="11.888502"/>
+    <trkpt lat="46.724255" lon="11.888528"/>
+    <trkpt lat="46.724273" lon="11.888529"/>
+    <trkpt lat="46.724273" lon="11.888503"/>
+    <trkpt lat="46.724291" lon="11.888504"/>
+    <trkpt lat="46.724292" lon="11.888478"/>
+    <trkpt lat="46.724310" lon="11.888479"/>
+    <trkpt lat="46.724311" lon="11.888453"/>
+  </trkseg></trk>
+  <trk><name>Umriss 007 0,5 m</name><trkseg>
+    <trkpt lat="46.738091" lon="11.875156"/>
+    <trkpt lat="46.738073" lon="11.875155"/>
+    <trkpt lat="46.738075" lon="11.875077"/>
+    <trkpt lat="46.738057" lon="11.875076"/>
+    <trkpt lat="46.738058" lon="11.875050"/>
+    <trkpt lat="46.738040" lon="11.875049"/>
+    <trkpt lat="46.738039" lon="11.875075"/>
+    <trkpt lat="46.738021" lon="11.875074"/>
+    <trkpt lat="46.738021" lon="11.875100"/>
+    <trkpt lat="46.738003" lon="11.875099"/>
+    <trkpt lat="46.738002" lon="11.875125"/>
+    <trkpt lat="46.737984" lon="11.875124"/>
+    <trkpt lat="46.737984" lon="11.875150"/>
+    <trkpt lat="46.737966" lon="11.875149"/>
+    <trkpt lat="46.737965" lon="11.875175"/>
+    <trkpt lat="46.737983" lon="11.875176"/>
+    <trkpt lat="46.737982" lon="11.875203"/>
+    <trkpt lat="46.738036" lon="11.875205"/>
+    <trkpt lat="46.738036" lon="11.875232"/>
+    <trkpt lat="46.738054" lon="11.875233"/>
+    <trkpt lat="46.738054" lon="11.875206"/>
+    <trkpt lat="46.738072" lon="11.875207"/>
+    <trkpt lat="46.738073" lon="11.875181"/>
+    <trkpt lat="46.738091" lon="11.875182"/>
+    <trkpt lat="46.738091" lon="11.875156"/>
+  </trkseg></trk>
+  <trk><name>Umriss 002 0,5 m</name><trkseg>
+    <trkpt lat="46.761049" lon="11.866215"/>
+    <trkpt lat="46.761031" lon="11.866214"/>
+    <trkpt lat="46.761032" lon="11.866188"/>
+    <trkpt lat="46.760978" lon="11.866185"/>
+    <trkpt lat="46.760978" lon="11.866212"/>
+    <trkpt lat="46.760960" lon="11.866211"/>
+    <trkpt lat="46.760957" lon="11.866315"/>
+    <trkpt lat="46.760975" lon="11.866316"/>
+    <trkpt lat="46.760974" lon="11.866342"/>
+    <trkpt lat="46.760992" lon="11.866343"/>
+    <trkpt lat="46.760993" lon="11.866317"/>
+    <trkpt lat="46.761011" lon="11.866318"/>
+    <trkpt lat="46.761012" lon="11.866292"/>
+    <trkpt lat="46.761030" lon="11.866293"/>
+    <trkpt lat="46.761030" lon="11.866267"/>
+    <trkpt lat="46.761048" lon="11.866268"/>
+    <trkpt lat="46.761049" lon="11.866215"/>
+  </trkseg></trk>
+  <trk><name>Umriss 006 0,5 m</name><trkseg>
+    <trkpt lat="46.743317" lon="11.872789"/>
+    <trkpt lat="46.743299" lon="11.872789"/>
+    <trkpt lat="46.743301" lon="11.872710"/>
+    <trkpt lat="46.743283" lon="11.872709"/>
+    <trkpt lat="46.743283" lon="11.872683"/>
+    <trkpt lat="46.743158" lon="11.872676"/>
+    <trkpt lat="46.743157" lon="11.872702"/>
+    <trkpt lat="46.743139" lon="11.872701"/>
+    <trkpt lat="46.743136" lon="11.872806"/>
+    <trkpt lat="46.743154" lon="11.872807"/>
+    <trkpt lat="46.743154" lon="11.872833"/>
+    <trkpt lat="46.743208" lon="11.872836"/>
+    <trkpt lat="46.743207" lon="11.872862"/>
+    <trkpt lat="46.743225" lon="11.872863"/>
+    <trkpt lat="46.743226" lon="11.872837"/>
+    <trkpt lat="46.743298" lon="11.872841"/>
+    <trkpt lat="46.743298" lon="11.872815"/>
+    <trkpt lat="46.743316" lon="11.872816"/>
+    <trkpt lat="46.743317" lon="11.872789"/>
+  </trkseg></trk>
+  <trk><name>Umriss 007 2,5 m</name><trkseg>
+    <trkpt lat="46.694512" lon="11.910289"/>
+    <trkpt lat="46.694467" lon="11.910286"/>
+    <trkpt lat="46.694475" lon="11.909960"/>
+    <trkpt lat="46.694430" lon="11.909957"/>
+    <trkpt lat="46.694432" lon="11.909892"/>
+    <trkpt lat="46.694387" lon="11.909889"/>
+    <trkpt lat="46.694385" lon="11.909955"/>
+    <trkpt lat="46.694340" lon="11.909952"/>
+    <trkpt lat="46.694335" lon="11.910148"/>
+    <trkpt lat="46.694245" lon="11.910143"/>
+    <trkpt lat="46.694244" lon="11.910209"/>
+    <trkpt lat="46.694199" lon="11.910206"/>
+    <trkpt lat="46.694197" lon="11.910272"/>
+    <trkpt lat="46.694242" lon="11.910274"/>
+    <trkpt lat="46.694240" lon="11.910339"/>
+    <trkpt lat="46.694285" lon="11.910342"/>
+    <trkpt lat="46.694284" lon="11.910407"/>
+    <trkpt lat="46.694329" lon="11.910410"/>
+    <trkpt lat="46.694327" lon="11.910475"/>
+    <trkpt lat="46.694417" lon="11.910480"/>
+    <trkpt lat="46.694418" lon="11.910414"/>
+    <trkpt lat="46.694463" lon="11.910417"/>
+    <trkpt lat="46.694465" lon="11.910352"/>
+    <trkpt lat="46.694510" lon="11.910354"/>
+    <trkpt lat="46.694512" lon="11.910289"/>
+  </trkseg></trk>
+  <trk><name>Umriss 005 2,5 m</name><trkseg>
+    <trkpt lat="46.702265" lon="11.870609"/>
+    <trkpt lat="46.702220" lon="11.870607"/>
+    <trkpt lat="46.702221" lon="11.870542"/>
+    <trkpt lat="46.702176" lon="11.870539"/>
+    <trkpt lat="46.702175" lon="11.870605"/>
+    <trkpt lat="46.701815" lon="11.870586"/>
+    <trkpt lat="46.701814" lon="11.870651"/>
+    <trkpt lat="46.701769" lon="11.870648"/>
+    <trkpt lat="46.701765" lon="11.870779"/>
+    <trkpt lat="46.701720" lon="11.870777"/>
+    <trkpt lat="46.701719" lon="11.870842"/>
+    <trkpt lat="46.701764" lon="11.870844"/>
+    <trkpt lat="46.701762" lon="11.870910"/>
+    <trkpt lat="46.701987" lon="11.870922"/>
+    <trkpt lat="46.701985" lon="11.870987"/>
+    <trkpt lat="46.702030" lon="11.870989"/>
+    <trkpt lat="46.702032" lon="11.870924"/>
+    <trkpt lat="46.702212" lon="11.870934"/>
+    <trkpt lat="46.702213" lon="11.870868"/>
+    <trkpt lat="46.702258" lon="11.870871"/>
+    <trkpt lat="46.702265" lon="11.870609"/>
+  </trkseg></trk>
+  <trk><name>Umriss 001 2,5 m</name><trkseg>
+    <trkpt lat="46.759819" lon="11.868822"/>
+    <trkpt lat="46.759774" lon="11.868819"/>
+    <trkpt lat="46.759779" lon="11.868623"/>
+    <trkpt lat="46.759734" lon="11.868621"/>
+    <trkpt lat="46.759735" lon="11.868555"/>
+    <trkpt lat="46.759690" lon="11.868553"/>
+    <trkpt lat="46.759697" lon="11.868291"/>
+    <trkpt lat="46.759652" lon="11.868289"/>
+    <trkpt lat="46.759654" lon="11.868224"/>
+    <trkpt lat="46.759564" lon="11.868219"/>
+    <trkpt lat="46.759562" lon="11.868284"/>
+    <trkpt lat="46.759517" lon="11.868282"/>
+    <trkpt lat="46.759511" lon="11.868543"/>
+    <trkpt lat="46.759466" lon="11.868541"/>
+    <trkpt lat="46.759461" lon="11.868737"/>
+    <trkpt lat="46.759236" lon="11.868725"/>
+    <trkpt lat="46.759234" lon="11.868791"/>
+    <trkpt lat="46.759189" lon="11.868788"/>
+    <trkpt lat="46.759186" lon="11.868919"/>
+    <trkpt lat="46.759141" lon="11.868917"/>
+    <trkpt lat="46.759136" lon="11.869113"/>
+    <trkpt lat="46.759181" lon="11.869115"/>
+    <trkpt lat="46.759180" lon="11.869181"/>
+    <trkpt lat="46.759404" lon="11.869193"/>
+    <trkpt lat="46.759403" lon="11.869258"/>
+    <trkpt lat="46.759448" lon="11.869260"/>
+    <trkpt lat="46.759446" lon="11.869326"/>
+    <trkpt lat="46.759536" lon="11.869330"/>
+    <trkpt lat="46.759538" lon="11.869265"/>
+    <trkpt lat="46.759582" lon="11.869267"/>
+    <trkpt lat="46.759584" lon="11.869202"/>
+    <trkpt lat="46.759674" lon="11.869207"/>
+    <trkpt lat="46.759676" lon="11.869141"/>
+    <trkpt lat="46.759721" lon="11.869144"/>
+    <trkpt lat="46.759722" lon="11.869078"/>
+    <trkpt lat="46.759767" lon="11.869081"/>
+    <trkpt lat="46.759769" lon="11.869015"/>
+    <trkpt lat="46.759814" lon="11.869018"/>
+    <trkpt lat="46.759819" lon="11.868822"/>
+  </trkseg></trk>
+  <trk><name>Umriss 016 2,5 m</name><trkseg>
+    <trkpt lat="46.688239" lon="11.930354"/>
+    <trkpt lat="46.688194" lon="11.930352"/>
+    <trkpt lat="46.688196" lon="11.930286"/>
+    <trkpt lat="46.688151" lon="11.930284"/>
+    <trkpt lat="46.688149" lon="11.930349"/>
+    <trkpt lat="46.688104" lon="11.930347"/>
+    <trkpt lat="46.688103" lon="11.930412"/>
+    <trkpt lat="46.688058" lon="11.930410"/>
+    <trkpt lat="46.688056" lon="11.930475"/>
+    <trkpt lat="46.688011" lon="11.930472"/>
+    <trkpt lat="46.688009" lon="11.930538"/>
+    <trkpt lat="46.687964" lon="11.930535"/>
+    <trkpt lat="46.687963" lon="11.930601"/>
+    <trkpt lat="46.687918" lon="11.930598"/>
+    <trkpt lat="46.687916" lon="11.930663"/>
+    <trkpt lat="46.687871" lon="11.930661"/>
+    <trkpt lat="46.687868" lon="11.930792"/>
+    <trkpt lat="46.687913" lon="11.930794"/>
+    <trkpt lat="46.687911" lon="11.930859"/>
+    <trkpt lat="46.688001" lon="11.930864"/>
+    <trkpt lat="46.688003" lon="11.930799"/>
+    <trkpt lat="46.688048" lon="11.930801"/>
+    <trkpt lat="46.688049" lon="11.930736"/>
+    <trkpt lat="46.688094" lon="11.930739"/>
+    <trkpt lat="46.688096" lon="11.930673"/>
+    <trkpt lat="46.688141" lon="11.930676"/>
+    <trkpt lat="46.688143" lon="11.930610"/>
+    <trkpt lat="46.688187" lon="11.930613"/>
+    <trkpt lat="46.688189" lon="11.930547"/>
+    <trkpt lat="46.688234" lon="11.930550"/>
+    <trkpt lat="46.688239" lon="11.930354"/>
+  </trkseg></trk>
+  <trk><name>Umriss 019 2,5 m</name><trkseg>
+    <trkpt lat="46.675371" lon="11.942537"/>
+    <trkpt lat="46.675326" lon="11.942535"/>
+    <trkpt lat="46.675330" lon="11.942404"/>
+    <trkpt lat="46.675285" lon="11.942402"/>
+    <trkpt lat="46.675286" lon="11.942336"/>
+    <trkpt lat="46.675241" lon="11.942334"/>
+    <trkpt lat="46.675240" lon="11.942399"/>
+    <trkpt lat="46.675195" lon="11.942397"/>
+    <trkpt lat="46.675190" lon="11.942593"/>
+    <trkpt lat="46.675235" lon="11.942595"/>
+    <trkpt lat="46.675233" lon="11.942660"/>
+    <trkpt lat="46.675323" lon="11.942665"/>
+    <trkpt lat="46.675325" lon="11.942600"/>
+    <trkpt lat="46.675370" lon="11.942602"/>
+    <trkpt lat="46.675371" lon="11.942537"/>
+  </trkseg></trk>
+  <trk><name>Umriss 002 2,5 m</name><trkseg>
+    <trkpt lat="46.758908" lon="11.869232"/>
+    <trkpt lat="46.758863" lon="11.869229"/>
+    <trkpt lat="46.758865" lon="11.869164"/>
+    <trkpt lat="46.758640" lon="11.869152"/>
+    <trkpt lat="46.758639" lon="11.869217"/>
+    <trkpt lat="46.758549" lon="11.869213"/>
+    <trkpt lat="46.758547" lon="11.869278"/>
+    <trkpt lat="46.758502" lon="11.869276"/>
+    <trkpt lat="46.758501" lon="11.869341"/>
+    <trkpt lat="46.758546" lon="11.869343"/>
+    <trkpt lat="46.758544" lon="11.869409"/>
+    <trkpt lat="46.758679" lon="11.869416"/>
+    <trkpt lat="46.758680" lon="11.869351"/>
+    <trkpt lat="46.758860" lon="11.869360"/>
+    <trkpt lat="46.758862" lon="11.869295"/>
+    <trkpt lat="46.758907" lon="11.869297"/>
+    <trkpt lat="46.758908" lon="11.869232"/>
+  </trkseg></trk>
+  <trk><name>Umriss 015 2,5 m</name><trkseg>
+    <trkpt lat="46.689410" lon="11.919758"/>
+    <trkpt lat="46.689365" lon="11.919756"/>
+    <trkpt lat="46.689367" lon="11.919690"/>
+    <trkpt lat="46.689322" lon="11.919688"/>
+    <trkpt lat="46.689320" lon="11.919753"/>
+    <trkpt lat="46.689141" lon="11.919744"/>
+    <trkpt lat="46.689139" lon="11.919809"/>
+    <trkpt lat="46.689094" lon="11.919806"/>
+    <trkpt lat="46.689092" lon="11.919872"/>
+    <trkpt lat="46.689137" lon="11.919874"/>
+    <trkpt lat="46.689136" lon="11.919939"/>
+    <trkpt lat="46.689270" lon="11.919947"/>
+    <trkpt lat="46.689272" lon="11.919881"/>
+    <trkpt lat="46.689362" lon="11.919886"/>
+    <trkpt lat="46.689364" lon="11.919821"/>
+    <trkpt lat="46.689409" lon="11.919823"/>
+    <trkpt lat="46.689410" lon="11.919758"/>
+  </trkseg></trk>
+  <trk><name>Umriss 009 2,5 m</name><trkseg>
+    <trkpt lat="46.693278" lon="11.921602"/>
+    <trkpt lat="46.693233" lon="11.921599"/>
+    <trkpt lat="46.693235" lon="11.921534"/>
+    <trkpt lat="46.693190" lon="11.921532"/>
+    <trkpt lat="46.693192" lon="11.921466"/>
+    <trkpt lat="46.693102" lon="11.921461"/>
+    <trkpt lat="46.693100" lon="11.921527"/>
+    <trkpt lat="46.693055" lon="11.921524"/>
+    <trkpt lat="46.693043" lon="11.921981"/>
+    <trkpt lat="46.692998" lon="11.921979"/>
+    <trkpt lat="46.692993" lon="11.922175"/>
+    <trkpt lat="46.693038" lon="11.922177"/>
+    <trkpt lat="46.693037" lon="11.922243"/>
+    <trkpt lat="46.693082" lon="11.922245"/>
+    <trkpt lat="46.693083" lon="11.922180"/>
+    <trkpt lat="46.693128" lon="11.922182"/>
+    <trkpt lat="46.693130" lon="11.922117"/>
+    <trkpt lat="46.693175" lon="11.922119"/>
+    <trkpt lat="46.693178" lon="11.921989"/>
+    <trkpt lat="46.693223" lon="11.921991"/>
+    <trkpt lat="46.693226" lon="11.921861"/>
+    <trkpt lat="46.693271" lon="11.921863"/>
+    <trkpt lat="46.693278" lon="11.921602"/>
+  </trkseg></trk>
+  <trk><name>Umriss 010 2,5 m</name><trkseg>
+    <trkpt lat="46.691431" lon="11.921698"/>
+    <trkpt lat="46.691386" lon="11.921696"/>
+    <trkpt lat="46.691387" lon="11.921630"/>
+    <trkpt lat="46.691297" lon="11.921626"/>
+    <trkpt lat="46.691296" lon="11.921691"/>
+    <trkpt lat="46.691251" lon="11.921688"/>
+    <trkpt lat="46.691249" lon="11.921754"/>
+    <trkpt lat="46.690980" lon="11.921739"/>
+    <trkpt lat="46.690978" lon="11.921805"/>
+    <trkpt lat="46.690933" lon="11.921802"/>
+    <trkpt lat="46.690930" lon="11.921933"/>
+    <trkpt lat="46.690885" lon="11.921930"/>
+    <trkpt lat="46.690881" lon="11.922061"/>
+    <trkpt lat="46.690926" lon="11.922063"/>
+    <trkpt lat="46.690921" lon="11.922259"/>
+    <trkpt lat="46.690966" lon="11.922262"/>
+    <trkpt lat="46.690965" lon="11.922327"/>
+    <trkpt lat="46.691009" lon="11.922329"/>
+    <trkpt lat="46.691008" lon="11.922395"/>
+    <trkpt lat="46.691053" lon="11.922397"/>
+    <trkpt lat="46.691049" lon="11.922528"/>
+    <trkpt lat="46.691094" lon="11.922530"/>
+    <trkpt lat="46.691093" lon="11.922596"/>
+    <trkpt lat="46.691138" lon="11.922598"/>
+    <trkpt lat="46.691139" lon="11.922533"/>
+    <trkpt lat="46.691184" lon="11.922535"/>
+    <trkpt lat="46.691194" lon="11.922143"/>
+    <trkpt lat="46.691239" lon="11.922146"/>
+    <trkpt lat="46.691243" lon="11.922015"/>
+    <trkpt lat="46.691287" lon="11.922017"/>
+    <trkpt lat="46.691289" lon="11.921952"/>
+    <trkpt lat="46.691334" lon="11.921955"/>
+    <trkpt lat="46.691336" lon="11.921889"/>
+    <trkpt lat="46.691381" lon="11.921892"/>
+    <trkpt lat="46.691382" lon="11.921826"/>
+    <trkpt lat="46.691427" lon="11.921829"/>
+    <trkpt lat="46.691431" lon="11.921698"/>
+  </trkseg></trk>
+  <trk><name>Umriss 012 2,5 m</name><trkseg>
+    <trkpt lat="46.690958" lon="11.924354"/>
+    <trkpt lat="46.690913" lon="11.924351"/>
+    <trkpt lat="46.690923" lon="11.923960"/>
+    <trkpt lat="46.690878" lon="11.923957"/>
+    <trkpt lat="46.690883" lon="11.923761"/>
+    <trkpt lat="46.690838" lon="11.923759"/>
+    <trkpt lat="46.690841" lon="11.923628"/>
+    <trkpt lat="46.690796" lon="11.923626"/>
+    <trkpt lat="46.690805" lon="11.923299"/>
+    <trkpt lat="46.690760" lon="11.923297"/>
+    <trkpt lat="46.690761" lon="11.923232"/>
+    <trkpt lat="46.690716" lon="11.923229"/>
+    <trkpt lat="46.690715" lon="11.923294"/>
+    <trkpt lat="46.690535" lon="11.923285"/>
+    <trkpt lat="46.690533" lon="11.923350"/>
+    <trkpt lat="46.690488" lon="11.923348"/>
+    <trkpt lat="46.690487" lon="11.923413"/>
+    <trkpt lat="46.690532" lon="11.923415"/>
+    <trkpt lat="46.690528" lon="11.923546"/>
+    <trkpt lat="46.690573" lon="11.923548"/>
+    <trkpt lat="46.690570" lon="11.923679"/>
+    <trkpt lat="46.690615" lon="11.923681"/>
+    <trkpt lat="46.690605" lon="11.924073"/>
+    <trkpt lat="46.690650" lon="11.924076"/>
+    <trkpt lat="46.690647" lon="11.924206"/>
+    <trkpt lat="46.690691" lon="11.924209"/>
+    <trkpt lat="46.690685" lon="11.924470"/>
+    <trkpt lat="46.690730" lon="11.924472"/>
+    <trkpt lat="46.690726" lon="11.924603"/>
+    <trkpt lat="46.690771" lon="11.924605"/>
+    <trkpt lat="46.690770" lon="11.924671"/>
+    <trkpt lat="46.690815" lon="11.924673"/>
+    <trkpt lat="46.690816" lon="11.924608"/>
+    <trkpt lat="46.690906" lon="11.924613"/>
+    <trkpt lat="46.690908" lon="11.924547"/>
+    <trkpt lat="46.690953" lon="11.924550"/>
+    <trkpt lat="46.690958" lon="11.924354"/>
+  </trkseg></trk>
+  <trk><name>Umriss 013 2,5 m</name><trkseg>
+    <trkpt lat="46.690748" lon="11.921988"/>
+    <trkpt lat="46.690703" lon="11.921986"/>
+    <trkpt lat="46.690705" lon="11.921921"/>
+    <trkpt lat="46.690525" lon="11.921911"/>
+    <trkpt lat="46.690524" lon="11.921976"/>
+    <trkpt lat="46.690479" lon="11.921974"/>
+    <trkpt lat="46.690470" lon="11.922300"/>
+    <trkpt lat="46.690246" lon="11.922288"/>
+    <trkpt lat="46.690251" lon="11.922092"/>
+    <trkpt lat="46.690206" lon="11.922090"/>
+    <trkpt lat="46.690207" lon="11.922025"/>
+    <trkpt lat="46.690117" lon="11.922020"/>
+    <trkpt lat="46.690116" lon="11.922085"/>
+    <trkpt lat="46.690071" lon="11.922083"/>
+    <trkpt lat="46.690059" lon="11.922540"/>
+    <trkpt lat="46.690014" lon="11.922537"/>
+    <trkpt lat="46.690009" lon="11.922733"/>
+    <trkpt lat="46.690054" lon="11.922736"/>
+    <trkpt lat="46.690052" lon="11.922801"/>
+    <trkpt lat="46.690142" lon="11.922806"/>
+    <trkpt lat="46.690144" lon="11.922740"/>
+    <trkpt lat="46.690459" lon="11.922757"/>
+    <trkpt lat="46.690457" lon="11.922823"/>
+    <trkpt lat="46.690502" lon="11.922825"/>
+    <trkpt lat="46.690503" lon="11.922760"/>
+    <trkpt lat="46.690548" lon="11.922762"/>
+    <trkpt lat="46.690550" lon="11.922697"/>
+    <trkpt lat="46.690595" lon="11.922699"/>
+    <trkpt lat="46.690597" lon="11.922634"/>
+    <trkpt lat="46.690642" lon="11.922637"/>
+    <trkpt lat="46.690643" lon="11.922571"/>
+    <trkpt lat="46.690688" lon="11.922574"/>
+    <trkpt lat="46.690690" lon="11.922508"/>
+    <trkpt lat="46.690645" lon="11.922506"/>
+    <trkpt lat="46.690647" lon="11.922441"/>
+    <trkpt lat="46.690602" lon="11.922438"/>
+    <trkpt lat="46.690610" lon="11.922112"/>
+    <trkpt lat="46.690700" lon="11.922117"/>
+    <trkpt lat="46.690702" lon="11.922051"/>
+    <trkpt lat="46.690747" lon="11.922054"/>
+    <trkpt lat="46.690748" lon="11.921988"/>
+  </trkseg></trk>
+  <trk><name>Umriss 006 2,5 m</name><trkseg>
+    <trkpt lat="46.694285" lon="11.954225"/>
+    <trkpt lat="46.694240" lon="11.954223"/>
+    <trkpt lat="46.694241" lon="11.954158"/>
+    <trkpt lat="46.694197" lon="11.954155"/>
+    <trkpt lat="46.694195" lon="11.954220"/>
+    <trkpt lat="46.694015" lon="11.954211"/>
+    <trkpt lat="46.694013" lon="11.954276"/>
+    <trkpt lat="46.693968" lon="11.954274"/>
+    <trkpt lat="46.693965" lon="11.954404"/>
+    <trkpt lat="46.694010" lon="11.954407"/>
+    <trkpt lat="46.694008" lon="11.954472"/>
+    <trkpt lat="46.694233" lon="11.954484"/>
+    <trkpt lat="46.694235" lon="11.954419"/>
+    <trkpt lat="46.694280" lon="11.954421"/>
+    <trkpt lat="46.694285" lon="11.954225"/>
+  </trkseg></trk>
+  <trk><name>Umriss 011 2,5 m</name><trkseg>
+    <trkpt lat="46.691491" lon="11.912284"/>
+    <trkpt lat="46.691446" lon="11.912282"/>
+    <trkpt lat="46.691456" lon="11.911890"/>
+    <trkpt lat="46.691411" lon="11.911888"/>
+    <trkpt lat="46.691413" lon="11.911822"/>
+    <trkpt lat="46.691368" lon="11.911820"/>
+    <trkpt lat="46.691369" lon="11.911755"/>
+    <trkpt lat="46.691190" lon="11.911745"/>
+    <trkpt lat="46.691188" lon="11.911810"/>
+    <trkpt lat="46.691143" lon="11.911808"/>
+    <trkpt lat="46.691141" lon="11.911873"/>
+    <trkpt lat="46.691096" lon="11.911871"/>
+    <trkpt lat="46.691091" lon="11.912067"/>
+    <trkpt lat="46.691136" lon="11.912069"/>
+    <trkpt lat="46.691135" lon="11.912134"/>
+    <trkpt lat="46.691180" lon="11.912137"/>
+    <trkpt lat="46.691171" lon="11.912463"/>
+    <trkpt lat="46.691216" lon="11.912466"/>
+    <trkpt lat="46.691215" lon="11.912531"/>
+    <trkpt lat="46.691259" lon="11.912533"/>
+    <trkpt lat="46.691258" lon="11.912599"/>
+    <trkpt lat="46.691348" lon="11.912604"/>
+    <trkpt lat="46.691349" lon="11.912538"/>
+    <trkpt lat="46.691394" lon="11.912541"/>
+    <trkpt lat="46.691396" lon="11.912475"/>
+    <trkpt lat="46.691441" lon="11.912478"/>
+    <trkpt lat="46.691443" lon="11.912412"/>
+    <trkpt lat="46.691487" lon="11.912415"/>
+    <trkpt lat="46.691491" lon="11.912284"/>
+  </trkseg></trk>
+  <trk><name>Umriss 018 2,5 m</name><trkseg>
+    <trkpt lat="46.677660" lon="11.941027"/>
+    <trkpt lat="46.677615" lon="11.941025"/>
+    <trkpt lat="46.677617" lon="11.940959"/>
+    <trkpt lat="46.677392" lon="11.940947"/>
+    <trkpt lat="46.677390" lon="11.941012"/>
+    <trkpt lat="46.677301" lon="11.941007"/>
+    <trkpt lat="46.677299" lon="11.941073"/>
+    <trkpt lat="46.677254" lon="11.941070"/>
+    <trkpt lat="46.677252" lon="11.941136"/>
+    <trkpt lat="46.677207" lon="11.941133"/>
+    <trkpt lat="46.677206" lon="11.941198"/>
+    <trkpt lat="46.677161" lon="11.941196"/>
+    <trkpt lat="46.677159" lon="11.941261"/>
+    <trkpt lat="46.677204" lon="11.941264"/>
+    <trkpt lat="46.677202" lon="11.941329"/>
+    <trkpt lat="46.677292" lon="11.941334"/>
+    <trkpt lat="46.677294" lon="11.941269"/>
+    <trkpt lat="46.677339" lon="11.941271"/>
+    <trkpt lat="46.677341" lon="11.941206"/>
+    <trkpt lat="46.677565" lon="11.941218"/>
+    <trkpt lat="46.677567" lon="11.941153"/>
+    <trkpt lat="46.677612" lon="11.941155"/>
+    <trkpt lat="46.677613" lon="11.941090"/>
+    <trkpt lat="46.677658" lon="11.941092"/>
+    <trkpt lat="46.677660" lon="11.941027"/>
+  </trkseg></trk>
+  <trk><name>Umriss 003 2,5 m</name><trkseg>
+    <trkpt lat="46.756931" lon="11.932966"/>
+    <trkpt lat="46.756886" lon="11.932963"/>
+    <trkpt lat="46.756888" lon="11.932898"/>
+    <trkpt lat="46.756798" lon="11.932893"/>
+    <trkpt lat="46.756797" lon="11.932959"/>
+    <trkpt lat="46.756752" lon="11.932956"/>
+    <trkpt lat="46.756748" lon="11.933087"/>
+    <trkpt lat="46.756703" lon="11.933084"/>
+    <trkpt lat="46.756702" lon="11.933150"/>
+    <trkpt lat="46.756747" lon="11.933152"/>
+    <trkpt lat="46.756745" lon="11.933218"/>
+    <trkpt lat="46.756835" lon="11.933222"/>
+    <trkpt lat="46.756836" lon="11.933157"/>
+    <trkpt lat="46.756881" lon="11.933160"/>
+    <trkpt lat="46.756883" lon="11.933094"/>
+    <trkpt lat="46.756928" lon="11.933097"/>
+    <trkpt lat="46.756931" lon="11.932966"/>
+  </trkseg></trk>
+  <trk><name>Umriss 004 2,5 m</name><trkseg>
+    <trkpt lat="46.722927" lon="11.882830"/>
+    <trkpt lat="46.722882" lon="11.882828"/>
+    <trkpt lat="46.722884" lon="11.882762"/>
+    <trkpt lat="46.722839" lon="11.882760"/>
+    <trkpt lat="46.722840" lon="11.882694"/>
+    <trkpt lat="46.722795" lon="11.882692"/>
+    <trkpt lat="46.722794" lon="11.882757"/>
+    <trkpt lat="46.722749" lon="11.882755"/>
+    <trkpt lat="46.722744" lon="11.882951"/>
+    <trkpt lat="46.722699" lon="11.882949"/>
+    <trkpt lat="46.722697" lon="11.883014"/>
+    <trkpt lat="46.722652" lon="11.883012"/>
+    <trkpt lat="46.722651" lon="11.883077"/>
+    <trkpt lat="46.722696" lon="11.883079"/>
+    <trkpt lat="46.722694" lon="11.883145"/>
+    <trkpt lat="46.722784" lon="11.883150"/>
+    <trkpt lat="46.722786" lon="11.883084"/>
+    <trkpt lat="46.722875" lon="11.883089"/>
+    <trkpt lat="46.722877" lon="11.883024"/>
+    <trkpt lat="46.722922" lon="11.883026"/>
+    <trkpt lat="46.722927" lon="11.882830"/>
+  </trkseg></trk>
+  <trk><name>Umriss 014 2,5 m</name><trkseg>
+    <trkpt lat="46.689522" lon="11.932974"/>
+    <trkpt lat="46.689477" lon="11.932971"/>
+    <trkpt lat="46.689479" lon="11.932906"/>
+    <trkpt lat="46.689299" lon="11.932896"/>
+    <trkpt lat="46.689297" lon="11.932962"/>
+    <trkpt lat="46.689252" lon="11.932959"/>
+    <trkpt lat="46.689251" lon="11.933025"/>
+    <trkpt lat="46.689296" lon="11.933027"/>
+    <trkpt lat="46.689294" lon="11.933092"/>
+    <trkpt lat="46.689474" lon="11.933102"/>
+    <trkpt lat="46.689475" lon="11.933037"/>
+    <trkpt lat="46.689520" lon="11.933039"/>
+    <trkpt lat="46.689522" lon="11.932974"/>
+  </trkseg></trk>
+  <trk><name>Umriss 017 2,5 m</name><trkseg>
+    <trkpt lat="46.685448" lon="11.944393"/>
+    <trkpt lat="46.685404" lon="11.944390"/>
+    <trkpt lat="46.685405" lon="11.944325"/>
+    <trkpt lat="46.685360" lon="11.944322"/>
+    <trkpt lat="46.685362" lon="11.944257"/>
+    <trkpt lat="46.685317" lon="11.944255"/>
+    <trkpt lat="46.685319" lon="11.944189"/>
+    <trkpt lat="46.685274" lon="11.944187"/>
+    <trkpt lat="46.685272" lon="11.944252"/>
+    <trkpt lat="46.685227" lon="11.944250"/>
+    <trkpt lat="46.685224" lon="11.944380"/>
+    <trkpt lat="46.685269" lon="11.944383"/>
+    <trkpt lat="46.685267" lon="11.944448"/>
+    <trkpt lat="46.685357" lon="11.944453"/>
+    <trkpt lat="46.685355" lon="11.944518"/>
+    <trkpt lat="46.685400" lon="11.944521"/>
+    <trkpt lat="46.685402" lon="11.944455"/>
+    <trkpt lat="46.685447" lon="11.944458"/>
+    <trkpt lat="46.685448" lon="11.944393"/>
+  </trkseg></trk>
+  <trk><name>Umriss 008 2,5 m</name><trkseg>
+    <trkpt lat="46.693354" lon="11.923895"/>
+    <trkpt lat="46.693310" lon="11.923892"/>
+    <trkpt lat="46.693311" lon="11.923827"/>
+    <trkpt lat="46.693221" lon="11.923822"/>
+    <trkpt lat="46.693220" lon="11.923888"/>
+    <trkpt lat="46.693175" lon="11.923885"/>
+    <trkpt lat="46.693173" lon="11.923950"/>
+    <trkpt lat="46.693128" lon="11.923948"/>
+    <trkpt lat="46.693126" lon="11.924013"/>
+    <trkpt lat="46.693081" lon="11.924011"/>
+    <trkpt lat="46.693080" lon="11.924076"/>
+    <trkpt lat="46.693125" lon="11.924079"/>
+    <trkpt lat="46.693123" lon="11.924144"/>
+    <trkpt lat="46.693168" lon="11.924146"/>
+    <trkpt lat="46.693170" lon="11.924081"/>
+    <trkpt lat="46.693215" lon="11.924083"/>
+    <trkpt lat="46.693216" lon="11.924018"/>
+    <trkpt lat="46.693306" lon="11.924023"/>
+    <trkpt lat="46.693308" lon="11.923958"/>
+    <trkpt lat="46.693353" lon="11.923960"/>
+    <trkpt lat="46.693354" lon="11.923895"/>
+  </trkseg></trk>
+  <trk><name>Umriss 020 2,5 m</name><trkseg>
+    <trkpt lat="46.675475" lon="11.864024"/>
+    <trkpt lat="46.675430" lon="11.864022"/>
+    <trkpt lat="46.675432" lon="11.863957"/>
+    <trkpt lat="46.675387" lon="11.863954"/>
+    <trkpt lat="46.675385" lon="11.864020"/>
+    <trkpt lat="46.675340" lon="11.864017"/>
+    <trkpt lat="46.675335" lon="11.864213"/>
+    <trkpt lat="46.675380" lon="11.864216"/>
+    <trkpt lat="46.675379" lon="11.864281"/>
+    <trkpt lat="46.675424" lon="11.864283"/>
+    <trkpt lat="46.675425" lon="11.864218"/>
+    <trkpt lat="46.675470" lon="11.864220"/>
+    <trkpt lat="46.675475" lon="11.864024"/>
+  </trkseg></trk>
+</gpx>
