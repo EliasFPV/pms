@@ -5,7 +5,7 @@ from xml.sax.saxutils import escape
 import config as C
 
 CSV_COLUMNS = [
-    "id", "score",
+    "profil", "id", "score",
     "score_wall_height", "score_slope_compact", "score_geology",
     "score_south_aspect", "score_access",
     "vert_extent_m", "area_m2", "slope_mean_deg", "slope_max_deg",
@@ -25,29 +25,46 @@ _SRS = """<srs><spatialrefsys>
     </spatialrefsys></srs>"""
 
 
-def write_vector_outputs(gdf, gpkg_path, csv_path, context=None):
-    """GeoPackage (Kandidaten + Kontext) und nach Score sortiertes CSV."""
-    import geopandas as gpd
+def write_vector_outputs(gdfs, gpkg_path, out_dir, context=None):
+    """gdfs: {profil_tag: GeoDataFrame}. Ein GeoPackage, je Profil eine
+    Kandidatenebene, dazu die Kontextlayer. CSVs je Profil und kombiniert."""
+    import pandas as pd
 
-    gpkg_path, csv_path = Path(gpkg_path), Path(csv_path)
-    gpkg_path.parent.mkdir(parents=True, exist_ok=True)
+    gpkg_path, out_dir = Path(gpkg_path), Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     if gpkg_path.exists():
         gpkg_path.unlink()
 
-    g = gdf.copy()
-    ll = g.geometry.centroid.to_crs(4326)
-    g["lat"] = ll.y.values
-    g["lon"] = ll.x.values
-    g.to_file(gpkg_path, layer="felskandidaten", driver="GPKG")
+    prepared, csvs = {}, []
+    for tag, gdf in gdfs.items():
+        if gdf is None or not len(gdf):
+            continue
+        g = gdf.copy()
+        g["profil"] = tag
+        ll = g.geometry.centroid.to_crs(4326)
+        g["lat"] = ll.y.values
+        g["lon"] = ll.x.values
+        g.to_file(gpkg_path, layer=f"felskandidaten_{tag}", driver="GPKG")
+        prepared[tag] = g
+        cols = [c for c in CSV_COLUMNS if c in g.columns]
+        one = out_dir / f"felskandidaten_{tag}.csv"
+        g[cols].sort_values("score", ascending=False).to_csv(
+            one, index=False, float_format="%.4f")
+        csvs.append(one)
 
     for name, layer in (context or {}).items():
         if layer is not None and len(layer):
             layer.to_file(gpkg_path, layer=name, driver="GPKG")
 
-    cols = [c for c in CSV_COLUMNS if c in g.columns]
-    (g[cols].sort_values("score", ascending=False)
-            .to_csv(csv_path, index=False, float_format="%.4f"))
-    return gpkg_path, csv_path
+    combined = out_dir / "felskandidaten.csv"
+    if prepared:
+        allc = [c for c in CSV_COLUMNS
+                if any(c in g.columns for g in prepared.values())]
+        df = pd.concat([g[[c for c in allc if c in g.columns]]
+                        for g in prepared.values()], ignore_index=True)
+        df.sort_values("score", ascending=False).to_csv(
+            combined, index=False, float_format="%.4f")
+    return gpkg_path, combined, csvs
 
 
 def _raster_layer(lid, name, src, gray=True, vmin=0, vmax=255, ramp=False):
@@ -101,12 +118,16 @@ def _sym(props, symbol_type, layer_class):
             f'</renderer-v2>')
 
 
-def write_qgis_project(qgs_path, gpkg_rel, hillshade_rel, ndom_rel, slope_rel,
-                       extent, title="Felskandidaten Gadertal"):
+def write_qgis_project(qgs_path, gpkg_rel, profiles, extent,
+                       title="Felskandidaten Gadertal"):
+    """profiles: Liste von (tag, label, hillshade_rel, ndom_rel, slope_rel)."""
     minx, miny, maxx, maxy = extent
     cand_sym = _sym({"color": "255,0,0,90", "outline_color": "227,26,28,255",
                      "outline_width": "0.5", "style": "solid",
                      "outline_style": "solid"}, "fill", "SimpleFill")
+    cand_sym2 = _sym({"color": "255,140,0,70", "outline_color": "230,120,20,255",
+                      "outline_width": "0.4", "style": "solid",
+                      "outline_style": "solid"}, "fill", "SimpleFill")
     geo_sym = _sym({"color": "180,180,120,60", "outline_color": "120,120,80,255",
                     "outline_width": "0.26", "style": "solid",
                     "outline_style": "solid"}, "fill", "SimpleFill")
@@ -116,36 +137,51 @@ def write_qgis_project(qgs_path, gpkg_rel, hillshade_rel, ndom_rel, slope_rel,
     way_sym = _sym({"line_color": "60,60,60,255", "line_width": "0.3",
                     "line_style": "solid"}, "line", "SimpleLine")
 
-    layers = [
-        _raster_layer("hs1", "DGM-Schummerung (2 m)", hillshade_rel,
-                      vmin=0, vmax=255),
-        _raster_layer("ndom1", "nDOM (DOM - DGM)", ndom_rel, ramp=True,
-                      vmin=0, vmax=25),
-        _raster_layer("slope1", "Hangneigung 2 m [Grad]", slope_rel, ramp=True,
-                      vmin=0, vmax=90),
+    layers, tree_spec = [], []
+    for i, (tag, label, hs, nd, sl) in enumerate(profiles):
+        sym = cand_sym if i == 0 else cand_sym2
+        src = f"{gpkg_rel}|layername=felskandidaten_{tag}"
+        layers.append(_vector_layer(f"cand_{tag}", f"Felskandidaten {label}",
+                                    src, "Polygon", sym))
+        tree_spec.append((f"cand_{tag}", f"Felskandidaten {label}", src, "ogr", 1))
+    for i, (tag, label, hs, nd, sl) in enumerate(profiles):
+        layers += [
+            _raster_layer(f"slope_{tag}", f"Hangneigung {label} [Grad]", sl,
+                          ramp=True, vmin=0, vmax=90),
+            _raster_layer(f"ndom_{tag}", f"nDOM {label}", nd, ramp=True,
+                          vmin=0, vmax=25),
+            _raster_layer(f"hs_{tag}", f"DGM-Schummerung {label}", hs,
+                          vmin=0, vmax=255),
+        ]
+        tree_spec += [
+            (f"slope_{tag}", f"Hangneigung {label} [Grad]", sl, "gdal", 0),
+            (f"ndom_{tag}", f"nDOM {label}", nd, "gdal", 0),
+            (f"hs_{tag}", f"DGM-Schummerung {label}", hs, "gdal", 1 if i == 0 else 0),
+        ]
+
+    layers += [
+        _vector_layer("way1", "Wege/Strassen (OSM)",
+                      f"{gpkg_rel}|layername=wege", "Line", way_sym),
+        _vector_layer("park1", "Naturparke",
+                      f"{gpkg_rel}|layername=schutzgebiete", "Polygon", park_sym),
         _vector_layer("geo1", "Geologie (Uebersicht)",
                       f"{gpkg_rel}|layername=geologie", "Polygon", geo_sym),
-        _vector_layer("park1", "Naturparke", f"{gpkg_rel}|layername=schutzgebiete",
-                      "Polygon", park_sym),
-        _vector_layer("way1", "Wege/Strassen (OSM)", f"{gpkg_rel}|layername=wege",
-                      "Line", way_sym),
-        _vector_layer("cand1", "Felskandidaten",
-                      f"{gpkg_rel}|layername=felskandidaten", "Polygon", cand_sym),
     ]
-    order = ["cand1", "way1", "park1", "geo1", "slope1", "ndom1", "hs1"]
+    ctx_spec = [
+        ("way1", "Wege/Strassen (OSM)", f"{gpkg_rel}|layername=wege", "ogr", 1),
+        ("park1", "Naturparke", f"{gpkg_rel}|layername=schutzgebiete", "ogr", 1),
+        ("geo1", "Geologie (Uebersicht)", f"{gpkg_rel}|layername=geologie", "ogr", 0),
+    ]
+    # Kandidaten oben, dann Kontext, dann Raster
+    order = ([t[0] for t in tree_spec if t[0].startswith("cand_")] +
+             [t[0] for t in ctx_spec] +
+             [t[0] for t in tree_spec if not t[0].startswith("cand_")])
+    full = ([t for t in tree_spec if t[0].startswith("cand_")] + ctx_spec +
+            [t for t in tree_spec if not t[0].startswith("cand_")])
     tree = "".join(
-        f'<layer-tree-layer id="{i}" name="{n}" source="{escape(s)}" '
+        f'<layer-tree-layer id="{i}" name="{escape(n)}" source="{escape(s_)}" '
         f'providerKey="{p}" checked="{"Qt::Checked" if c else "Qt::Unchecked"}" '
-        f'expanded="0"/>'
-        for i, n, s, p, c in [
-            ("cand1", "Felskandidaten", f"{gpkg_rel}|layername=felskandidaten", "ogr", 1),
-            ("way1", "Wege/Strassen (OSM)", f"{gpkg_rel}|layername=wege", "ogr", 1),
-            ("park1", "Naturparke", f"{gpkg_rel}|layername=schutzgebiete", "ogr", 1),
-            ("geo1", "Geologie (Uebersicht)", f"{gpkg_rel}|layername=geologie", "ogr", 0),
-            ("slope1", "Hangneigung 2 m [Grad]", slope_rel, "gdal", 0),
-            ("ndom1", "nDOM (DOM - DGM)", ndom_rel, "gdal", 0),
-            ("hs1", "DGM-Schummerung (2 m)", hillshade_rel, "gdal", 1),
-        ])
+        f'expanded="0"/>' for i, n, s_, p, c in full)
 
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <qgis projectname="{escape(title)}" version="3.34.0">

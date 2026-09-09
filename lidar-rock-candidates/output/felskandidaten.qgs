@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<qgis projectname="Felskandidaten Gadertal" version="3.34.0">
+  <homePath path=""/>
+  <title>Felskandidaten Gadertal</title>
+  <projectCrs><srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs></projectCrs>
+  <layer-tree-group><layer-tree-layer id="cand_05m" name="Felskandidaten 0,5 m nativ / 2 m Analyse" source="./felskandidaten.gpkg|layername=felskandidaten_05m" providerKey="ogr" checked="Qt::Checked" expanded="0"/><layer-tree-layer id="cand_25m" name="Felskandidaten 2,5 m nativ / 5 m Analyse" source="./felskandidaten.gpkg|layername=felskandidaten_25m" providerKey="ogr" checked="Qt::Checked" expanded="0"/><layer-tree-layer id="way1" name="Wege/Strassen (OSM)" source="./felskandidaten.gpkg|layername=wege" providerKey="ogr" checked="Qt::Checked" expanded="0"/><layer-tree-layer id="park1" name="Naturparke" source="./felskandidaten.gpkg|layername=schutzgebiete" providerKey="ogr" checked="Qt::Checked" expanded="0"/><layer-tree-layer id="geo1" name="Geologie (Uebersicht)" source="./felskandidaten.gpkg|layername=geologie" providerKey="ogr" checked="Qt::Unchecked" expanded="0"/><layer-tree-layer id="slope_05m" name="Hangneigung 0,5 m nativ / 2 m Analyse [Grad]" source="../data/derived/05m/slope.tif" providerKey="gdal" checked="Qt::Unchecked" expanded="0"/><layer-tree-layer id="ndom_05m" name="nDOM 0,5 m nativ / 2 m Analyse" source="../data/derived/05m/ndom.tif" providerKey="gdal" checked="Qt::Unchecked" expanded="0"/><layer-tree-layer id="hs_05m" name="DGM-Schummerung 0,5 m nativ / 2 m Analyse" source="../data/derived/05m/hillshade.tif" providerKey="gdal" checked="Qt::Checked" expanded="0"/><layer-tree-layer id="slope_25m" name="Hangneigung 2,5 m nativ / 5 m Analyse [Grad]" source="../data/derived/25m/slope.tif" providerKey="gdal" checked="Qt::Unchecked" expanded="0"/><layer-tree-layer id="ndom_25m" name="nDOM 2,5 m nativ / 5 m Analyse" source="../data/derived/25m/ndom.tif" providerKey="gdal" checked="Qt::Unchecked" expanded="0"/><layer-tree-layer id="hs_25m" name="DGM-Schummerung 2,5 m nativ / 5 m Analyse" source="../data/derived/25m/hillshade.tif" providerKey="gdal" checked="Qt::Unchecked" expanded="0"/>
+    <custom-order enabled="0"><item>cand_05m</item><item>cand_25m</item><item>way1</item><item>park1</item><item>geo1</item><item>slope_05m</item><item>ndom_05m</item><item>hs_05m</item><item>slope_25m</item><item>ndom_25m</item><item>hs_25m</item></custom-order>
+  </layer-tree-group>
+  <mapcanvas name="theMapCanvas">
+    <units>meters</units>
+    <extent><xmin>715897.75</xmin><ymin>5172940.75</ymin><xmax>725897.75</xmax><ymax>5182940.75</ymax></extent>
+    <destinationsrs><srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs></destinationsrs>
+  </mapcanvas>
+  <projectlayers>
+  <maplayer type="vector" geometry="Polygon" hasScaleBasedVisibilityFlag="0">
+    <id>cand_05m</id>
+    <datasource>./felskandidaten.gpkg|layername=felskandidaten_05m</datasource>
+    <layername>Felskandidaten 0,5 m nativ / 2 m Analyse</layername>
+    <provider encoding="UTF-8">ogr</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <renderer-v2 type="singleSymbol" forceraster="0" symbollevels="0"><symbols><symbol type="fill" name="0" alpha="1" clip_to_extent="1"><layer class="SimpleFill" enabled="1" pass="0"><Option type="Map"><Option type="QString" name="color" value="255,0,0,90"/><Option type="QString" name="outline_color" value="227,26,28,255"/><Option type="QString" name="outline_width" value="0.5"/><Option type="QString" name="style" value="solid"/><Option type="QString" name="outline_style" value="solid"/></Option></layer></symbol></symbols></renderer-v2>
+  </maplayer>
+  <maplayer type="vector" geometry="Polygon" hasScaleBasedVisibilityFlag="0">
+    <id>cand_25m</id>
+    <datasource>./felskandidaten.gpkg|layername=felskandidaten_25m</datasource>
+    <layername>Felskandidaten 2,5 m nativ / 5 m Analyse</layername>
+    <provider encoding="UTF-8">ogr</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <renderer-v2 type="singleSymbol" forceraster="0" symbollevels="0"><symbols><symbol type="fill" name="0" alpha="1" clip_to_extent="1"><layer class="SimpleFill" enabled="1" pass="0"><Option type="Map"><Option type="QString" name="color" value="255,140,0,70"/><Option type="QString" name="outline_color" value="230,120,20,255"/><Option type="QString" name="outline_width" value="0.4"/><Option type="QString" name="style" value="solid"/><Option type="QString" name="outline_style" value="solid"/></Option></layer></symbol></symbols></renderer-v2>
+  </maplayer>
+  <maplayer type="raster" hasScaleBasedVisibilityFlag="0">
+    <id>slope_05m</id>
+    <datasource>../data/derived/05m/slope.tif</datasource>
+    <layername>Hangneigung 0,5 m nativ / 2 m Analyse [Grad]</layername>
+    <provider>gdal</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <pipe><rasterrenderer type="singlebandpseudocolor" band="1" opacity="0.75"><rastershader><colorrampshader colorRampType="INTERPOLATED" classificationMode="1" clip="0"><item label="0" value="0" color="#2b83ba" alpha="255"/><item label="45.0" value="45.0" color="#ffffbf" alpha="255"/><item label="90" value="90" color="#d7191c" alpha="255"/></colorrampshader></rastershader></rasterrenderer><brightnesscontrast brightness="0" contrast="0"/>
+      <huesaturation saturation="0"/><rasterresampler maxOversampling="2"/>
+    </pipe>
+  </maplayer>
+  <maplayer type="raster" hasScaleBasedVisibilityFlag="0">
+    <id>ndom_05m</id>
+    <datasource>../data/derived/05m/ndom.tif</datasource>
+    <layername>nDOM 0,5 m nativ / 2 m Analyse</layername>
+    <provider>gdal</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <pipe><rasterrenderer type="singlebandpseudocolor" band="1" opacity="0.75"><rastershader><colorrampshader colorRampType="INTERPOLATED" classificationMode="1" clip="0"><item label="0" value="0" color="#2b83ba" alpha="255"/><item label="12.5" value="12.5" color="#ffffbf" alpha="255"/><item label="25" value="25" color="#d7191c" alpha="255"/></colorrampshader></rastershader></rasterrenderer><brightnesscontrast brightness="0" contrast="0"/>
+      <huesaturation saturation="0"/><rasterresampler maxOversampling="2"/>
+    </pipe>
+  </maplayer>
+  <maplayer type="raster" hasScaleBasedVisibilityFlag="0">
+    <id>hs_05m</id>
+    <datasource>../data/derived/05m/hillshade.tif</datasource>
+    <layername>DGM-Schummerung 0,5 m nativ / 2 m Analyse</layername>
+    <provider>gdal</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <pipe><rasterrenderer type="singlebandgray" band="1" grayBand="1" opacity="1" gradient="BlackToWhite"><contrastEnhancement><minValue>0</minValue><maxValue>255</maxValue><algorithm>StretchToMinimumMaximum</algorithm></contrastEnhancement></rasterrenderer><brightnesscontrast brightness="0" contrast="0"/>
+      <huesaturation saturation="0"/><rasterresampler maxOversampling="2"/>
+    </pipe>
+  </maplayer>
+  <maplayer type="raster" hasScaleBasedVisibilityFlag="0">
+    <id>slope_25m</id>
+    <datasource>../data/derived/25m/slope.tif</datasource>
+    <layername>Hangneigung 2,5 m nativ / 5 m Analyse [Grad]</layername>
+    <provider>gdal</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <pipe><rasterrenderer type="singlebandpseudocolor" band="1" opacity="0.75"><rastershader><colorrampshader colorRampType="INTERPOLATED" classificationMode="1" clip="0"><item label="0" value="0" color="#2b83ba" alpha="255"/><item label="45.0" value="45.0" color="#ffffbf" alpha="255"/><item label="90" value="90" color="#d7191c" alpha="255"/></colorrampshader></rastershader></rasterrenderer><brightnesscontrast brightness="0" contrast="0"/>
+      <huesaturation saturation="0"/><rasterresampler maxOversampling="2"/>
+    </pipe>
+  </maplayer>
+  <maplayer type="raster" hasScaleBasedVisibilityFlag="0">
+    <id>ndom_25m</id>
+    <datasource>../data/derived/25m/ndom.tif</datasource>
+    <layername>nDOM 2,5 m nativ / 5 m Analyse</layername>
+    <provider>gdal</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <pipe><rasterrenderer type="singlebandpseudocolor" band="1" opacity="0.75"><rastershader><colorrampshader colorRampType="INTERPOLATED" classificationMode="1" clip="0"><item label="0" value="0" color="#2b83ba" alpha="255"/><item label="12.5" value="12.5" color="#ffffbf" alpha="255"/><item label="25" value="25" color="#d7191c" alpha="255"/></colorrampshader></rastershader></rasterrenderer><brightnesscontrast brightness="0" contrast="0"/>
+      <huesaturation saturation="0"/><rasterresampler maxOversampling="2"/>
+    </pipe>
+  </maplayer>
+  <maplayer type="raster" hasScaleBasedVisibilityFlag="0">
+    <id>hs_25m</id>
+    <datasource>../data/derived/25m/hillshade.tif</datasource>
+    <layername>DGM-Schummerung 2,5 m nativ / 5 m Analyse</layername>
+    <provider>gdal</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <pipe><rasterrenderer type="singlebandgray" band="1" grayBand="1" opacity="1" gradient="BlackToWhite"><contrastEnhancement><minValue>0</minValue><maxValue>255</maxValue><algorithm>StretchToMinimumMaximum</algorithm></contrastEnhancement></rasterrenderer><brightnesscontrast brightness="0" contrast="0"/>
+      <huesaturation saturation="0"/><rasterresampler maxOversampling="2"/>
+    </pipe>
+  </maplayer>
+  <maplayer type="vector" geometry="Line" hasScaleBasedVisibilityFlag="0">
+    <id>way1</id>
+    <datasource>./felskandidaten.gpkg|layername=wege</datasource>
+    <layername>Wege/Strassen (OSM)</layername>
+    <provider encoding="UTF-8">ogr</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <renderer-v2 type="singleSymbol" forceraster="0" symbollevels="0"><symbols><symbol type="line" name="0" alpha="1" clip_to_extent="1"><layer class="SimpleLine" enabled="1" pass="0"><Option type="Map"><Option type="QString" name="line_color" value="60,60,60,255"/><Option type="QString" name="line_width" value="0.3"/><Option type="QString" name="line_style" value="solid"/></Option></layer></symbol></symbols></renderer-v2>
+  </maplayer>
+  <maplayer type="vector" geometry="Polygon" hasScaleBasedVisibilityFlag="0">
+    <id>park1</id>
+    <datasource>./felskandidaten.gpkg|layername=schutzgebiete</datasource>
+    <layername>Naturparke</layername>
+    <provider encoding="UTF-8">ogr</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <renderer-v2 type="singleSymbol" forceraster="0" symbollevels="0"><symbols><symbol type="fill" name="0" alpha="1" clip_to_extent="1"><layer class="SimpleFill" enabled="1" pass="0"><Option type="Map"><Option type="QString" name="color" value="0,160,80,40"/><Option type="QString" name="outline_color" value="0,120,60,255"/><Option type="QString" name="outline_width" value="0.6"/><Option type="QString" name="style" value="solid"/><Option type="QString" name="outline_style" value="dash"/></Option></layer></symbol></symbols></renderer-v2>
+  </maplayer>
+  <maplayer type="vector" geometry="Polygon" hasScaleBasedVisibilityFlag="0">
+    <id>geo1</id>
+    <datasource>./felskandidaten.gpkg|layername=geologie</datasource>
+    <layername>Geologie (Uebersicht)</layername>
+    <provider encoding="UTF-8">ogr</provider>
+    <srs><spatialrefsys>
+      <proj4>+proj=utm +zone=32 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>2649</srsid><srid>25832</srid><authid>EPSG:25832</authid>
+      <description>ETRS89 / UTM zone 32N</description>
+      <projectionacronym>utm</projectionacronym>
+      <ellipsoidacronym>EPSG:7019</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys></srs>
+    <renderer-v2 type="singleSymbol" forceraster="0" symbollevels="0"><symbols><symbol type="fill" name="0" alpha="1" clip_to_extent="1"><layer class="SimpleFill" enabled="1" pass="0"><Option type="Map"><Option type="QString" name="color" value="180,180,120,60"/><Option type="QString" name="outline_color" value="120,120,80,255"/><Option type="QString" name="outline_width" value="0.26"/><Option type="QString" name="style" value="solid"/><Option type="QString" name="outline_style" value="solid"/></Option></layer></symbol></symbols></renderer-v2>
+  </maplayer>
+  </projectlayers>
+  <layerorder><layer id='cand_05m'/><layer id='cand_25m'/><layer id='way1'/><layer id='park1'/><layer id='geo1'/><layer id='slope_05m'/><layer id='ndom_05m'/><layer id='hs_05m'/><layer id='slope_25m'/><layer id='ndom_25m'/><layer id='hs_25m'/></layerorder>
+  <properties>
+    <Paths><Absolute type="bool">false</Absolute></Paths>
+  </properties>
+</qgis>

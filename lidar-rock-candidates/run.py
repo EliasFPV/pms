@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
-"""Gesamtlauf: Mosaik -> Stack -> Maske -> Polygone -> Kontext -> Score -> Output.
+"""Gesamtlauf ueber beide Aufloesungsprofile.
 
-Voraussetzung: `python3 download.py --yes` ist gelaufen.
+  hires : 0,5 m nativ / 2 m Analyse  - wie spezifiziert, deckt aber nur die
+          Korridore ab, fuer die die Provinz 0,5-m-Daten fliegt
+  wide  : 2,5 m nativ / 5 m Analyse  - flaechendeckend, deutlich grober
+
+Beide Ergebnisse werden getrennt gefuehrt (Attribut "profil"), der zweite
+Lauf ersetzt den ersten nicht.
+
+Voraussetzung: download.py ist fuer beide Profile gelaufen.
 """
 import math
 import sys
-from pathlib import Path
 
 import numpy as np
 import rasterio
@@ -38,105 +44,147 @@ def export_band(stack_path, band, out_path):
     return out_path
 
 
-def main():
-    for d in (C.DERIVED_DIR, C.CONTEXT_DIR, C.OUT_DIR, C.BASE_DIR / "docs"):
-        d.mkdir(parents=True, exist_ok=True)
+def run_profile(name):
+    """Rasterkette fuer ein Profil. Gibt (gdf_ohne_kontext, stats, rasterpfade)."""
+    p = C.set_profile(name)
+    tag = p["tag"]
+    log(f"Profil {name}: {p['label']}")
+    C.DERIVED_DIR.mkdir(parents=True, exist_ok=True)
 
     dgm_dir, dom_dir = C.TILE_DIR / "dgm", C.TILE_DIR / "dom"
     dgm_tiles = sorted(dgm_dir.glob("*.tif"))
     dom_tiles = sorted(dom_dir.glob("*.tif"))
+    names = {q.stem for q in dgm_tiles} & {q.stem for q in dom_tiles}
+    dgm_tiles = [q for q in dgm_tiles if q.stem in names]
+    dom_tiles = [q for q in dom_tiles if q.stem in names]
     if not dgm_tiles:
-        sys.exit("Keine Kacheln vorhanden - zuerst download.py laufen lassen.")
-    # nur Paare verwenden
-    names = {p.stem for p in dgm_tiles} & {p.stem for p in dom_tiles}
-    dgm_tiles = [p for p in dgm_tiles if p.stem in names]
-    dom_tiles = [p for p in dom_tiles if p.stem in names]
-    log(f"Kacheln mit DGM+DOM: {len(dgm_tiles)}")
+        log(f"  Profil {name}: keine Kacheln - uebersprungen")
+        return None, None, None
+    log(f"  Kacheln mit DGM+DOM: {len(dgm_tiles)}")
 
-    log("Mosaik (VRT)")
-    dgm_vrt = build_vrt(dgm_tiles, C.DERIVED_DIR / "dgm_05m.vrt")
-    dom_vrt = build_vrt(dom_tiles, C.DERIVED_DIR / "dom_05m.vrt")
+    dgm_vrt = build_vrt(dgm_tiles, C.DERIVED_DIR / f"dgm_{tag}.vrt")
+    dom_vrt = build_vrt(dom_tiles, C.DERIVED_DIR / f"dom_{tag}.vrt")
 
-    stack = C.DERIVED_DIR / "stack_2m.tif"
+    stack = C.DERIVED_DIR / "stack.tif"
     if not stack.exists():
-        log("Analysestack 2 m (windowed)")
+        log("  Analysestack (windowed)")
         build_stack(dgm_vrt, dom_vrt, stack)
 
-    slope_p = C.DERIVED_DIR / "slope_2m.tif"
-    aspect_p = C.DERIVED_DIR / "aspect_2m.tif"
+    slope_p = C.DERIVED_DIR / "slope.tif"
+    aspect_p = C.DERIVED_DIR / "aspect.tif"
     if not (slope_p.exists() and aspect_p.exists()):
-        log("Neigung / Exposition 2 m")
+        log("  Neigung / Exposition")
         M.derive_slope_aspect(stack, slope_p, aspect_p)
 
-    ndom_p = C.DERIVED_DIR / "ndom_2m.tif"
-    hs_p = C.DERIVED_DIR / "hillshade_2m.tif"
+    ndom_p = C.DERIVED_DIR / "ndom.tif"
+    hs_p = C.DERIVED_DIR / "hillshade.tif"
     if not ndom_p.exists():
         export_band(stack, "ndom_mean", ndom_p)
     if not hs_p.exists():
-        log("Schummerung")
+        log("  Schummerung")
         M.hillshade(stack, hs_p)
 
-    log("Felsmaske + Morphologie + Labeling")
+    log("  Felsmaske + Morphologie + Labeling")
     mk = M.rock_mask(stack, slope_p)
     with rasterio.open(stack) as s:
         vf = s.read(BANDS.index("valid_frac") + 1)
-    coverage_pct = float(np.nanmean(vf > 0.5) * 100.0)
+    coverage_pct = float(np.mean(vf > 0.5) * 100.0)
     lab, n = M.clean_and_label(mk)
-    log(f"Maskenzellen {int(mk.sum())}, Flaechen nach Bereinigung {n}")
+    log(f"  Maskenzellen {int(mk.sum())}, Flaechen {n}, Abdeckung {coverage_pct:.1f} %")
+
+    stats = {
+        "tag": tag, "label": p["label"], "profile": name,
+        "native": p["native"], "coarse": p["coarse"],
+        "cov_dgm": p["cov_dgm"], "cov_dom": p["cov_dom"],
+        "tiles_with_data": len(dgm_tiles),
+        "tiles_total": len(tiles_touching_aoi()),
+        "coverage_pct": coverage_pct,
+        "mask_cells": int(mk.sum()), "n_raw": 0, "n_final": 0,
+        "bbox": aoi_bbox(),
+    }
+    rasters = {
+        "hillshade": f"../data/derived/{tag}/hillshade.tif",
+        "ndom": f"../data/derived/{tag}/ndom.tif",
+        "slope": f"../data/derived/{tag}/slope.tif",
+    }
     if n == 0:
-        sys.exit("Keine Flaechen gefunden - Schwellen pruefen.")
+        return None, stats, rasters
 
-    log("Kennwerte je Flaeche")
+    log("  Kennwerte je Flaeche")
     gdf = P.build_geodataframe(lab, n, stack, slope_p, aspect_p)
-    n_raw = len(gdf)
+    stats["n_raw"] = len(gdf)
     gdf = P.apply_filters(gdf)
-    log(f"nach Filter: {len(gdf)} von {n_raw}")
-    if not len(gdf):
-        sys.exit("Alle Flaechen weggefiltert - Filter pruefen.")
+    stats["n_final"] = len(gdf)
+    log(f"  nach Filter: {len(gdf)} von {stats['n_raw']}")
+    return (gdf if len(gdf) else None), stats, rasters
 
-    log("Kontext: Geologie")
+
+def main():
+    only = None
+    if "--profile" in sys.argv:
+        only = sys.argv[sys.argv.index("--profile") + 1]
+    profiles = [only] if only else ["hires", "wide"]
+
+    C.OUT_DIR.mkdir(parents=True, exist_ok=True)
+    results = {}
+    for name in profiles:
+        gdf, stats, rasters = run_profile(name)
+        if stats:
+            results[name] = {"gdf": gdf, "stats": stats, "rasters": rasters}
+
+    if not results:
+        sys.exit("Kein Profil lieferte Daten.")
+
+    log("Kontext: Geologie / Naturparke / OSM-Wege")
+    C.set_profile(profiles[0])
     geo = ctx.fetch_geology()
-    gdf = ctx.join_geology(gdf, geo)
-    log("Kontext: Naturparke")
     parks = ctx.fetch_parks()
-    gdf = ctx.flag_protected(gdf, parks)
-    log("Kontext: OSM-Wege")
     ways = ctx.fetch_osm_ways()
-    gdf = ctx.distance_to_ways(gdf, ways)
+    log(f"  Geologie {len(geo)}, Parke {len(parks)}, Wege {len(ways)}")
 
-    log("Score")
-    gdf = S.add_score(gdf)
+    gdfs = {}
+    for name, r in results.items():
+        g = r["gdf"]
+        if g is None:
+            continue
+        g = ctx.join_geology(g, geo)
+        g = ctx.flag_protected(g, parks)
+        g = ctx.distance_to_ways(g, ways)
+        g = S.add_score(g)
+        gdfs[r["stats"]["tag"]] = g
+        st = r["stats"]
+        st["n_protected"] = int(g["im_schutzgebiet"].sum())
+        st["n_geo_good"] = int((g["geologie_klasse"] == "gut").sum())
+        st["n_geo_bad"] = int((g["geologie_klasse"] == "unbrauchbar_vermutet").sum())
+        st["n_geo_mixed"] = int(
+            (g["geologie_klasse"] == "gemischt_karbonat_werfener").sum())
+        st["max_wall_m"] = float(g["vert_extent_m"].max())
+        st["top_score"] = float(g["score"].max())
 
     log("Ausgaben")
-    gpkg, csv = O.write_vector_outputs(
-        gdf, C.OUT_DIR / "felskandidaten.gpkg", C.OUT_DIR / "felskandidaten.csv",
+    gpkg, csv, per = O.write_vector_outputs(
+        gdfs, C.OUT_DIR / "felskandidaten.gpkg", C.OUT_DIR,
         context={"geologie": geo, "schutzgebiete": parks, "wege": ways})
     O.write_qgis_project(
-        C.OUT_DIR / "felskandidaten.qgs",
-        "./felskandidaten.gpkg",
-        "../data/derived/hillshade_2m.tif",
-        "../data/derived/ndom_2m.tif",
-        "../data/derived/slope_2m.tif",
-        aoi_bbox())
+        C.OUT_DIR / "felskandidaten.qgs", "./felskandidaten.gpkg",
+        [(r["stats"]["tag"], r["stats"]["label"], r["rasters"]["hillshade"],
+          r["rasters"]["ndom"], r["rasters"]["slope"])
+         for r in results.values()],
+        results[profiles[0]]["stats"]["bbox"])
 
     cx, cy = center_utm()
     nx, ny = center_utm(C.AOI_CENTER_LATLON_NOMINATIM)
     R.write_readme(C.BASE_DIR / "README.md", {
-        "bbox": aoi_bbox(),
         "center_offset_m": math.hypot(nx - cx, ny - cy),
-        "tiles_with_data": len(dgm_tiles),
-        "tiles_total": len(tiles_touching_aoi()),
-        "coverage_pct": coverage_pct,
-        "n_raw": n_raw,
-        "n_final": len(gdf),
-        "n_protected": int(gdf["im_schutzgebiet"].sum()),
-        "n_geo_good": int((gdf["geologie_klasse"] == "gut").sum()),
-        "n_geo_bad": int((gdf["geologie_klasse"] == "unbrauchbar_vermutet").sum()),
+        "profiles": [r["stats"] for r in results.values()],
     })
-    log(f"fertig: {gpkg.name}, {csv.name}, felskandidaten.qgs, README.md")
-    print(gdf.head(10)[["id", "score", "vert_extent_m", "area_m2",
-                        "slope_mean_deg", "geologie_klasse", "dist_weg_m"]]
-          .to_string(index=False))
+    log(f"fertig: {gpkg.name}, {csv.name}, "
+        f"{', '.join(q.name for q in per)}, felskandidaten.qgs, README.md")
+    for tag, g in gdfs.items():
+        print(f"\n--- Top 10, Profil {tag} ---")
+        print(g.head(10)[["id", "score", "vert_extent_m", "area_m2",
+                          "slope_mean_deg", "aspect_mean_deg",
+                          "geologie_klasse", "dist_weg_m"]].to_string(index=False))
 
 
 if __name__ == "__main__":

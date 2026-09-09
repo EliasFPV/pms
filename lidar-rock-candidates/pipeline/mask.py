@@ -44,7 +44,7 @@ def rock_mask(stack_path, slope_path):
     with rasterio.open(slope_path) as s:
         sl2 = s.read(1)
 
-    m = (sl2 > C.SLOPE_MIN_DEG) & (ndom < C.NDOM_MAX_M)
+    m = (sl2 > C.SLOPE_MIN_ACTIVE) & (ndom < C.NDOM_MAX_M)
     m &= np.isfinite(sl2) & np.isfinite(ndom) & (valid > 0.5)
     if C.REQUIRE_BOTH_SCALES:
         m &= sl05 > C.SLOPE_MIN_DEG_NATIVE
@@ -52,13 +52,23 @@ def rock_mask(stack_path, slope_path):
 
 
 def clean_and_label(mask):
-    """Opening/Closing gegen Salt-and-Pepper, dann zusammenhaengende Flaechen."""
-    st = ndi.generate_binary_structure(2, 2)      # 8er-Nachbarschaft
-    m = mask
-    if C.OPENING_ITER:
-        m = ndi.binary_opening(m, structure=st, iterations=C.OPENING_ITER)
-    if C.CLOSING_ITER:
-        m = ndi.binary_closing(m, structure=st, iterations=C.CLOSING_ITER)
+    """Closing/Opening gegen Salt-and-Pepper, dann zusammenhaengende Flaechen.
+
+    Reihenfolge ueber C.MORPH_ORDER; Begruendung siehe config.py.
+    """
+    st_open = ndi.generate_binary_structure(2, C.OPENING_CONNECTIVITY)
+    st_close = ndi.generate_binary_structure(2, C.CLOSING_CONNECTIVITY)
+    st = ndi.generate_binary_structure(2, 2)      # Labeling: 8er-Nachbarschaft
+
+    def _open(a):
+        return ndi.binary_opening(a, structure=st_open,
+                                  iterations=C.OPENING_ITER) if C.OPENING_ITER else a
+
+    def _close(a):
+        return ndi.binary_closing(a, structure=st_close,
+                                  iterations=C.CLOSING_ITER) if C.CLOSING_ITER else a
+
+    m = _open(_close(mask)) if C.MORPH_ORDER == "closing_first" else _close(_open(mask))
     lab, n = ndi.label(m, structure=st)
     if C.MIN_PIXELS > 1 and n:
         counts = np.bincount(lab.ravel())

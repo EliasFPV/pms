@@ -3,7 +3,11 @@
 
 Nutzt den bereits gebauten 2-m-Stack, laedt nichts nach.
 Aufruf: python3 sensitivity.py
+
+Aufruf: python3 sensitivity.py [--profile hires|wide]
 """
+import sys
+
 import numpy as np
 import rasterio
 from scipy import ndimage as ndi
@@ -16,19 +20,25 @@ NDOMS = [1.0, 1.5, 2.5, 5.0]
 
 
 def main():
-    stack = C.DERIVED_DIR / "stack_2m.tif"
+    prof = "hires"
+    if "--profile" in sys.argv:
+        prof = sys.argv[sys.argv.index("--profile") + 1]
+    p = C.set_profile(prof)
+    print(f"Profil: {prof} ({p['label']})")
+    stack = C.DERIVED_DIR / "stack.tif"
     with rasterio.open(stack) as s:
         ndom = s.read(BANDS.index("ndom_mean") + 1)
         valid = s.read(BANDS.index("valid_frac") + 1)
         dmin = s.read(BANDS.index("dgm_min") + 1)
         dmax = s.read(BANDS.index("dgm_max") + 1)
-    with rasterio.open(C.DERIVED_DIR / "slope_2m.tif") as s:
+    with rasterio.open(C.DERIVED_DIR / "slope.tif") as s:
         sl = s.read(1)
 
     base = np.isfinite(sl) & np.isfinite(ndom) & (valid > 0.5)
     st = ndi.generate_binary_structure(2, 2)
     cell = C.COARSE_RES ** 2
 
+    print(f"aktive Schwelle dieses Profils: {C.SLOPE_MIN_ACTIVE:.0f} Grad")
     print(f"Filter: vert >= {C.MIN_VERTICAL_EXTENT_M} m, Flaeche >= {C.MIN_AREA_M2} m2")
     print(f"{'Neigung':>8} {'nDOM':>6} {'Zellen':>9} {'Flaechen':>9} "
           f"{'Kandidaten':>11} {'max Wand [m]':>13}")

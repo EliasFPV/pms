@@ -1,37 +1,10 @@
-"""README-Erzeugung - Schwellenwerte kommen direkt aus config.py."""
-from datetime import date
-from pathlib import Path
-
-import config as C
-
-
-def write_readme(path, info):
-    C.set_profile("hires")
-    w = C.WEIGHTS
-    profs = info["profiles"]
-    hi = next((p for p in profs if p["profile"] == "hires"), profs[0])
-    wide = next((p for p in profs if p["profile"] == "wide"), None)
-
-    gl = "\n".join(
-        f"| `{cls}` | {sc:.2f} | {', '.join(keys[:6])}{' …' if len(keys) > 6 else ''} |"
-        for sc, cls, keys in C.GEOLOGY_RULES)
-
-    src = "\n".join(
-        f"| {p['label']} | `{p['cov_dgm']}` | `{p['cov_dom']}` |" for p in profs)
-
-    res = "\n".join(
-        f"| {p['label']} | {p['tiles_with_data']}/{p['tiles_total']} | "
-        f"{p['coverage_pct']:.1f} % | {p['mask_cells']:,} | {p['n_raw']} | "
-        f"{p['n_final']} | {p.get('max_wall_m', float('nan')):.1f} | "
-        f"{p.get('n_protected', 0)} |" for p in profs)
-
-    txt = f"""# Felskandidaten aus LiDAR - Welschellen/Rina, Gadertal
+# Felskandidaten aus LiDAR - Welschellen/Rina, Gadertal
 
 Automatisch abgeleitete Kandidatenflaechen fuer Klettern und Bouldern im
 5-km-Umkreis um Welschellen/Rina (Gadertal, Suedtirol), aus den
 LiDAR-Hoehenmodellen der Autonomen Provinz Bozen.
 
-Erzeugt am {date.today().isoformat()}.
+Erzeugt am 2026-09-09.
 
 **Das Ergebnis ist eine Vorauswahl fuer die Kartenarbeit, kein Kletterfuehrer.**
 Jede Flaeche muss vor Ort geprueft werden. Abschnitt 8 ist Teil des
@@ -49,15 +22,15 @@ Gewaesser, kein Flaechenmodell -, rechts der bestbewertete Kandidat.*
 
 | | |
 |---|---|
-| Zentrum (WGS84, Vorgabe) | {C.AOI_CENTER_LATLON[0]} N, {C.AOI_CENTER_LATLON[1]} E |
-| Zentrum laut Nominatim ("Rina - Welschellen") | {C.AOI_CENTER_LATLON_NOMINATIM[0]} N, {C.AOI_CENTER_LATLON_NOMINATIM[1]} E |
-| Abweichung | {info['center_offset_m']:.0f} m |
-| Puffer | {C.AOI_BUFFER_M:.0f} m |
-| Arbeits-CRS | {C.CRS} (ETRS89 / UTM 32N) |
-| Bounding Box (0,5-m-Grid) | {hi['bbox'][0]:.2f}, {hi['bbox'][1]:.2f} .. {hi['bbox'][2]:.2f}, {hi['bbox'][3]:.2f} |
+| Zentrum (WGS84, Vorgabe) | 46.7185 N, 11.8905 E |
+| Zentrum laut Nominatim ("Rina - Welschellen") | 46.715605 N, 11.879643 E |
+| Abweichung | 890 m |
+| Puffer | 5000 m |
+| Arbeits-CRS | EPSG:25832 (ETRS89 / UTM 32N) |
+| Bounding Box (0,5-m-Grid) | 715897.75, 5172940.75 .. 725897.75, 5182940.75 |
 
 Die Nominatim-Abfrage bestaetigt die Vorgabe grob: der Ortskern liegt rund
-{info['center_offset_m']:.0f} m suedwestlich des vorgegebenen Zentrums, also weit
+890 m suedwestlich des vorgegebenen Zentrums, also weit
 innerhalb des 5-km-Puffers. Gerechnet wurde mit der Nutzervorgabe
 (`AOI_CENTER_LATLON` in `config.py`). Die Bounding Box wird je Profil auf den
 Ursprung des jeweiligen Quellrasters gerastet; die beiden Boxen unterscheiden
@@ -65,24 +38,25 @@ sich dadurch um weniger als 2,5 m.
 
 ## 2. Datenquellen
 
-WCS der Autonomen Provinz Bozen, `{C.WCS_URL}` (WCS {C.WCS_VERSION}).
+WCS der Autonomen Provinz Bozen, `https://geoservices9.civis.bz.it/geoserver/wcs` (WCS 2.0.1).
 Die vollstaendige Coverage-Liste aus `GetCapabilities` liegt in
 `docs/wcs_coverages.txt` - es wurde keine ID geraten.
 
 | Profil | DGM | DOM |
 |---|---|---|
-{src}
+| 0,5 m nativ / 2 m Analyse | `p_bz-Elevation__DigitalTerrainModel-0.5m` | `p_bz-Elevation__DigitalElevationModel-0.5m` |
+| 2,5 m nativ / 5 m Analyse | `p_bz-Elevation__DigitalTerrainModel-2.5m` | `p_bz-Elevation__DigitalElevationModel-2.5m` |
 
 DGM und DOM liegen in **beiden** Profilen in derselben Aufloesung vor und
-teilen Ursprung, Zellgroesse und NoData ({C.NODATA:.0f}). Ein Resampling des
+teilen Ursprung, Zellgroesse und NoData (-9999). Ein Resampling des
 DOM auf das DGM-Grid war daher **nicht** noetig.
 
 Kontextlayer:
 
 | Layer | Quelle |
 |---|---|
-| Geologie | WFS `{C.LYR_GEOLOGY}` (geoservices1) |
-| Naturparke | WFS `{C.LYR_PARKS}` (geoservices1) |
+| Geologie | WFS `p_bz-Geology:GeologicalUnitsOverview` (geoservices1) |
+| Naturparke | WFS `p_bz-TerritorialPlans:LandscapePlan-NationalAndNaturalParks` (geoservices1) |
 | Wege/Strassen | OSM via Overpass |
 
 Die detaillierte geologische Karte (`GeologicalUnits-Detailed`, CARG-Blaetter)
@@ -93,14 +67,14 @@ Uebersichtskarte; was das kostet, steht in 8.6.
 ## 3. Zwei Aufloesungsprofile
 
 Das 0,5-m-Produkt der Provinz ist **kein flaechendeckendes Modell**. Es deckt
-im AOI nur {hi['coverage_pct']:.0f} % ab, in Korridoren entlang Gewaessern und
+im AOI nur 26 % ab, in Korridoren entlang Gewaessern und
 Talboeden. Statt still auf ein groeberes Modell auszuweichen, laufen zwei
 getrennte Durchgaenge:
 
 | Profil | nativ | Analyseskala | Abdeckung AOI | Rolle |
 |---|---|---|---|---|
-| `hires` | {hi['native']} m | {hi['coarse']} m | {hi['coverage_pct']:.1f} % | Primaerergebnis wie spezifiziert |
-{f"| `wide` | {wide['native']} m | {wide['coarse']} m | {wide['coverage_pct']:.1f} % | Ergaenzung fuer die restliche Flaeche |" if wide else ""}
+| `hires` | 0.5 m | 2.0 m | 26.3 % | Primaerergebnis wie spezifiziert |
+| `wide` | 2.5 m | 5.0 m | 100.0 % | Ergaenzung fuer die restliche Flaeche |
 
 Die Ergebnisse werden **nicht** vermischt: eigene GeoPackage-Ebene, eigene CSV
 und die Spalte `profil` in jeder Zeile.
@@ -108,24 +82,24 @@ und die Spalte `profil` in jeder Zeile.
 ### Warum das grobe Profil eine andere Schwelle braucht
 
 Dieselbe Gradzahl bedeutet auf beiden Skalen nicht dasselbe. Der Horn-Kernel
-misst ueber zwei Zellweiten, bei {wide['coarse']:.0f} m also ueber
-{2*wide['coarse']:.0f} m statt ueber {2*hi['coarse']:.0f} m, und mittelt
-dieselbe Wand entsprechend flacher. Mit {C.SLOPE_MIN_DEG:.0f} Grad liefert das
+misst ueber zwei Zellweiten, bei 5 m also ueber
+10 m statt ueber 4 m, und mittelt
+dieselbe Wand entsprechend flacher. Mit 60 Grad liefert das
 grobe Profil praktisch nichts. Die Schwelle wurde deshalb auf der Flaeche
 kalibriert, auf der beide Profile Daten haben (`calibrate.py`, Protokoll in
 `docs/kalibrierung_wide.txt`).
 
 **Das Ergebnis der Kalibrierung ist selbst ein Befund:** keine
-{wide['coarse']:.0f}-m-Schwelle reproduziert die feine Felsmaske auch nur
+5-m-Schwelle reproduziert die feine Felsmaske auch nur
 annaehernd. Ueber alle geprueften Schwellen von 30 bis 65 Grad bleibt das beste
 F1 bei **0,05**; der Recall kommt nie ueber 7 Prozent. Die im feinen Profil
 gefundenen Waende sind im Grundriss wenige Meter schmal und auf der
-{wide['coarse']:.0f}-m-Skala schlicht nicht mehr aufloesbar.
+5-m-Skala schlicht nicht mehr aufloesbar.
 
 Daraus folgt: `wide` ist **keine** grobere Fassung derselben Antwort, sondern
 ein anderes, deutlich stumpferes Instrument. Es findet nur grosse, ausgedehnte
 Waende und uebersieht alles Kleinraeumige. Die Schwelle steht auf
-{C.SLOPE_MIN_DEG_PROFILE['wide']:.0f} Grad - nicht auf dem F1-Optimum (45 Grad,
+50 Grad - nicht auf dem F1-Optimum (45 Grad,
 das nur ueber Recall zustande kommt), sondern dort, wo die zellweise Precision
 noch vertretbar ist. Scores sind zwischen den Profilen **nicht** vergleichbar.
 
@@ -135,26 +109,26 @@ noch vertretbar ist. Scores sind zwischen den Profilen **nicht** vergleichbar.
    werden uebersprungen (idempotenter Wiederanlauf). Kacheln ohne DGM-Daten
    bekommen einen `.empty`-Marker und werden nicht erneut angefragt; die
    zugehoerige DOM-Kachel wird dann gar nicht erst angefragt.
-2. **Mosaik** als VRT ueber die Kacheln; NoData {C.NODATA:.0f}, CRS {C.CRS}.
+2. **Mosaik** als VRT ueber die Kacheln; NoData -9999, CRS EPSG:25832.
 3. **Zwei Neigungsskalen**: Hangneigung nach Horn einmal nativ, einmal auf der
    groberen Analyseskala. Die native Variante ist verrauscht (Wurzelteller,
    Blockwerk, Filterartefakte), die grobere traegt die Wandstruktur und ist das
    Hauptkriterium. Beide werden im Analysestack gefuehrt
    (`slope05_mean`, `slope05_std`) und verschnitten
-   (`REQUIRE_BOTH_SCALES = {C.REQUIRE_BOTH_SCALES}`); die native Streuung geht
+   (`REQUIRE_BOTH_SCALES = False`); die native Streuung geht
    ueber die Kompaktheitskomponente in den Score ein.
 4. **nDOM** = DOM - DGM, zellweise auf dem gemeinsamen nativen Grid.
-5. **Felsmaske**: Neigung(Analyseskala) > {C.SLOPE_MIN_DEG:.0f} Grad **und**
-   nDOM < {C.NDOM_MAX_M} m.
-6. **Morphologie**: Opening ({C.OPENING_ITER}x) gegen Salt-and-Pepper, danach
-   Closing ({C.CLOSING_ITER}x) gegen Loecher in Wandflaechen, 8er-Nachbarschaft;
-   Flaechen unter {C.MIN_PIXELS} Zellen entfallen. Danach Labeling
+5. **Felsmaske**: Neigung(Analyseskala) > 60 Grad **und**
+   nDOM < 1.5 m.
+6. **Morphologie**: Opening (1x) gegen Salt-and-Pepper, danach
+   Closing (2x) gegen Loecher in Wandflaechen, 8er-Nachbarschaft;
+   Flaechen unter 10 Zellen entfallen. Danach Labeling
    zusammenhaengender Flaechen.
 7. **Kennwerte je Flaeche**: Grundflaeche, vertikale Erstreckung (max-min der
    DGM-Hoehe), mittlere und maximale Neigung, mittlere Exposition (zirkulaeres
    Mittel ueber sin/cos), Zentroid, Hoehe ue.M.
-8. **Filter**: vertikale Erstreckung >= {C.MIN_VERTICAL_EXTENT_M:.0f} m
-   **und** Flaeche >= {C.MIN_AREA_M2:.0f} m2.
+8. **Filter**: vertikale Erstreckung >= 8 m
+   **und** Flaeche >= 40 m2.
 
 Die nativen Raster werden ausschliesslich blockweise gelesen (rasterio
 windowed, Boundless-Read mit Halo fuer die 3x3-Kernel) und direkt zum
@@ -163,7 +137,7 @@ vertikale Erstreckung bleibt dabei **exakt**: je Analysezelle werden Minimum
 und Maximum der darunterliegenden nativen Zellen mitgefuehrt, sodass die
 Spanne je Flaeche der Vollaufloesung entspricht. Nur Maske und Labeling
 arbeiten auf dem fertigen Analyseraster im Speicher - bei
-{hi['coarse']:.0f} m sind das {int(10000/hi['coarse'])}x{int(10000/hi['coarse'])}
+2 m sind das 5000x5000
 Zellen, also unkritisch.
 
 ## 5. Schwellenwerte
@@ -172,14 +146,14 @@ Alle Werte stehen als Konstanten oben in `config.py`.
 
 | Konstante | Wert | Bedeutung |
 |---|---|---|
-| `SLOPE_MIN_DEG` | {C.SLOPE_MIN_DEG} Grad | Mindestneigung auf der Analyseskala |
-| `NDOM_MAX_M` | {C.NDOM_MAX_M} m | maximale Objekthoehe ueber Grund |
-| `REQUIRE_BOTH_SCALES` | {C.REQUIRE_BOTH_SCALES} | zusaetzlich Steilheit nativ fordern |
-| `SLOPE_MIN_DEG_NATIVE` | {C.SLOPE_MIN_DEG_NATIVE} Grad | Schwelle dafuer |
-| `OPENING_ITER` / `CLOSING_ITER` | {C.OPENING_ITER} / {C.CLOSING_ITER} | Morphologie |
-| `MIN_PIXELS` | {C.MIN_PIXELS} | Mindestzellen vor Vektorisierung |
-| `MIN_VERTICAL_EXTENT_M` | {C.MIN_VERTICAL_EXTENT_M} m | Filter Wandhoehe |
-| `MIN_AREA_M2` | {C.MIN_AREA_M2} m2 | Filter Grundflaeche |
+| `SLOPE_MIN_DEG` | 60.0 Grad | Mindestneigung auf der Analyseskala |
+| `NDOM_MAX_M` | 1.5 m | maximale Objekthoehe ueber Grund |
+| `REQUIRE_BOTH_SCALES` | False | zusaetzlich Steilheit nativ fordern |
+| `SLOPE_MIN_DEG_NATIVE` | 55.0 Grad | Schwelle dafuer |
+| `OPENING_ITER` / `CLOSING_ITER` | 1 / 2 | Morphologie |
+| `MIN_PIXELS` | 10 | Mindestzellen vor Vektorisierung |
+| `MIN_VERTICAL_EXTENT_M` | 8.0 m | Filter Wandhoehe |
+| `MIN_AREA_M2` | 40.0 m2 | Filter Grundflaeche |
 
 `python3 sensitivity.py --profile hires` zeigt tabellarisch, wie viele
 Kandidaten andere Kombinationen von Neigungs- und nDOM-Schwelle liefern, ohne
@@ -193,18 +167,21 @@ skalierbar.
 
 | Komponente | Spalte | Gewicht | Normierung |
 |---|---|---|---|
-| Wandhoehe | `score_wall_height` | {w['wall_height']} | vert. Erstreckung / {C.WALL_HEIGHT_FULL_SCORE_M:.0f} m, gekappt bei 1 |
-| Neigungskompaktheit | `score_slope_compact` | {w['slope_compact']} | 1 - Neigungs-Std / {C.SLOPE_STD_FULL_PENALTY_DEG:.0f} Grad |
-| Geologie-Eignung | `score_geology` | {w['geology']} | Tabelle unten |
-| Suedexposition | `score_south_aspect` | {w['south_aspect']} | (1 - cos(Exposition)) / 2; 1 = Sued, 0 = Nord |
-| Wegnaehe | `score_access` | {w['access']} | 1 bei <= {C.ACCESS_BEST_M:.0f} m, linear auf 0 bei {C.ACCESS_WORST_M:.0f} m |
+| Wandhoehe | `score_wall_height` | 0.35 | vert. Erstreckung / 40 m, gekappt bei 1 |
+| Neigungskompaktheit | `score_slope_compact` | 0.2 | 1 - Neigungs-Std / 25 Grad |
+| Geologie-Eignung | `score_geology` | 0.2 | Tabelle unten |
+| Suedexposition | `score_south_aspect` | 0.15 | (1 - cos(Exposition)) / 2; 1 = Sued, 0 = Nord |
+| Wegnaehe | `score_access` | 0.1 | 1 bei <= 100 m, linear auf 0 bei 2000 m |
 
 Geologie-Bewertung (erster Treffer gewinnt, case-insensitiv):
 
 | Klasse | Eignung | Schluesselwoerter |
 |---|---|---|
-{gl}
-| `unbekannt` | {C.GEOLOGY_DEFAULT[0]:.2f} | kein Treffer |
+| `unbrauchbar_vermutet` | 0.10 | moraen, moran, morän, moren, grundmoraene, werfen … |
+| `gemischt_karbonat_werfener` | 0.70 | permo-jurassische sedimentabfolge, sedimentabfolge, permo-giurassica, successione sedimentaria |
+| `gut` | 1.00 | dolomit, dolomia, kalk, calcare, riff, schlern … |
+| `mittel` | 0.65 | granit, granodiorit, tonalit, pluton, porphyr, vulkanit … |
+| `unbekannt` | 0.50 | kein Treffer |
 
 Moraene, Werfener und Bellerophon-Schichten werden als
 `unbrauchbar_vermutet` markiert und im Score abgewertet, aber **nicht
@@ -214,7 +191,8 @@ entfernt** - sie stehen mit Flag in GeoPackage und CSV.
 
 | Profil | Kacheln | Abdeckung | Maskenzellen | Flaechen | Kandidaten | max. Wand [m] | im Schutzgebiet |
 |---|---|---|---|---|---|---|---|
-{res}
+| 0,5 m nativ / 2 m Analyse | 53/90 | 26.3 % | 1,893 | 25 | 25 | 41.3 | 0 |
+| 2,5 m nativ / 5 m Analyse | 25/25 | 100.0 % | 1,339 | 20 | 20 | 101.0 | 1 |
 
 Dateien in `output/`:
 
@@ -266,19 +244,19 @@ zu sein. Ein Teil der Kandidaten ist deshalb Infrastruktur, kein Fels.
 
 ### 8.3 Abdeckungsluecke im 0,5-m-Modell
 
-Das 0,5-m-Produkt deckt im AOI nur **{hi['coverage_pct']:.0f} %** ab, in
+Das 0,5-m-Produkt deckt im AOI nur **26 %** ab, in
 korridorfoermigen Streifen entlang der Gewaesser und Talboeden. Rund
-{100 - hi['coverage_pct']:.0f} % des Umkreises - darunter ein grosser Teil der
+74 % des Umkreises - darunter ein grosser Teil der
 Hangflanken, auf denen Felswaende ueberhaupt erst zu erwarten sind - sind in
 0,5 m **gar nicht erfasst**. Das `hires`-Ergebnis ist daher *keine*
 vollstaendige Inventur des 5-km-Umkreises, sondern eine vollstaendige
-Auswertung der {hi['coverage_pct']:.0f} % Flaeche mit Daten. Das
+Auswertung der 26 % Flaeche mit Daten. Das
 `wide`-Ergebnis schliesst diese Luecke flaechenmaessig, aber nur auf
-{wide['native'] if wide else 2.5} m Grundaufloesung.
+2.5 m Grundaufloesung.
 
 ### 8.4 nDOM-Schwelle schneidet in beide Richtungen
 
-`nDOM < {C.NDOM_MAX_M} m` entfernt bewachsene Steilhaenge, entfernt aber auch
+`nDOM < 1.5 m` entfernt bewachsene Steilhaenge, entfernt aber auch
 **Fels unter Baumkronen** - im Gadertal betrifft das viele niedrigere
 Wandstufen im Wald, die kletterbar waeren. Umgekehrt bleiben bewachsene
 Felspartien faelschlich stehen, wenn die Bodenfilterung Vegetation bereits ins
@@ -286,10 +264,10 @@ DGM uebernommen hat. Die Schwelle ist ein Vegetationsfilter, kein Felsnachweis.
 
 ### 8.5 Skalenwahl und Bouldern
 
-Die Maske arbeitet im Profil `hires` auf {hi['coarse']:.0f} m,
-{f"im Profil `wide` auf {wide['coarse']:.0f} m" if wide else ""}. Bloecke unter
-etwa {2 * hi['coarse']:.0f} m Kantenlaenge werden im besten Fall weggemittelt.
-Der Filter `MIN_VERTICAL_EXTENT_M = {C.MIN_VERTICAL_EXTENT_M:.0f}` entfernt
+Die Maske arbeitet im Profil `hires` auf 2 m,
+im Profil `wide` auf 5 m. Bloecke unter
+etwa 4 m Kantenlaenge werden im besten Fall weggemittelt.
+Der Filter `MIN_VERTICAL_EXTENT_M = 8` entfernt
 Boulderbloecke ohnehin vollstaendig. **Fuer Bouldern taugt diese
 Parametrisierung nicht**; wer Bloecke sucht, muss `MIN_VERTICAL_EXTENT_M` und
 `MIN_AREA_M2` deutlich senken, `COARSE_RES` auf 1 m stellen, ausschliesslich
@@ -310,7 +288,7 @@ ableitbar**. Die Einheit laeuft deshalb als eigene Klasse
 `gemischt_karbonat_werfener` und wird mit 0,70 leicht positiv bewertet - mit
 der geologischen Begruendung, dass in dieser Abfolge die wandbildenden
 Gesteine die Karbonate sind, waehrend Werfener-Schichten Wiesen- und
-Schutthaenge bilden; die Neigungsschwelle von {C.SLOPE_MIN_DEG:.0f} Grad
+Schutthaenge bilden; die Neigungsschwelle von 60 Grad
 selektiert also bereits weitgehend das kompetente Gestein. Das ist eine
 plausible Annahme, **kein kartierter Befund**. Die Schluesselwortregeln fuer
 Dolomit/Kalk und fuer Moraene/Werfener/Bellerophon bleiben in `config.py`
@@ -347,6 +325,3 @@ sagt keine dieser Flaechen etwas ueber Grundeigentum, Betretungsrechte,
 Vogelschutz-Sperrzeiten, Steinschlag, Absturzgelaende oder Felsqualitaet.
 Erschliessung oder Begehung nur nach Klaerung mit Grundeigentuemern,
 Behoerden und dem zustaendigen Alpenverein.
-"""
-    Path(path).write_text(txt, encoding="utf-8")
-    return path

@@ -1,4 +1,3 @@
 data/
-output/
 *.log
 __pycache__/

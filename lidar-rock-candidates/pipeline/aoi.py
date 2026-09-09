@@ -6,10 +6,9 @@ from pyproj import Transformer
 
 import config as C
 
-# Rasterursprung der Provinz-Coverages (aus DescribeCoverage),
-# damit unsere Fenster exakt auf dem Quellgrid liegen.
-GRID_ORIGIN_E = 610544.75
-GRID_ORIGIN_N = 5216600.25
+# Der Rasterursprung kommt aus DescribeCoverage und haengt am Profil
+# (0,5-m- und 2,5-m-Coverage haben verschiedene Ursprunge), damit unsere
+# Fenster exakt auf dem jeweiligen Quellgrid liegen.
 
 
 def center_utm(latlon=None):
@@ -27,8 +26,8 @@ def aoi_bbox():
     cx, cy = center_utm()
     b = C.AOI_BUFFER_M
     return (
-        _snap(cx - b, GRID_ORIGIN_E), _snap(cy - b, GRID_ORIGIN_N),
-        _snap(cx + b, GRID_ORIGIN_E), _snap(cy + b, GRID_ORIGIN_N),
+        _snap(cx - b, C.GRID_ORIGIN_E), _snap(cy - b, C.GRID_ORIGIN_N),
+        _snap(cx + b, C.GRID_ORIGIN_E), _snap(cy + b, C.GRID_ORIGIN_N),
     )
 
 
